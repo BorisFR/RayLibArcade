@@ -2,16 +2,16 @@
 # RayLibArcade
 
 Emulateur logiciel en C / C++, basé sur le principe de M.A.M.E.  
-L'objectif est de réaliser un émulateur software pourun ESP32-P4. Cependant, ce projet existe pour "simplifier" le développement afin de ne pas avoir à flasher le micro-controleur et aussi de pouvoir avancer sur le développement sans avoir l'ESP32-P4.  
+L'objectif est de réaliser un émulateur software pour un ESP32-P4. Cependant, ce projet existe pour "simplifier" le développement afin de ne pas avoir à flasher le micro-controleur et aussi de pouvoir avancer sur le développement sans avoir l'ESP32-P4.  
 
-J'ai choisi d'utiliser le framework RayLib car c'esst un framewor que j'ai déjà utilisé pour faire de la 3D. Au final, en pur gestion itmap 2D, cela ne se révèle pas être un bon choix car j'ai un framerate complétement à la ramasse. La gestion du double buffer de RayLib est en "conflit" avec mon moteur graphique d'émulation. Pour tester c'est ok, mais cela ne sera pas utilisable en vrai sur ordinateur. Cela n'est pas bien grâve.
+J'ai choisi d'utiliser le framework RayLib car c'est un framework que j'ai déjà utilisé pour faire de la 3D. Au final, en pur gestion bitmap 2D, cela ne se révèle pas être un bon choix car j'ai un framerate complétement à la ramasse. La gestion du double buffer de RayLib est en "conflit" avec mon moteur graphique d'émulation. Pour tester c'est ok, mais cela ne sera pas utilisable en vrai sur ordinateur. Vu mon besoin, un SFML ou SDL aurait été un meilleur choix. Cela n'est pas bien grâve. J'adapterai peut-être un jour.  
 
-Le projet "réel" est EspArcade. Il partage l'ensemble des fichiers sources de ce projet. Seul la partie compilation est différente.
+Le projet "réel" est **[EspArcade](https://github.com/BorisFR/EspArcade)**. Il partage l'ensemble des fichiers sources de ce projet. Seul la partie compilation est différente.
 
 Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalité que je ne connais pas du tout, je n'ai jamais développé sur cette fonctionalité. Cela viendra plus tard quand j'aurai quelques jeux d'opérationnels.  
 
-> <u>Auteur :</u> Boris  
-Projet démarré en été 2025  
+> <ins>Auteur :</ins> Boris  
+<ins>Démarrage :</ins> Août 2025  
 
 ## Blog
 
