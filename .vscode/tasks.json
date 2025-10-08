@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe build active file",
+			"command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${workspaceFolder}/src/games/*.cpp",
+				"${workspaceFolder}/src/games/*.c",
+				"${workspaceFolder}/src/machines/*.cpp",
+				"${workspaceFolder}/src/machines/*.c",
+				"${workspaceFolder}/src/*.cpp",
+				"${workspaceFolder}/src/*.c",
+				"-o",
+				"${workspaceFolder}/build/main.exe",
+				"-Wno-register",
+				"-IC:/msys64/ucrt64/bin",
+				"-LC:/msys64/ucrt64/lib",
+				"-lraylib",
+			],
+			"options": {
+				//"cwd": "./build/main"
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "Build task"
+		}
+	]
+}

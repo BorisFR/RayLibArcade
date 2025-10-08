@@ -1,0 +1,109 @@
+const char *TAG = "Main";
+
+#ifdef THE_ESP32P4
+//#include "Arduino.h"
+#else
+#include "../lib/Arduino.h"
+#endif
+
+#include "TheSdCard.hpp"
+TheSdCard sdCard = TheSdCard();
+
+#include "TheDisplay.hpp"
+TheDisplay display = TheDisplay();
+
+#include "TheTouch.hpp"
+TheTouch touch = TheTouch(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+#include "GameInvaders.hpp"
+#include "GameInvadpt2.hpp"
+#include "GameFrogger.hpp"
+#include "GamePacman.hpp"
+#include "GameCrush.hpp"
+
+TheGame *game;
+
+void setup()
+{
+  //Serial.begin(115200);
+  //delay(1500);
+  MY_DEBUG(TAG, "*** ESP Arcade");
+  touch.Setup();
+  display.Setup();
+  sdCard.Setup();
+  //game = new GameInvaders();
+  //game = new GameInvadpt2();
+  //game = new GameFrogger();
+  game = new GamePacman();
+  //game = new GameCrush();
+  if (!game->IsReady())
+  {
+    game->Setup(display, sdCard);
+    //if (game->IsReady())
+    //{
+    //  display.Print("Game Ok", 10, 70);
+    //}
+    //else
+    //{
+    //  display.Print("Game KO!!!", 10, 70);
+    //}
+  }
+  uint32_t zoomFactor = MIN(display.GetMaxZoomX(), display.GetMaxZoomY());
+  display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
+}
+
+void loop()
+{
+  if (game->IsReady())
+  {
+    game->Loop(display);
+  }
+  display.Loop();
+#ifdef THE_ESP32P4
+#else
+  for (uint8_t k = 0; k < BUTTON_END; k++)
+  {
+    if (IsKeyChanged(k))
+      game->KeyChange(k);
+  }
+#endif
+  touch.Loop();
+  if (touch.IsTouched())
+  {
+    for (int i = 0; i < touch.Touches(); i++)
+    {
+#ifdef THE_ESP32P4  
+#else
+      //display.ClearRectangle(10, 730, 300, 20);
+      //String text = "Touch " + String(i) + ": " + String(touch.Points(i).x) + "/" + String(touch.Points(i).y);
+      //display.Print(text, 10, 730);
+#endif
+      // Serial.print("  size: ");
+      // MY_DEBUG(TAG, ts.points[i].size);
+    }
+    // ts.isTouched = false;
+  }
+}
+
+#ifdef THE_ESP32P4
+extern "C" void app_main(void)
+{
+    setup();
+  while (1)
+  {
+    loop();
+    vTaskDelay(1 / portTICK_PERIOD_MS);
+  }
+}
+#else
+int main()
+{
+  setup();
+  while (!display.MustExit())
+  {
+    loop();
+  }
+  delete game;
+  return 0;
+}
+#endif

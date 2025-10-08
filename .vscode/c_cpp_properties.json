@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "g++",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/src/*.h",
+                "${workspaceFolder}/src/*.hpp",
+                "${workspaceFolder}/src/games/*.h",
+                "${workspaceFolder}/src/machines/*.h",
+                "C:/msys64/ucrt64/include",
+                "${workspaceFolder}/lib/*.h"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPathInCppPropertiesJson": "C:/msys64/ucrt64/bin/g++.exe",
+            "mergeConfigurations": false,
+            "recursiveIncludes": {},
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
