@@ -10,7 +10,7 @@
 extern struct GfxLayout pacmanTileLayout;
 extern struct GfxLayout pacmanSpriteLayout;
 
-const struct GfxDecodeInfo pacmanGfxDecodeInfo[] =
+static struct GfxDecodeInfo pacmanGfxDecodeInfo[] =
     {
         {ROM_GFX, 0x0000, &pacmanTileLayout, 0, 32},
         {ROM_GFX, 0x1000, &pacmanSpriteLayout, 0, 32},

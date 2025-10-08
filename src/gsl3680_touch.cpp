@@ -9,6 +9,7 @@
 #include "esp_lcd_touch.h"
 #include "esp_lcd_gsl3680.h"
 #include "gsl3680_touch.hpp"
+#include "TheDisplay.hpp"
 
 static const char *TAG = "GSL3680";
 
@@ -42,7 +43,7 @@ void gsl3680_touch::begin(int8_t sda_pin, int8_t scl_pin, int8_t rst_pin, int8_t
 
     esp_lcd_panel_io_i2c_config_t tp_io_config = ESP_LCD_TOUCH_IO_I2C_GSL3680_CONFIG();
     
-    //ESP_LOGI(TAG, "Initialize touch IO (I2C)");
+    ESP_LOGI(TAG, "Initialize touch IO (I2C)");
     esp_lcd_new_panel_io_i2c((esp_lcd_i2c_bus_handle_t)I2C_NUM_0, &tp_io_config, &tp_io_handle);
 
     esp_lcd_touch_config_t tp_cfg = {
@@ -62,7 +63,7 @@ void gsl3680_touch::begin(int8_t sda_pin, int8_t scl_pin, int8_t rst_pin, int8_t
     };
     if(cb != NULL) tp_cfg.interrupt_callback = cb;
 
-    //ESP_LOGI(TAG, "Initialize touch controller gsl3680");
+    ESP_LOGI(TAG, "Initialize touch controller gsl3680");
     ESP_ERROR_CHECK(esp_lcd_touch_new_i2c_gsl3680(tp_io_handle, &tp_cfg, &tp));
 
     //esp_lcd_touch_register_interrupt_callback(tp, cb);

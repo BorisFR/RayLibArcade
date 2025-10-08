@@ -7,6 +7,18 @@ static uint8_t readbit(const uint8_t *src, uint32_t bitnum)
     return src[bitnum / 8] & (0x80 >> (bitnum % 8));
 }
 
+
+uint8_t GetBitFromNumber(uint8_t value)
+{
+    uint8_t res = 0;
+    uint8_t temp = value >> 1;
+    while (temp > 0) {
+        res++;
+        temp = temp >> 1;
+    }
+    return res;
+}
+
 // *******************************************************************
 // *******************************************************************
 

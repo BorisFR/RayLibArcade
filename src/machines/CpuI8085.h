@@ -2,12 +2,12 @@
 #define CPU_I8085_H
 
 #include "../MyDefine.h"
-#include <cstdint>
 
 #ifdef ESP32P4
 //#define word uint32_t
 //#define dword uint64_t
 #else
+#include <cstdint>
 #endif
 #include "../TheMemory.h"
 

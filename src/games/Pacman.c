@@ -22,6 +22,8 @@ struct GfxLayout pacmanSpriteLayout = {
     64 * 8 /* every sprite takes 64 bytes */
 };
 
+
+
 // *******************************************************************
 
 void pacman_videoram_w(int offset, int data) { boardMemory[offset] = data; }

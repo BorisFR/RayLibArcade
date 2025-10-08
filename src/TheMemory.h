@@ -76,8 +76,9 @@ extern "C"
 {
 #endif
 
-extern const struct OneGame allGames[];
-#define VISIBLE_AREA_FULL {0, 65535, 0, 65535}
+
+#define VISIBLE_AREA_FULL  (struct VisibleArea){0, 65535, 0, 65535}
+
 extern struct VisibleArea visibleArea;
 
 	struct VisibleArea
@@ -90,7 +91,7 @@ extern struct VisibleArea visibleArea;
 
 	#define TRANSPARENCY_NONE false
 	#define TRANSPARENCY_BLACK true
-	extern void GameDrawElement(uint32_t *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, bool blackIsTransparent);
+	extern void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, bool blackIsTransparent);
 
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];

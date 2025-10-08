@@ -10,6 +10,8 @@ extern "C"
 {
 #endif
 
+// Declaration moved after struct OneGame definition
+
 #define IP_ACTIVE_HIGH 0x00
 #define IP_ACTIVE_LOW 0xff
 
@@ -322,27 +324,27 @@ extern "C"
 	};
 
 	struct TheMachine {
-		const RomModule *roms;
+		const struct RomModule *roms;
 		void (*decode)();
-		const MemoryReadAddress *readAddress;
-		const MemoryWriteAddress *writeAddress;
-		const InputPort *inputPorts;
-		const IOReadPort *readPorts;
-		const IOWritePort *writePorts;
+		const struct MemoryReadAddress *readAddress;
+		const struct MemoryWriteAddress *writeAddress;
+		const struct InputPort *inputPorts;
+		const struct IOReadPort *readPorts;
+		const struct IOWritePort *writePorts;
 	};
 
 	struct OneGame
 	{
 		const char *folder;
 		const char *name;
-		const TheVideo video;
+		const struct TheVideo video;
 		// const uint32_t screenWidth;
 		// const uint32_t screenHeight;
 		// const uint8_t orientation;
 		// void (*drawDisplay)(); // must draw screen in screendata[]
 		// const struct GfxDecodeInfo *decodeInfo;
 		const unsigned long frequency;
-		const TheMachine machine;
+		const struct TheMachine machine;
 		// const RomModule *roms;
 		// const MemoryReadAddress *readAddress;
 		// const MemoryWriteAddress *writeAddress;
@@ -351,6 +353,8 @@ extern "C"
 		// const IOWritePort *writePorts;
 		const int8_t machineType;
 	};
+
+	extern const struct OneGame allGames[];
 
 #ifdef __cplusplus
 }

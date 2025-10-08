@@ -5,7 +5,7 @@ struct VisibleArea visibleArea;
 
 uint8_t maxp = 0;
 
-void GameDrawElement(uint32_t *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, bool blackIsTransparent)
+void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, bool blackIsTransparent)
 {
     DIRTY_MIN(atX, screenDirtyMinX)
     DIRTY_MAX(atX + element->width, screenDirtyMaxX)

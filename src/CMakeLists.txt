@@ -1,14 +1,19 @@
 
 idf_component_register(SRCS  "main.cpp"
+
 "TheDisplay.cpp" "TheGame.cpp" "TheMemory.c" "TheSdCard.cpp" "TheTools.cpp" 
-"CpuI8085.c" "CpuZ80.c"
-"MachineDriver8080bw.cpp" "MachineI8080device.c" "MachineInputPort.cpp" "MachineTheZ80.cpp"
-"GameCrush.cpp"
-"GameFrogger.cpp"
-"GameInvaders.cpp"
-"GameInvadpt2.cpp"
-"GamePacman.c"
-"GamePacman.cpp"
+"GamesList.c" "MyDefine.c"
 "esp_lcd_gsl3680.c" "gsl_point_id.c" "gsl3680_touch.cpp"
+"gsl_point_id.c" "gsl3680_touch.cpp"
+
+"machines/CpuI8085.c" "machines/CpuZ80.c"
+"machines/MachineDriver8080bw.cpp" "machines/MachineInputPort.cpp" "machines/MachineTheZ80.cpp"
+"machines/mb14241.c"
+
+"games/Frogger.c"
+"games/Invaders.c"
+"games/Invadpt2.c"
+"games/Pacman.c"
+
 PRIV_REQUIRES spi_flash fatfs sd_card sdmmc
 INCLUDE_DIRS "" ".")

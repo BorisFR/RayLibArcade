@@ -2,6 +2,9 @@
 #define MY_DEFINE_H
 
 #pragma once
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-function"
 
 // to comment for RayLib on PC :)
 // #define ESP32P4 1
@@ -52,6 +55,8 @@ extern uint8_t GetBitFromNumber(uint8_t value);
         maxValue = value;          \
     }
 
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+    
 #define PORT_SWITCH_VALUE MY_DEBUG2(TAG, "Value:", allGames[currentGame].machine.inputPorts[i].default_value)
 #define PORT_SWITCH_DEFAULT_VALUE(value) portValue += value;
 
