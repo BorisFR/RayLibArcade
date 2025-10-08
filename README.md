@@ -13,13 +13,22 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 > <ins>Auteur :</ins> Boris  
 <ins>Démarrage :</ins> Août 2025  
 
+## Jeux  
+
+
 ## Blog
 
-- Je tourne en rond, je n'arrive pas à avoir une fonction générique pour décoder les graphismes.  
+- Début de l'implémentation du scrolling. Il semble que ce premier code soit opérationnel comme il le devrait. J'en suis surpris, il faut que je creuse un peu plus. J'ai un doute sur un décalage d'une ligne vers le bas.  
+
+- Le souci des INPUT_PORT est réglé : je n'avais pas implémenter toutes les touches (input du player 2 par exemple, ou encore le COIN2, COIN", START P2, ...). Maintenant que c'est implémenté, je sais enfin démarrer une  partie de FROGGER et même essayer de jouer. Bon, j'ai un souci avec les couleurs des sprites (pas des tiles) et je n'ai pas implémenter le scrolling. Il y a également un souci avec le nombres de vies : elles n'aparaissent pas et j'en ai un nomre infini.
+
+- J'ai une première version des INPUT_PORT opérationnelle. Je me plonge dans le décodage graphique et c'est enfin un succès. J'ai les sprites de Pacman et de Frogger ! Space Invders et sa suite sont toujours fonctionnels. Il y a cependant un "truc" avec les INPUT_PORT car au démarrage d'une partie de Pacman, le joystick ne fonctionne pas comme il devrait, je dois faire un mouvement dans toutes les directions pour que cela fonctionne correctement. Avec Frogger, je ne sais même pas simuler un COIN1. Le jeu Pacman est maintenant pleinement opérationnel !  
+
+- Je tourne en rond, je n'arrive pas à avoir une fonction générique pour décoder les graphismes. Je plonge dans le code source de M.A.M.E. version 0.37xxx (genre pure C) et sur la toute dernière (C / C++ orienté objet). Je commence à intégrer la logique. J'en extrait du code qque j'intègre dans le mien. Je commence par les macros permettant de charger les ROMS. Cela me permet d'avoir un gestionnaire de mémoire. J'intègre ensuite la partie qui gère les INPUT. Je revois complétement l'architecture logicielle de mon programme.  
 
 - En bidouillant, j'arrive à avoir les sprites opérationnels. Cependant cela ne me satisfait pas trop car cela semble trop en "dur" pour ce jeu et ne fonctionnera surement pas pour d'autres.  Je décide donc d'essayer sur un autre jeu Z80. Je choisis d'abord Crush Roller mais eu final, il y a une protection des ROM et je ne pas trop envie de m'y atteler dès à présent. Je bascule alors sur le jeu Frogger. Celui-ci utilise deux Z80, mais un des deux n'est utile que pour l'audio, cela devrait donc me suffir pour valider mon développement.  Bon, une petite adaptation est nécessaire pour les ROM car certaines ne sont pas utilisale tel quel pour avoir le graphisme. Une inversion des bit 0 et 1 sur la première rom graphique (et également pour la première ROM audio).  
 
-- J'avance doucement en analysant d'autres émulateurs Pacman. J'arrive à faire fonctionner l'émulation Z80, le souci étant ue j'aimerai ne faire que du C++ mais quasi tout les émulateurs sont en pur C. L'autre souci est au niveau graphique : il faut décoder le stockage des tiles et sprites. Je m'inspire de ces autres émulateurs, cela commence à fonctionner, au moins pour les tiles de taille 8x8. Pour les sprites 16x16, c'est un peu tout mélangé.  
+- J'avance doucement en analysant d'autres émulateurs Pacman. J'arrive à faire fonctionner l'émulation Z80, le souci étant ue j'aimerai ne faire que du C++ mais quasi tout les émulateurs sont en pur C. L'autre souci est au niveau graphique : il faut décoder le stockage des tiles et sprites. Je m'inspire de ces autres émulateurs, cela commence à fonctionner, au moins pour les tiles de taille 8x8. Pour les sprites 16x16, c'est un peu tout mélangé. J'ai ma fonction qui extrait les couleurs et également les palettes de couleurs. Je suis un peu perdu avec la notion de "pen" de Mame.  
 
 - J'enchaine sur un nouveau jeu avec un autre processeur. Les jeux sur le processuer I8080 en noir et blanc sont tout de mâme un peu trop ancien à mon goût. Je me contenterai de Space Invaders et Space Invaders Part II.  
 Le nouveau jeu aura donc de la couleur est mon choix se porte sur Pacman qui fonctionne sur un processeur Z80.  
