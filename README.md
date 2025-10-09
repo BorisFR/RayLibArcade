@@ -20,6 +20,7 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 ## Blog
 
 - <ins>Octobre 2025</ins> : Début de l'implémentation du scrolling pour le jeu Frogger. Il semble que ce premier code soit opérationnel comme il le devrait. J'en suis surpris, il faut que je creuse un peu plus. J'ai un doute sur un potentiel décalage d'une ligne vers le bas.  
+J'ai refait une synchro avec EspArcade. L'émulation I8080 ne fonctionne plus, l'ESP32-P4 fait un reboot à cause d'un morceau de code de ce processeur 😒  
 
 - <ins>Octobre 2025</ins> : Le souci des INPUT_PORT est réglé : je n'avais pas implémenter toutes les touches (input du player 2 par exemple, ou encore le COIN2, COIN", START P2, ...). Maintenant que c'est implémenté, ~~le souci de joystick de Panman est réglé et~~ je sais enfin démarrer une  partie de FROGGER et même commencer à jouer. Bon, j'ai un souci avec les couleurs des sprites (pas des tiles) et je n'ai pas implémenter le scrolling. Il y a également un souci avec le nombres de vies : elles n'apparaissent pas et j'en ai un nombre infini. Pour le moment je n'ai aucune idée du pourquoi de ce phénomène.
 
