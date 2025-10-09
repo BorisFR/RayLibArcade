@@ -180,6 +180,8 @@ void frogger_decode_rom()
 }
 
 uint8_t maxc = 0;
+uint8_t last = 0;
+
 void FroggerRefreshScreen()
 {
     // videoram_size = 0x03FF;
@@ -209,7 +211,24 @@ void FroggerRefreshScreen()
         // 		0,TRANSPARENCY_NONE,0);
         uint16_t tileAddress = 0xa800 + offset;
         uint8_t tileIndex = boardMemory[tileAddress];
-        GameDrawElement(screenDataOld, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE);
+        if (sy < 16)
+        {
+            GameDrawElement(screenDataOld, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_REPLACE, froggerWater);
+            // if (last != col)
+            //{
+            //     last = col;
+            //     MY_DEBUG2("CC", "Palette:", last)
+            // } // O ou 3
+        }
+        else
+        {
+            GameDrawElement(screenDataOld, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            // if (last != col)
+            //{
+            //     last = col;
+            //     MY_DEBUG2("CC", "Palette:", last)
+            // } // 0 ou 4
+        }
         //}
     }
     /*
@@ -291,6 +310,11 @@ void FroggerRefreshScreen()
         uint8_t sx = base[3] + hoffset;
         // sx = 240 - sx;
         sy = 240 - sy;
-        GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK);
+        //GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+        // if (last != color)
+        // {
+        //     last = color;
+        //     MY_DEBUG2("CC", "Palette:", last)
+        // } // O ou 3
     }
 }

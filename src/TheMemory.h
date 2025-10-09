@@ -89,9 +89,14 @@ extern struct VisibleArea visibleArea;
 		uint32_t maxY;
 	};
 
-	#define TRANSPARENCY_NONE false
-	#define TRANSPARENCY_BLACK true
-	extern void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, bool blackIsTransparent);
+	#define TRANSPARENCY_NONE 0
+	#define TRANSPARENCY_BLACK 1
+	#define TRANSPARENCY_REPLACE 2
+	#define TRANSPARENT_NONE_COLOR 0
+
+	extern THE_COLOR froggerWater;
+
+	extern void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor=0);
 
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];

@@ -84,6 +84,7 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
 {
     this->display = &display;
     MY_DEBUG2TEXT(TAG, GAME_NAME, "setup");
+    froggerWater = display.Rgb888ToRgb565(0x00, 0x00, 0x47);
     if (!Initialize(display, sdCard))
     {
         MY_DEBUG2TEXT(TAG, GAME_NAME, "could not be setup");
@@ -622,7 +623,8 @@ bool TheGame::DecodeColors(TheDisplay &display)
 
 bool TheGame::GeneratePalette(TheDisplay &display)
 {
-    paletteColorSize = element->total_colors * element->color_granularity;
+    //paletteColorSize = element->total_colors * element->color_granularity;
+    paletteColorSize = colorMemorySize;
     MY_DEBUG2(TAG, "Generate palette:", paletteColorSize)
     paletteColor = (THE_COLOR *)malloc(paletteColorSize * sizeof(THE_COLOR));
     if (paletteColor == NULL)
@@ -633,17 +635,9 @@ bool TheGame::GeneratePalette(TheDisplay &display)
     }
     memset(paletteColor, 0, paletteColorSize);
     //uint8_t indexColor = 0;
-    for (uint8_t i = 0; i < 32; i++)
+    for (uint8_t i = 0; i < colorMemorySize; i++)
     {
-        // if (i & 3)
-        // {
-        //     paletteColor[i] = colorRGB[indexColor];
-        // }
-        // else
-        // {
-        //     paletteColor[i] = colorRGB[indexColor];
-        // }
-        paletteColor[i] = colorRGB[i];
+        paletteColor[colorMemorySize-i-1] = colorRGB[i];
     }
     hasPalette = true;
     return true;

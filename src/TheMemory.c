@@ -2,10 +2,11 @@
 
 // *******************************************************************
 struct VisibleArea visibleArea;
+THE_COLOR froggerWater;
 
 uint8_t maxp = 0;
 
-void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, bool blackIsTransparent)
+void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
 {
     DIRTY_MIN(atX, screenDirtyMinX)
     DIRTY_MAX(atX + element->width, screenDirtyMaxX)
@@ -26,7 +27,11 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                     {
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if (!blackIsTransparent || color != 255)
+                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
+                            uint32_t index = tempX + tempY * screenWidth;
+                            screenData[index] = replacedColor;
+                        } else
+                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             screenData[index] = color;
@@ -53,7 +58,11 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                         {
                             uint8_t pixel = pointerLine[x];
                             THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                            if (!blackIsTransparent || color != 255)
+                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
+                            uint32_t index = tempX + tempY * screenWidth;
+                            screenData[index] = replacedColor;
+                        } else
+                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
                             {
                                 uint32_t index = tempX + tempY * screenWidth;
                                 screenData[index] = color;
@@ -80,7 +89,11 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                             {
                                 uint8_t pixel = pointerLine[x];
                                 THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                                if (!blackIsTransparent || color != 255)
+                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
+                            uint32_t index = tempX + tempY * screenWidth;
+                            screenData[index] = replacedColor;
+                        } else
+                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
                                 {
                                     uint32_t index = tempX + tempY * screenWidth;
                                     screenData[index] = color;
@@ -113,7 +126,11 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                                     color = paletteColor[paletteIndex * 4 + pixel];
                                 else
                                     color = colorRGB[paletteIndex * 4 + pixel];
-                                if (!blackIsTransparent || color != 255)
+                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
+                            uint32_t index = tempX + tempY * screenWidth;
+                            screenData[index] = replacedColor;
+                        } else
+                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
                                 {
                                     uint32_t index = tempX + tempY * screenWidth;
                                     screenData[index] = color;
