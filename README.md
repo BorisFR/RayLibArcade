@@ -30,6 +30,8 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 
 ## Blog
 
+- <ins>Octobre 2025</ins> : Changement de l'émulateur CpuI8085 pour i8080.Semble ok pour Space Invaders mais ne fonctionne pas pour SpaceInvaders Part II. Je teste en version ESP...  
+
 - <ins>Octobre 2025</ins> : Début de l'implémentation du scrolling pour le jeu Frogger. Il semble que ce premier code soit opérationnel comme il le devrait. J'en suis surpris, il faut que je creuse un peu plus. J'ai un doute sur un potentiel décalage d'une ligne vers le bas.  
 J'ai refait une synchro avec EspArcade. L'émulation I8080 ne fonctionne plus, l'ESP32-P4 fait un reboot à cause d'un morceau de code de ce processeur 😒  
 

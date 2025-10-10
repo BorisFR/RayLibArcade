@@ -5,7 +5,8 @@
 
 #include "../MyDefine.h"
 #include "../TheGame.hpp"
-#include "CpuI8085.h"
+//#include "CpuI8085.h"
+#include "i8080.hpp"
 
 class MachineDriver8080bw : public TheGame
 {
@@ -16,9 +17,11 @@ public:
     void Loop(TheDisplay &display);
 
 protected:
-    const char *TAG = "MachineDriver8080bw";
 
 private:
+    const char *TAG = "MachineDriver8080bw";
+    CPU_8080 cpu;
+
 };
 
 #endif
