@@ -7,12 +7,12 @@ static uint8_t readbit(const uint8_t *src, uint32_t bitnum)
     return src[bitnum / 8] & (0x80 >> (bitnum % 8));
 }
 
-
 uint8_t GetBitFromNumber(uint8_t value)
 {
     uint8_t res = 0;
     uint8_t temp = value >> 1;
-    while (temp > 0) {
+    while (temp > 0)
+    {
         res++;
         temp = temp >> 1;
     }
@@ -613,8 +613,8 @@ bool TheGame::DecodeColors(TheDisplay &display)
         uint8_t green = (uint8_t)((((colorByte >> 3U) & 0b1) * 0x21) + (((colorByte >> 4U) & 0b1) * 0x47) + (((colorByte >> 5U) & 0b1) * 0x97));
         uint8_t blue = (uint8_t)((((colorByte >> 6U) & 0b1) * 0x51) + (((colorByte >> 7U) & 0b1) * 0xAE));
         colorRGB[c] = display.Rgb888ToRgb565(red, green, blue);
-        //std::string t = std::to_string(red) + "/" + std::to_string(green) + "/" + std::to_string(blue) + " => " + std::to_string(colorRGB[c]);
-        //MY_DEBUG(TAG, t.c_str())
+        // std::string t = std::to_string(red) + "/" + std::to_string(green) + "/" + std::to_string(blue) + " => " + std::to_string(colorRGB[c]);
+        // MY_DEBUG(TAG, t.c_str())
     }
     return true;
 }
@@ -623,7 +623,7 @@ bool TheGame::DecodeColors(TheDisplay &display)
 
 bool TheGame::GeneratePalette(TheDisplay &display)
 {
-    //paletteColorSize = element->total_colors * element->color_granularity;
+    // paletteColorSize = element->total_colors * element->color_granularity;
     paletteColorSize = colorMemorySize;
     MY_DEBUG2(TAG, "Generate palette:", paletteColorSize)
     paletteColor = (THE_COLOR *)malloc(paletteColorSize * sizeof(THE_COLOR));
@@ -634,10 +634,10 @@ bool TheGame::GeneratePalette(TheDisplay &display)
         return false;
     }
     memset(paletteColor, 0, paletteColorSize);
-    //uint8_t indexColor = 0;
+    // uint8_t indexColor = 0;
     for (uint8_t i = 0; i < colorMemorySize; i++)
     {
-        paletteColor[colorMemorySize-i-1] = colorRGB[i];
+        paletteColor[i] = colorRGB[i];
     }
     hasPalette = true;
     return true;
@@ -816,6 +816,7 @@ GfxElement *TheGame::DecodeGfxElement(const uint8_t *fromMemory, uint32_t offset
     if (element->color_granularity <= 32) /* can't handle more than 32 pens */
         element->pen_usage = (unsigned int *)malloc(element->total_elements * sizeof(int));
     /* no need to check for failure, the code can work without pen_usage */
+    MY_DEBUG2(TAG, "color_granularity ", element->color_granularity)
     for (uint16_t index = 0; index < gfxLayout->total; index++)
     {
         // MY_DEBUG2(TAG, "GFX LAYOUT ", index)
@@ -908,6 +909,7 @@ bool TheGame::DecodeAllGfx(const GfxDecodeInfo info[])
         case ROM_GFX:
             allGfx[i] = DecodeGfxElement(gfxMemory, info[i].start, info[i].gfxlayout);
             allGfx[i]->total_colors = info[i].total_color_codes;
+            MY_DEBUG2(TAG, "total_colors ", allGfx[i]->total_colors)
             break;
         }
     }

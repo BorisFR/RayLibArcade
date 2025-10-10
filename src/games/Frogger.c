@@ -179,8 +179,9 @@ void frogger_decode_rom()
     }
 }
 
-uint8_t maxc = 0;
-uint8_t last = 0;
+//uint8_t maxc = 0;
+uint8_t maxc2 = 0;
+//uint8_t last = 0;
 
 void FroggerRefreshScreen()
 {
@@ -199,11 +200,11 @@ void FroggerRefreshScreen()
         int sy = (offset % 32);
         int col = boardMemory[0xb000 + 2 * sy + 1] & 7;
         col = ((col >> 1) & 0x03) | ((col << 2) & 0x04);
-        if (col > maxc)
-        {
-            maxc = col;
-            MY_DEBUG2("CC", "Max:", maxc)
-        }
+        //if (col > maxc)
+        //{
+        //    maxc = col;
+        //    MY_DEBUG2("CC", "Max tile:", maxc)
+        //} // 7
         // drawgfx(tmpbitmap,Machine->gfx[0],
         // 		videoram[offset],
         // 		col + (sy <= 15 ? 8 : 0),	// blue background in the upper 128 lines
@@ -243,6 +244,7 @@ void FroggerRefreshScreen()
             copyscrollbitmap(bitmap,tmpbitmap,32,scroll,0,0,&Machine->drv->visible_area,TRANSPARENCY_NONE,0);
         }
 */
+    // better to do completly by code!
     // TODO: not good cause visiility area is not active...
     memcpy(screenData, screenDataOld, screenLength);
 
@@ -300,21 +302,29 @@ void FroggerRefreshScreen()
     for (int spriteNumber = 7; spriteNumber >= 0; spriteNumber--)
     {
         const uint8_t *base = &boardMemory[0xb040 + spriteNumber * 4];
+        if(base[3]){
         uint8_t base0 = ((base[0] >> 4) | (base[0] << 4));
         uint8_t sy = 240 - (base0 - (spriteNumber >= 3));
         uint16_t code = base[1] & 0x3f;
         uint8_t flipx = base[1] & 0x40;
         uint8_t flipy = base[1] & 0x80;
         uint8_t color = base[2] & 7;
+        color = ((color >> 1) & 0x03) | ((color << 2) & 0x04);
         const int hoffset = 1;
         uint8_t sx = base[3] + hoffset;
         // sx = 240 - sx;
         sy = 240 - sy;
-        //GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+        GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
         // if (last != color)
         // {
         //     last = color;
         //     MY_DEBUG2("CC", "Palette:", last)
         // } // O ou 3
+        if (color > maxc2)
+        {
+            maxc2 = color;
+            MY_DEBUG2("CC", "Max sprite:", maxc2)
+        } // 7
+        }
     }
 }

@@ -17,6 +17,17 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 
 ![Space Invaders](roms/RLarcade_invaders.png) ![Space Invaders Part II](roms/RLarcade_invadpt2.png) ![Pacman](roms/RLarcade_pacman.png) ![Frogger](roms/RLarcade_frogger.png)
 
+## Remerciements
+
+La MAMEdev Team : [https://docs.mamedev.org/](https://docs.mamedev.org/)  
+Harbaum pour son Galagino - ESP32 Arcade Emulator : [https://github.com/harbaum/galagino](https://github.com/harbaum/galagino)  
+Sandroid75 pour sn émulateur PAC : [https://github.com/Sandroid75/pac](https://github.com/Sandroid75/pac)  
+Justin-Credible pour son émulateur Pacma en C# : [https://github.com/Justin-Credible/pac-man-emulator](https://github.com/Justin-Credible/pac-man-emulator)  
+tommojphillips pour son émulateur Space Invaders : [https://github.com/tommojphillips/Space-Invaders](https://github.com/tommojphillips/Space-Invaders)  
+camelliya pour son émulateur Space Invaders : [https://github.com/camelliya/pacman](https://github.com/camelliya/pacman) 
+JoseLGF pour son émulateur Space Invaders : [https://github.com/JoseLGF/SpaceIvaders](https://github.com/JoseLGF/SpaceIvaders)  
+Jean-Marc Harvengt pour son teensyMame: [https://github.com/Jean-MarcHarvengt/teensyMAME] (https://github.com/Jean-MarcHarvengt/teensyMAME)  
+
 ## Blog
 
 - <ins>Octobre 2025</ins> : Début de l'implémentation du scrolling pour le jeu Frogger. Il semble que ce premier code soit opérationnel comme il le devrait. J'en suis surpris, il faut que je creuse un peu plus. J'ai un doute sur un potentiel décalage d'une ligne vers le bas.  

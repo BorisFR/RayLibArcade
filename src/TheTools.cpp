@@ -38,7 +38,7 @@ void myDebug2Text(const char *tag, const char *text, const char *value)
 }
 void myDebug2(const char *tag, const char *text, int value)
 {
-    printf("[%s] %s %d\n", tag, text, value);
+    printf("[%s] %s %i\n", tag, text, value);
     fflush(stdout);
 }
 /*#else
