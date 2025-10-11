@@ -27,11 +27,12 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                     {
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                        {
                             uint32_t index = tempX + tempY * screenWidth;
                             screenData[index] = replacedColor;
-                        } else
-                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
+                        }
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             screenData[index] = color;
@@ -58,11 +59,12 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                         {
                             uint8_t pixel = pointerLine[x];
                             THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
-                            uint32_t index = tempX + tempY * screenWidth;
-                            screenData[index] = replacedColor;
-                        } else
-                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
+                            if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                            {
+                                uint32_t index = tempX + tempY * screenWidth;
+                                screenData[index] = replacedColor;
+                            }
+                            else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
                             {
                                 uint32_t index = tempX + tempY * screenWidth;
                                 screenData[index] = color;
@@ -89,11 +91,12 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                             {
                                 uint8_t pixel = pointerLine[x];
                                 THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
-                            uint32_t index = tempX + tempY * screenWidth;
-                            screenData[index] = replacedColor;
-                        } else
-                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
+                                if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                                {
+                                    uint32_t index = tempX + tempY * screenWidth;
+                                    screenData[index] = replacedColor;
+                                }
+                                else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
                                 {
                                     uint32_t index = tempX + tempY * screenWidth;
                                     screenData[index] = color;
@@ -117,20 +120,22 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                             if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                             {
                                 uint8_t pixel = pointerLine[x];
-                                if(pixel> maxp){
-                                    maxp=pixel;
-                                    MY_DEBUG2("PIX","Pixel:", maxp)
+                                if (pixel > maxp)
+                                {
+                                    maxp = pixel;
+                                    MY_DEBUG2("PIX", "Pixel:", maxp)
                                 }
                                 THE_COLOR color;
                                 if (hasPalette)
                                     color = paletteColor[paletteIndex * 4 + pixel];
                                 else
                                     color = colorRGB[paletteIndex * 4 + pixel];
-                        if(blackIsTransparent==TRANSPARENCY_REPLACE && color == 255){
-                            uint32_t index = tempX + tempY * screenWidth;
-                            screenData[index] = replacedColor;
-                        } else
-                                if (!(blackIsTransparent==TRANSPARENCY_BLACK && color == 255))
+                                if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                                {
+                                    uint32_t index = tempX + tempY * screenWidth;
+                                    screenData[index] = replacedColor;
+                                }
+                                else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
                                 {
                                     uint32_t index = tempX + tempY * screenWidth;
                                     screenData[index] = color;
@@ -203,16 +208,56 @@ WriteHandler *memoryWriteHandler;
 
 int readMemoryHandler(int address)
 {
-    if (memoryReadHandler[address].handler != 0)
+    // if (address < 0)
+    // {
+    //     //MY_DEBUG2("MEMORY READ ERROR", "address neg:", address)
+    //     ESP_LOGE("MEMORY READ ERROR", "address neg: %x", address);
+    //     return 0;
+    // }
+    // if (address >= boardMemorySize)
+    // {
+    //     //MY_DEBUG2("MEMORY READ ERROR", "address:", address)
+    //     ESP_LOGE("MEMORY READ ERROR", "address: %x", address);
+    //     return 0;
+    // }
+    // if (memoryReadHandler == NULL)
+    // {
+    //     //MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler is NULL:", address)
+    //     ESP_LOGE("MEMORY READ ERROR", "memoryReadHandler NULL : %x", address);
+    //     return 0;
+    // }
+    if (memoryReadHandler[address].handler == NULL)
+    {
+        return boardMemory[address];
+        //MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler handler is NULL:", address)
+        //ESP_LOGE("MEMORY READ ERROR", "handler NULL : %x", address);
+        //return 0;
+    } else
+    //if (memoryReadHandler[address].handler != NULL)
     {
         return memoryReadHandler[address].handler(address);
     }
-    return boardMemory[address];
+    //return boardMemory[address];
 }
 
 void writeMemoryHandler(int address, int value)
 {
-    if (memoryWriteHandler[address].handler != 0)
+    // if (address < 0)
+    // {
+    //     MY_DEBUG2("MEMORY WRITE ERROR", "address neg:", address)
+    //     return;
+    // }
+    // if (address >= boardMemorySize)
+    // {
+    //     MY_DEBUG2("MEMORY WRITE ERROR", "address:", address)
+    //     return;
+    // }
+    // if (memoryWriteHandler == NULL)
+    // {
+    //     MY_DEBUG2("MEMORY WRITE ERROR", "memoryWriteHandler is NULL:", address)
+    //     return;
+    // }
+    if (memoryWriteHandler[address].handler != NULL)
     {
         memoryWriteHandler[address].handler(address, value);
         return;

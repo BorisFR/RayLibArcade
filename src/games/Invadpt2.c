@@ -85,4 +85,8 @@ void invadpt2_videoram_w(int offset, int data)
     }
     screenDirtyMaxX++;
     screenDirtyMaxY++;
+    if (screenDirtyMaxX >= screenWidth)
+        screenDirtyMaxX = screenWidth - 1;
+    if (screenDirtyMaxY >= screenHeight)
+        screenDirtyMaxY = screenHeight - 1;
 }

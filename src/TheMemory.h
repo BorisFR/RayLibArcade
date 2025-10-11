@@ -96,7 +96,7 @@ extern struct VisibleArea visibleArea;
 
 	extern THE_COLOR froggerWater;
 
-	extern void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor=0);
+	extern void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
 
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];

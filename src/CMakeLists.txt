@@ -7,6 +7,7 @@ idf_component_register(SRCS  "main.cpp"
 "gsl_point_id.c" "gsl3680_touch.cpp"
 
 "machines/CpuI8085.c" "machines/CpuZ80.c"
+"machines/i8080.cpp" "machines/i8080instructions.cpp"
 "machines/MachineDriver8080bw.cpp" "machines/MachineInputPort.cpp" "machines/MachineTheZ80.cpp"
 "machines/mb14241.c"
 

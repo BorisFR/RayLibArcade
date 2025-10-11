@@ -69,8 +69,8 @@
 // 1 or 2
 #define SCREEN_FRAME_BUFFER (1)
 #else
-#define SCREEN_WIDTH (400)
-#define SCREEN_HEIGHT (400)
+#define SCREEN_WIDTH (600)
+#define SCREEN_HEIGHT (600)
 #include "raylib.h"
 #endif
 
@@ -113,7 +113,7 @@
 // #define DEBUG_DISPLAY_SPRITES
 
 // #define LIMIT_FPS
-// #define NO_FPS
+ //#define NO_FPS
 #define NO_FPS_ON_CONSOLE
 
 class TheDisplay

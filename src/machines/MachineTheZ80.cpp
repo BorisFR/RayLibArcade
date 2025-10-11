@@ -14,17 +14,19 @@ void Z80PortOut(z80 *const z, uint8_t port, uint8_t value)
 
 uint8_t Z80MemoryRead(void *xx, uint16_t address)
 {
-    return memoryReadHandler[address].handler(address);
+    return readMemoryHandler(address);
+    //return memoryReadHandler[address].handler(address);
 }
 
 void Z80MemoryWrite(void *xx, uint16_t address, uint8_t value)
 {
-    if (memoryWriteHandler[address].handler != NULL)
-    {
-        memoryWriteHandler[address].handler(address, value);
-        return;
-    }
-    boardMemory[address] = value;
+    writeMemoryHandler(address, value);
+    //if (memoryWriteHandler[address].handler != NULL)
+    //{
+    //    memoryWriteHandler[address].handler(address, value);
+    //    return;
+    //}
+    //boardMemory[address] = value;
 }
 
 // *******************************************************************

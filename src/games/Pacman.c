@@ -118,7 +118,7 @@ void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)
     //    return;
     // dirtyMemoryTiles[tileAddress - 0x4000] = tileIndex;
     // dirtyMemoryTiles[paletteAddress - 0x4000] = paletteIndex;
-    GameDrawElement(screenData, atX, atY, false, false, tileIndex, paletteIndex, false);
+    GameDrawElement(screenData, atX, atY, false, false, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
 }
 
 // *******************************************************************
@@ -211,7 +211,7 @@ void PacmanRefreshScreen()
             bool flipX = (state & 0x02) == 0x02;
             bool flipY = (state & 0x01) == 0x01;
             uint8_t spriteIndex = (state & 0xFC) >> 2;
-            GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, true);
+            GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
         } // something to draw
     }
 }
