@@ -178,32 +178,16 @@ private:
     SemaphoreHandle_t refresh_finish = NULL;
     uint16_t *fbs[SCREEN_FRAME_BUFFER];
     uint8_t currentFrameBuffer;
-#else
-    // bool keyCredit = false;
-    // bool keyCreditChange = false;
-    // bool keyStart = false;
-    // bool keyStartChange = false;
-    // bool keyLeft = false;
-    // bool keyLeftChange = false;
-    // bool keyRight = false;
-    // bool keyRightChange = false;
-    // bool keyFire = false;
-    // bool keyFireChange = false;
-#endif
-
-    // THE_COLOR myWhite = Rgb888ToRgb565(255, 255, 255);
-    // THE_COLOR myBlack = Rgb888ToRgb565(0, 0, 0);
-    // THE_COLOR myBlue = Rgb888ToRgb565(0, 0, 255);
-    // THE_COLOR myGreen = Rgb888ToRgb565(27, 190, 129);
-    // THE_COLOR myRed = Rgb888ToRgb565(255, 96, 0);
-
-#ifdef ESP32P4
     // esp_lcd_panel_io_handle_t tp_io_handle = NULL;
     // esp_lcd_touch_handle_t touch_handle;
     gsl3680_touch touch;
     bool touchInProgress;
     uint16_t touchX;
     uint16_t touchY;
+#else
+    Image fb_image;
+    Color *pixels;
+    Texture2D fb_texture;
 #endif
 };
 

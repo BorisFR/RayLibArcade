@@ -145,6 +145,14 @@ void TheDisplay::Setup()
     touchInProgress = false;
 #else
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Arcade");
+    pixels = (Color *)malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Color));
+    memset(pixels, 0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Color));
+    fb_image.width = SCREEN_WIDTH;
+    fb_image.height = SCREEN_HEIGHT;
+    fb_image.mipmaps = 1;
+    fb_image.data = pixels;
+    fb_image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+    fb_texture = LoadTextureFromImage(fb_image);
 #ifdef LIMIT_FPS
     SetTargetFPS(60);
 #endif
@@ -295,17 +303,24 @@ void TheDisplay::Loop()
     BeginDrawing();
     // because RAYLIB use double buffering
     ClearBackground(BLACK);
-    screenDirtyMaxX = screenWidth;
-    screenDirtyMinX = 0;
-    screenDirtyMaxY = screenHeight;
-    screenDirtyMinY = 0;
+    // screenDirtyMaxX = screenWidth;
+    // screenDirtyMinX = 0;
+    // screenDirtyMaxY = screenHeight;
+    // screenDirtyMinY = 0;
 #endif
-//if(screenDirtyMaxX > screenWidth)  screenDirtyMaxX = screenWidth;
-//if(screenDirtyMaxY > screenHeight) screenDirtyMaxY = screenHeight;
-    // DRAW SCREEN
-//screenDirtyMaxX = screenWidth; screenDirtyMinX = 0; screenDirtyMaxY = screenHeight; screenDirtyMinY = 0;
-//screenPosX=0;screenPosY=0;screenZoomX=1;screenZoomY=1;
-    // currentFrameBuffer = (currentFrameBuffer + 1) % SCREEN_FRAME_BUFFER;
+    screenDirtyMaxX++;
+    screenDirtyMaxY++;
+    if (screenDirtyMaxX >= screenWidth)
+        screenDirtyMaxX = screenWidth - 1;
+    if (screenDirtyMaxY >= screenHeight)
+        screenDirtyMaxY = screenHeight - 1;
+
+    // if(screenDirtyMaxX > screenWidth)  screenDirtyMaxX = screenWidth;
+    // if(screenDirtyMaxY > screenHeight) screenDirtyMaxY = screenHeight;
+    //  DRAW SCREEN
+    // screenDirtyMaxX = screenWidth; screenDirtyMinX = 0; screenDirtyMaxY = screenHeight; screenDirtyMinY = 0;
+    // screenPosX=0;screenPosY=0;screenZoomX=1;screenZoomY=1;
+    //  currentFrameBuffer = (currentFrameBuffer + 1) % SCREEN_FRAME_BUFFER;
     uint32_t index = 0;
     // for (uint32_t y = 0; y < screenHeight; y++)
     for (uint32_t y = screenDirtyMinY; y < screenDirtyMaxY; y++)
@@ -314,11 +329,11 @@ void TheDisplay::Loop()
         // for (uint32_t x = 0; x < screenWidth; x++)
         for (uint32_t x = screenDirtyMinX; x < screenDirtyMaxX; x++)
         {
-            index = y * screenWidth + x; //screenDirtyMinX;
-#ifdef ESP32P4
+            index = y * screenWidth + x; // screenDirtyMinX;
+            // #ifdef ESP32P4
             if (screenData[index] != screenDataOld[index])
             {
-#endif
+                // #endif
                 uint16_t posX = screenPosX + x * screenZoomX;
                 THE_COLOR color = screenData[index];
 #ifndef ESP32P4
@@ -332,13 +347,14 @@ void TheDisplay::Loop()
                         // newScreen[posX + zx + (posY + zy) * screenWidth * screenZoomX] = color;
                         fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
 #else
-                        DrawPixel(posX + zx, posY + zy, pixelColor);
+                        //DrawPixel(posX + zx, posY + zy, pixelColor);
+                        pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
 #endif
                     }
                 }
-#ifdef ESP32P4
+                // #ifdef ESP32P4
             }
-#endif
+            // #endif
             index++;
         }
     }
@@ -360,13 +376,14 @@ void TheDisplay::Loop()
                     for (uint16_t x = 0; x < element->gfxdata->width; x++)
                     {
                         uint8_t pixel = pointerLine[x];
-                        THE_COLOR color = colorRGB[pixel];;
-                        //if (pixel == 0)
-                        //    color = colorRGB[0];
-                        //else
+                        THE_COLOR color = colorRGB[pixel];
+                        ;
+                        // if (pixel == 0)
+                        //     color = colorRGB[0];
+                        // else
                         //{
-                        //    color = colorRGB[2];
-                        //}
+                        //     color = colorRGB[2];
+                        // }
 #ifndef ESP32P4
                         Color pixelColor = GetColor(color);
 #endif
@@ -563,6 +580,8 @@ void TheDisplay::Loop()
     xSemaphoreTake(refresh_finish, portMAX_DELAY);
 #else
 #ifndef NO_FPS
+     UpdateTexture(fb_texture, pixels);
+     DrawTexture(fb_texture, 0, 0, WHITE);
     // ClearRectangle(10, SCREEN_HEIGHT - 20, 30, 20);
     //  Print(std::to_string(lastFrameCount), 10, SCREEN_HEIGHT - 20);
     // ClearRectangle(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 20, 80, 20);

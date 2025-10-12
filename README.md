@@ -4,7 +4,7 @@
 Emulateur logiciel en C / C++, basé sur le principe de M.A.M.E.  
 L'objectif est de réaliser un émulateur software pour un ESP32-P4. Cependant, ce projet existe pour "simplifier" le développement afin de ne pas avoir à flasher le micro-controleur et aussi de pouvoir avancer sur le développement sans avoir l'ESP32-P4.  
 
-J'ai choisi d'utiliser le framework RayLib car c'est un framework que j'ai déjà utilisé pour faire de la 3D. Au final, en pur gestion bitmap 2D, cela ne se révèle pas être un bon choix car j'ai un framerate complétement à la ramasse quand je change la résolution du jeu en doublant les dimensions. C'est ok dans la résolution de base des jeux. La gestion du double buffer de RayLib est en "conflit" avec mon moteur graphique d'émulation. Pour tester c'est ok, mais cela ne sera pas utilisable en vrai sur ordinateur. Vu mon besoin, un SFML ou SDL aurait été un meilleur choix. Cela n'est pas bien grâve. J'adapterai peut-être un jour.  
+J'ai choisi d'utiliser le framework RayLib car c'est un framework que j'ai déjà utilisé pour faire de la 3D. Au final, en pur gestion bitmap 2D, cela ne se révèle pas être un bon choix car j'ai un framerate complétement à la ramasse quand je change la résolution du jeu en doublant les dimensions. C'est ok dans la résolution de base des jeux. ~~La gestion du double buffer de RayLib est en "conflit" avec mon moteur graphique d'émulation. Pour tester c'est ok, mais cela ne sera pas utilisable en vrai sur ordinateur. Vu mon besoin, un SFML ou SDL aurait été un meilleur choix. Cela n'est pas bien grâve. J'adapterai peut-être un jour.~~  
 
 Le projet "réel" est **[EspArcade](https://github.com/BorisFR/EspArcade)**. Il partage l'ensemble des fichiers sources de ce projet. Seul la partie compilation est différente.
 
@@ -33,7 +33,7 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 <details>
 <summary>Octobre 2025</summary>  
 
-* J'ai trouvé le souci des inputs pour Pacman : un bug dans la gestion de l'interruption car j'écrasais la valeur du port 0, comme je le faisais avec Space Invaders. La logique est ici différente.  
+* J'ai trouvé le souci des inputs pour Pacman : un bug dans la gestion de l'interruption car j'écrasais la valeur du port 0, comme je le faisais avec Space Invaders. La logique est ici différente. J'ai maintenant corrigé le souci avec RayLib et les premiers jeux (sans limite de fps) fonctionne à plus de 1000 fps...  
 * Changement de l'émulateur CpuI8085 pour i8080.Semble ok pour Space Invaders mais ne fonctionne pas pour SpaceInvaders Part II. Je teste en version ESP...  Bon, au final j'avais introduit un bug dans la gestion du "dirty screen". Comme cela ne fonctionnait pas uniquement avec les jeux i8080, j'avais is en cause l'émulation du processeur... j'en ai donc iplémenté un second. Ce second émulateur 'i8080' ne fonctionne pas avec Space Invaders Part II. Je suis donc revenu sur le premier 'i8085' et j'ai continué à creuser jusqu'à trouvé le bug. Cela ne se voyait pas dans les autres jeux car le 'dirty screen' n'est pas implenté pour ces jeux. Tout est à nouveau opérationnel et synchro en les deux versions😊.
 * Début de l'implémentation du scrolling pour le jeu Frogger. Il semble que ce premier code soit opérationnel comme il le devrait. J'en suis surpris, il faut que je creuse un peu plus. J'ai un doute sur un potentiel décalage d'une ligne vers le bas.  
 J'ai refait une synchro avec EspArcade. L'émulation I8080 ne fonctionne plus, l'ESP32-P4 fait un reboot à cause d'un morceau de code de ce processeur 😒  
@@ -56,7 +56,6 @@ Le nouveau jeu aura donc de la couleur est mon choix se porte sur Pacman qui fon
 <summary>Août 2025</summary>  
 
 * Je démarre l'écriture du code avec un jeu simple à émuler. Mon choix se porte sur Space Invaders.  
-
 * Il n'y a pas de gestion de couleur, c'est juste un filtre transparent sur l'écran.En fonction de l'emplacement du pixel allumé, le joueur le verra au travers du filtre et verra donc la couleur.  
 Le jeu allume et éteint les pixels, chaque pixel est un bit d'un octet.  
 Découverte du jeu, il fonctionne avec un processeur I8080. J'ai rapidement un affichage qui fonctionne. Sauf qu'il n'y a pas les envahisseurs ! Il faut implémenter les interruptions au niveau de l'émulation du processeur. J'implemente dans la foulée une gestion minimale des inputs afin de pouvoir commencer à interagir avec le jeu. J'implémente une gestion d'écran bitmap avec une gestion du "dirty" afin d'optimiser l'affichage et obtenir un 60 images par secondes au minimum sur l'ESP32-P4.  

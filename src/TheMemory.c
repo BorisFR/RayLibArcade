@@ -4,14 +4,10 @@
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;
 
-uint8_t maxp = 0;
+// uint8_t maxp = 0;
 
-void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
+void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
 {
-    DIRTY_MIN(atX, screenDirtyMinX)
-    DIRTY_MAX(atX + element->width, screenDirtyMaxX)
-    DIRTY_MIN(atY, screenDirtyMinY)
-    DIRTY_MAX(atY + element->height, screenDirtyMaxY)
     if (flipX && flipY)
     { // FLIP X & FLIP Y
         for (uint16_t y = 0; y < element->height; y++)
@@ -25,128 +21,135 @@ void GameDrawElement(THE_COLOR *screenData, uint32_t atX, uint32_t atY, bool fli
                     uint16_t tempX = atX + element->width - x;
                     if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
+                        CHECK_IF_DIRTY_XY(tempX, tempY)
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
                         if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
                         {
                             uint32_t index = tempX + tempY * screenWidth;
-                            screenData[index] = replacedColor;
+                            theScreen[index] = replacedColor;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
-                            screenData[index] = color;
+                            theScreen[index] = color;
                         }
                     }
                 }
             }
         }
+        return;
     } // FLIP X & FLIP Y
-    else
-    { // else FLIP X & FLIP Y
-        if (flipX)
-        { // FLIP X
-            for (uint16_t y = 0; y < element->height; y++)
+    // else
+    //{ // else FLIP X & FLIP Y
+    if (flipX)
+    { // FLIP X
+        for (uint16_t y = 0; y < element->height; y++)
+        {
+            uint16_t tempY = atY + y;
+            if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
             {
-                uint16_t tempY = atY + y;
-                if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
+                uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
+                for (uint16_t x = 0; x < element->width; x++)
                 {
-                    uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
-                    for (uint16_t x = 0; x < element->width; x++)
+                    uint16_t tempX = atX + element->width - x;
+                    if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
-                        uint16_t tempX = atX + element->width - x;
-                        if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
+                        CHECK_IF_DIRTY_XY(tempX, tempY)
+                        uint8_t pixel = pointerLine[x];
+                        THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
                         {
-                            uint8_t pixel = pointerLine[x];
-                            THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                            if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
-                            {
-                                uint32_t index = tempX + tempY * screenWidth;
-                                screenData[index] = replacedColor;
-                            }
-                            else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
-                            {
-                                uint32_t index = tempX + tempY * screenWidth;
-                                screenData[index] = color;
-                            }
+                            uint32_t index = tempX + tempY * screenWidth;
+                            theScreen[index] = replacedColor;
+                        }
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                        {
+                            uint32_t index = tempX + tempY * screenWidth;
+                            theScreen[index] = color;
                         }
                     }
                 }
             }
-        } // FLIP X
-        else
-        { // else FLIP X
-            if (flipY)
+        }
+        return;
+    } // FLIP X
+    // else
+    //{ // else FLIP X
+    if (flipY)
+    {
+        for (uint16_t y = 0; y < element->height; y++)
+        {
+            uint16_t tempY = atY + element->height - 1 - y;
+            if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
             {
-                for (uint16_t y = 0; y < element->height; y++)
+                uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
+                for (uint16_t x = 0; x < element->width; x++)
                 {
-                    uint16_t tempY = atY + element->height - 1 - y;
-                    if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
+                    uint16_t tempX = x + atX;
+                    if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
-                        uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
-                        for (uint16_t x = 0; x < element->width; x++)
+                        CHECK_IF_DIRTY_XY(tempX, tempY)
+                        uint8_t pixel = pointerLine[x];
+                        THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
                         {
-                            uint16_t tempX = x + atX;
-                            if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
-                            {
-                                uint8_t pixel = pointerLine[x];
-                                THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                                if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
-                                {
-                                    uint32_t index = tempX + tempY * screenWidth;
-                                    screenData[index] = replacedColor;
-                                }
-                                else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
-                                {
-                                    uint32_t index = tempX + tempY * screenWidth;
-                                    screenData[index] = color;
-                                }
-                            }
+                            uint32_t index = tempX + tempY * screenWidth;
+                            theScreen[index] = replacedColor;
+                        }
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                        {
+                            uint32_t index = tempX + tempY * screenWidth;
+                            theScreen[index] = color;
                         }
                     }
                 }
-            } // FLIP Y
-            else
-            { // NO FLIP
-                for (uint16_t y = 0; y < element->height; y++)
+            }
+        }
+        return;
+    } // FLIP Y
+    // else
+    //{ // NO FLIP
+    for (uint16_t y = 0; y < element->height; y++)
+    {
+        uint16_t tempY = atY + y;
+        if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
+        {
+            uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
+            for (uint16_t x = 0; x < element->width; x++)
+            {
+                uint16_t tempX = x + atX;
+                if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                 {
-                    uint16_t tempY = atY + y;
-                    if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
+                    CHECK_IF_DIRTY_XY(tempX, tempY)
+                    uint8_t pixel = pointerLine[x];
+                    // if (pixel > maxp)
+                    // {
+                    //     maxp = pixel;
+                    //     MY_DEBUG2("PIX", "Pixel:", maxp)
+                    // }
+                    THE_COLOR color;
+                    if (hasPalette)
+                        color = paletteColor[paletteIndex * 4 + pixel];
+                    else
+                        color = colorRGB[paletteIndex * 4 + pixel];
+                    if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
                     {
-                        uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
-                        for (uint16_t x = 0; x < element->width; x++)
-                        {
-                            uint16_t tempX = x + atX;
-                            if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
-                            {
-                                uint8_t pixel = pointerLine[x];
-                                if (pixel > maxp)
-                                {
-                                    maxp = pixel;
-                                    MY_DEBUG2("PIX", "Pixel:", maxp)
-                                }
-                                THE_COLOR color;
-                                if (hasPalette)
-                                    color = paletteColor[paletteIndex * 4 + pixel];
-                                else
-                                    color = colorRGB[paletteIndex * 4 + pixel];
-                                if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
-                                {
-                                    uint32_t index = tempX + tempY * screenWidth;
-                                    screenData[index] = replacedColor;
-                                }
-                                else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
-                                {
-                                    uint32_t index = tempX + tempY * screenWidth;
-                                    screenData[index] = color;
-                                }
-                            }
-                        }
+                        uint32_t index = tempX + tempY * screenWidth;
+                        theScreen[index] = replacedColor;
+                    }
+                    else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                    {
+                        uint32_t index = tempX + tempY * screenWidth;
+                        theScreen[index] = color;
                     }
                 }
-            } // NO FLIP
-        } // else FLIP X
-    } // else FLIP X & FLIP Y
+            }
+        }
+    }
+    //} // NO FLIP
+    //} // else FLIP X
+    //} // else FLIP X & FLIP Y
 }
 
 uint8_t Z80InterruptVector[MAX_Z80_CPU];
@@ -208,36 +211,37 @@ WriteHandler *memoryWriteHandler;
 
 int readMemoryHandler(int address)
 {
-    // if (address < 0)
-    // {
-    //     //MY_DEBUG2("MEMORY READ ERROR", "address neg:", address)
-    //     ESP_LOGE("MEMORY READ ERROR", "address neg: %x", address);
-    //     return 0;
-    // }
-    // if (address >= boardMemorySize)
-    // {
-    //     //MY_DEBUG2("MEMORY READ ERROR", "address:", address)
-    //     ESP_LOGE("MEMORY READ ERROR", "address: %x", address);
-    //     return 0;
-    // }
-    // if (memoryReadHandler == NULL)
-    // {
-    //     //MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler is NULL:", address)
-    //     ESP_LOGE("MEMORY READ ERROR", "memoryReadHandler NULL : %x", address);
-    //     return 0;
-    // }
+     if (address < 0)
+     {
+         MY_DEBUG2("MEMORY READ ERROR", "address neg:", address)
+         //ESP_LOGE("MEMORY READ ERROR", "address neg: %x", address);
+         return 0;
+     }
+     if (address >= boardMemorySize)
+     {
+         MY_DEBUG2("MEMORY READ ERROR", "address:", address)
+         //ESP_LOGE("MEMORY READ ERROR", "address: %x", address);
+         return 0;
+     }
+     if (memoryReadHandler == NULL)
+     {
+         MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler is NULL:", address)
+         //ESP_LOGE("MEMORY READ ERROR", "memoryReadHandler NULL : %x", address);
+         return 0;
+     }
     if (memoryReadHandler[address].handler == NULL)
     {
         return boardMemory[address];
-        //MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler handler is NULL:", address)
-        //ESP_LOGE("MEMORY READ ERROR", "handler NULL : %x", address);
-        //return 0;
-    } else
-    //if (memoryReadHandler[address].handler != NULL)
+        // MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler handler is NULL:", address)
+        // ESP_LOGE("MEMORY READ ERROR", "handler NULL : %x", address);
+        // return 0;
+    }
+    else
+    // if (memoryReadHandler[address].handler != NULL)
     {
         return memoryReadHandler[address].handler(address);
     }
-    //return boardMemory[address];
+    // return boardMemory[address];
 }
 
 void writeMemoryHandler(int address, int value)

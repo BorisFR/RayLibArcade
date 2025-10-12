@@ -323,14 +323,14 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
         }
         countMemoryWriteFunction++;
     }
-    //uint8_t buttons[] = {BUTTON_RIGHT, BUTTON_LEFT, BUTTON_DOWN, BUTTON_UP};
-    //for (uint8_t k = 0; k < 4; k++)
+    // uint8_t buttons[] = {BUTTON_RIGHT, BUTTON_LEFT, BUTTON_DOWN, BUTTON_UP};
+    // for (uint8_t k = 0; k < 4; k++)
     //{
-    //    keyPressed[buttons[k]] = true;
-    //    KeyChange(buttons[k]);
-    //    keyPressed[buttons[k]] = false;
-    //    KeyChange(buttons[k]);
-    //}
+    //     keyPressed[buttons[k]] = true;
+    //     KeyChange(buttons[k]);
+    //     keyPressed[buttons[k]] = false;
+    //     KeyChange(buttons[k]);
+    // }
     isReady = true;
 }
 
@@ -393,7 +393,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         return false;
     }
     memset(screenData, 0, screenLength);
-    screenDataOld = (THE_COLOR *)malloc(screenWidth * screenHeight * sizeof(THE_COLOR));
+    screenDataOld = (THE_COLOR *)malloc(screenLength);
     if (screenDataOld == NULL)
     {
         MY_DEBUG(TAG, "Error allocating old screen memory");

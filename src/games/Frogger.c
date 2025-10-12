@@ -130,7 +130,6 @@ void frogger_objram_w(int offset, int data)
             // Frogger: top and bottom 4 bits swapped entering the adder
             // if (m_frogger_adjust)
             froggerScrollLine[address >> 1] = ((data << 4) & 0xf0) | ((data >> 4) & 0x0f);
-            ;
             // froggerScrollSpeed[data];
             //  if (!m_sfx_adjust)
             //  	m_bg_tilemap->set_scrolly(offset >> 1, data);
@@ -144,6 +143,10 @@ void frogger_objram_w(int offset, int data)
                 froggerScreenDirty[address] = true;
             //    m_bg_tilemap->mark_tile_dirty(address);
         }
+    }
+    else
+    {
+        // sprite
     }
 }
 
@@ -179,12 +182,15 @@ void frogger_decode_rom()
     }
 }
 
-//uint8_t maxc = 0;
+// uint8_t maxc = 0;
 uint8_t maxc2 = 0;
-//uint8_t last = 0;
+// uint8_t last = 0;
 
 void FroggerRefreshScreen()
 {
+    // memcpy(screenDataOld, screenData, screenLength);
+    //for (uint32_t i = 0; i < screenLength; i++)
+    //    screenDataOld[i] = screenData[i];
     // videoram_size = 0x03FF;
     // frogger_attributesram => boardMemory from 0xb000
     element = allGfx[0];
@@ -200,21 +206,21 @@ void FroggerRefreshScreen()
         int sy = (offset % 32);
         int col = boardMemory[0xb000 + 2 * sy + 1] & 7;
         col = ((col >> 1) & 0x03) | ((col << 2) & 0x04);
-        //if (col > maxc)
+        // if (col > maxc)
         //{
-        //    maxc = col;
-        //    MY_DEBUG2("CC", "Max tile:", maxc)
-        //} // 7
-        // drawgfx(tmpbitmap,Machine->gfx[0],
-        // 		videoram[offset],
-        // 		col + (sy <= 15 ? 8 : 0),	// blue background in the upper 128 lines
-        // 		0,0,8*sx,8*sy,
-        // 		0,TRANSPARENCY_NONE,0);
+        //     maxc = col;
+        //     MY_DEBUG2("CC", "Max tile:", maxc)
+        // } // 7
+        //  drawgfx(tmpbitmap,Machine->gfx[0],
+        //  		videoram[offset],
+        //  		col + (sy <= 15 ? 8 : 0),	// blue background in the upper 128 lines
+        //  		0,0,8*sx,8*sy,
+        //  		0,TRANSPARENCY_NONE,0);
         uint16_t tileAddress = 0xa800 + offset;
         uint8_t tileIndex = boardMemory[tileAddress];
         if (sy < 16)
         {
-            GameDrawElement(screenDataOld, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_REPLACE, froggerWater);
+            GameDrawElement(screenData, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_REPLACE, froggerWater);
             // if (last != col)
             //{
             //     last = col;
@@ -223,7 +229,7 @@ void FroggerRefreshScreen()
         }
         else
         {
-            GameDrawElement(screenDataOld, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            GameDrawElement(screenData, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
             // if (last != col)
             //{
             //     last = col;
@@ -246,28 +252,34 @@ void FroggerRefreshScreen()
 */
     // better to do completly by code!
     // TODO: not good cause visiility area is not active...
-    memcpy(screenData, screenDataOld, screenLength);
+    // memcpy(screenData, screenDataOld, screenLength);
+    //for (uint32_t i = 0; i < screenLength; i++)
+    //    screenData[i] = screenDataOld[i];
 
-    for (uint8_t line = 0; line < 32; line++)
-    {
-        int scroll = froggerScrollLine[line] % screenWidth;
-        if (scroll > 0)
-        {
-            // for (int x = screenWidth - scroll; x >= 0; x--)
-            for (int x = screenWidth - 1; x >= 0; x--)
-            {
-                if (x + scroll >= 2 * 8 && x + scroll < 30 * 81)
-                {
-                    for (uint8_t y = 0; y < 8; y++)
-                    {
-                        // uint32_t old = screenDataOld[(x + scroll) + (line * 8 + y) * screenWidth];
-                        screenData[(x + scroll) + (line * 8 + y) * screenWidth] = screenDataOld[x + (line * 8 + y) * screenWidth];
-                        // screenDataOld[x + (line * 8 + y) * screenWidth] = old;
-                    }
-                }
-            }
-        }
-    }
+    // for (uint8_t line = 0; line < 32; line++)
+    //{
+    //     int scroll = froggerScrollLine[line] % screenWidth;
+    //     if (scroll > 0)
+    //     {
+    //         // for (int x = screenWidth - scroll; x >= 0; x--)
+    //         for (int x = screenWidth - 1; x >= 0; x--)
+    //         {
+    //             if (x + scroll >= 2 * 8 && x + scroll < 30 * 81)
+    //             {
+    //                 for (uint8_t y = 0; y < 8; y++)
+    //                 {
+    //                     CHECK_IF_DIRTY_XY(x + scroll, line * 8 + y)
+    //                     // uint32_t old = screenDataOld[(x + scroll) + (line * 8 + y) * screenWidth];
+    //                     screenData[(x + scroll) + (line * 8 + y) * screenWidth] = screenDataOld[x + (line * 8 + y) * screenWidth];
+    //                     // screenDataOld[x + (line * 8 + y) * screenWidth] = old;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // memcpy(screenDataOld, screenData, screenLength);
+
     // memcpy(screenData, screenDataOld, screenLength);
     //  Draw the sprites. Note that it is important to draw them exactly in this
     //  order, to have the correct priorities.
@@ -302,29 +314,30 @@ void FroggerRefreshScreen()
     for (int spriteNumber = 7; spriteNumber >= 0; spriteNumber--)
     {
         const uint8_t *base = &boardMemory[0xb040 + spriteNumber * 4];
-        if(base[3]){
-        uint8_t base0 = ((base[0] >> 4) | (base[0] << 4));
-        uint8_t sy = 240 - (base0 - (spriteNumber >= 3));
-        uint16_t code = base[1] & 0x3f;
-        uint8_t flipx = base[1] & 0x40;
-        uint8_t flipy = base[1] & 0x80;
-        uint8_t color = base[2] & 7;
-        color = ((color >> 1) & 0x03) | ((color << 2) & 0x04);
-        const int hoffset = 1;
-        uint8_t sx = base[3] + hoffset;
-        // sx = 240 - sx;
-        sy = 240 - sy;
-        GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
-        // if (last != color)
-        // {
-        //     last = color;
-        //     MY_DEBUG2("CC", "Palette:", last)
-        // } // O ou 3
-        if (color > maxc2)
+        if (base[3])
         {
-            maxc2 = color;
-            MY_DEBUG2("CC", "Max sprite:", maxc2)
-        } // 7
+            uint8_t base0 = ((base[0] >> 4) | (base[0] << 4));
+            uint8_t sy = 240 - (base0 - (spriteNumber >= 3));
+            uint16_t code = base[1] & 0x3f;
+            uint8_t flipx = base[1] & 0x40;
+            uint8_t flipy = base[1] & 0x80;
+            uint8_t color = base[2] & 7;
+            color = ((color >> 1) & 0x03) | ((color << 2) & 0x04);
+            const int hoffset = 1;
+            uint8_t sx = base[3] + hoffset;
+            // sx = 240 - sx;
+            sy = 240 - sy;
+            GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+            // if (last != color)
+            // {
+            //     last = color;
+            //     MY_DEBUG2("CC", "Palette:", last)
+            // } // O ou 3
+            // if (color > maxc2)
+            //{
+            //    maxc2 = color;
+            //    MY_DEBUG2("CC", "Max sprite:", maxc2)
+            //} // 7
         }
     }
 }
