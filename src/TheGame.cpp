@@ -612,8 +612,8 @@ bool TheGame::DecodeColors(TheDisplay &display)
         uint8_t green = (uint8_t)((((colorByte >> 3U) & 0b1) * 0x21) + (((colorByte >> 4U) & 0b1) * 0x47) + (((colorByte >> 5U) & 0b1) * 0x97));
         uint8_t blue = (uint8_t)((((colorByte >> 6U) & 0b1) * 0x51) + (((colorByte >> 7U) & 0b1) * 0xAE));
         colorRGB[c] = display.Rgb888ToRgb565(red, green, blue);
-        // std::string t = std::to_string(red) + "/" + std::to_string(green) + "/" + std::to_string(blue) + " => " + std::to_string(colorRGB[c]);
-        // MY_DEBUG(TAG, t.c_str())
+         std::string t = std::to_string(red) + "/" + std::to_string(green) + "/" + std::to_string(blue) + " => " + std::to_string(colorRGB[c]);
+         MY_DEBUG(TAG, t.c_str())
     }
     return true;
 }

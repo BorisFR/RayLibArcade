@@ -2,11 +2,18 @@
 
 #ifdef ESP32P4
 bool touched;
+unsigned long lastTouch = 0;
+#define TOUCH_DELAY_RELEASED 100
+bool touchedInProgress = false;
 
 void touchCallBack(esp_lcd_touch_handle_t tp)
 {
-    esp_rom_printf("Touch interrupt callback\n");
+    lastTouch = millis();
+    if (touchedInProgress)
+        return;
+    //esp_rom_printf("Touch interrupt callback\n");
     touched = true;
+    touchedInProgress = true;
 }
 #endif
 
@@ -142,7 +149,7 @@ void TheDisplay::Setup()
     touch.begin(I2C_SDA_PIN, I2C_SCL_PIN, TOUCH_RST, TOUCH_INT, touchCallBack);
     touch.set_rotation(TOUCH_ROTATION);
     touched = false;
-    touchInProgress = false;
+    touchedInProgress = false;
 #else
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Arcade");
     pixels = (Color *)malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Color));
@@ -225,41 +232,83 @@ THE_COLOR TheDisplay::GetColorFromPalette(uint8_t colorIndex, uint8_t paletteInd
 void TheDisplay::Loop()
 {
 #ifdef ESP32P4
-    if (touchInProgress && !touched)
+    if (!touched && touchedInProgress)
     {
-        touchInProgress = false;
-        if (touchX < SCREEN_WIDTH / 2)
+        if (millis() - lastTouch > TOUCH_DELAY_RELEASED)
         {
-            KEY_RELEASED(BUTTON_CREDIT)
+            touchedInProgress = false;
+            //esp_rom_printf("Touch release\n");
+            if (touchX < SCREEN_WIDTH / 2)
+            {
+                KEY_RELEASED(BUTTON_CREDIT)
+            }
+            else
+            {
+                KEY_RELEASED(BUTTON_START)
+            }
         }
         else
         {
-            KEY_RELEASED(BUTTON_START)
-        }
-    }
-    else
-    {
-        if (touched)
-        {
-            touched = false;
-            // esp_lcd_touch_read_data(tp);
             if (touch.getTouch(&touchX, &touchY))
             {
-                if (!touchInProgress)
-                {
-                    touchInProgress = true;
-                    if (touchX < SCREEN_WIDTH / 2)
-                    {
-                        KEY_PRESSED(BUTTON_CREDIT)
-                    }
-                    else
-                    {
-                        KEY_PRESSED(BUTTON_START)
-                    }
-                }
+                //std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
+                //MY_DEBUG2TEXT(TAG, "Moving X:", temp.c_str())
             }
         }
     }
+    if (touched)
+    {
+        touched = false;
+        if (touch.getTouch(&touchX, &touchY))
+        {
+            //std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
+            //MY_DEBUG2TEXT(TAG, "Touch X:", temp.c_str())
+            if (touchX < SCREEN_WIDTH / 2)
+            {
+                KEY_PRESSED(BUTTON_CREDIT)
+            }
+            else
+            {
+                KEY_PRESSED(BUTTON_START)
+            }
+        }
+    }
+
+    // if (touchInProgress && !touched)
+    // {
+    //     touchInProgress = false;
+    //     if (touchX < SCREEN_WIDTH / 2)
+    //     {
+    //         KEY_RELEASED(BUTTON_CREDIT)
+    //     }
+    //     else
+    //     {
+    //         KEY_RELEASED(BUTTON_START)
+    //     }
+    // }
+    // else
+    // {
+    //     if (touched)
+    //     {
+    //         touched = false;
+    //         // esp_lcd_touch_read_data(tp);
+    //         if (touch.getTouch(&touchX, &touchY))
+    //         {
+    //             if (!touchInProgress)
+    //             {
+    //                 touchInProgress = true;
+    //                 if (touchX < SCREEN_WIDTH / 2)
+    //                 {
+    //                     KEY_PRESSED(BUTTON_CREDIT)
+    //                 }
+    //                 else
+    //                 {
+    //                     KEY_PRESSED(BUTTON_START)
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 #ifdef LIMIT_FPS
     if (millis() - msTimer < 16)
     {
@@ -347,7 +396,7 @@ void TheDisplay::Loop()
                         // newScreen[posX + zx + (posY + zy) * screenWidth * screenZoomX] = color;
                         fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
 #else
-                        //DrawPixel(posX + zx, posY + zy, pixelColor);
+                        // DrawPixel(posX + zx, posY + zy, pixelColor);
                         pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
 #endif
                     }
@@ -580,8 +629,8 @@ void TheDisplay::Loop()
     xSemaphoreTake(refresh_finish, portMAX_DELAY);
 #else
 #ifndef NO_FPS
-     UpdateTexture(fb_texture, pixels);
-     DrawTexture(fb_texture, 0, 0, WHITE);
+    UpdateTexture(fb_texture, pixels);
+    DrawTexture(fb_texture, 0, 0, WHITE);
     // ClearRectangle(10, SCREEN_HEIGHT - 20, 30, 20);
     //  Print(std::to_string(lastFrameCount), 10, SCREEN_HEIGHT - 20);
     // ClearRectangle(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 20, 80, 20);

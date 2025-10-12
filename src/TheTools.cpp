@@ -6,14 +6,15 @@
 #include <chrono>
 #endif
 
-struct timeval _startTime;
+//struct timeval _startTime;
 
 #ifdef ESP32P4
 unsigned long millis()
 {
     struct timeval currentTime;
     gettimeofday(&currentTime, NULL);
-    return (unsigned long)(((currentTime.tv_sec - _startTime.tv_sec) * 1000) + ((currentTime.tv_usec - _startTime.tv_usec) / 1000)); // - _timeSuspended;
+    return currentTime.tv_sec * 1000;
+    //return (unsigned long)(((currentTime.tv_sec - _startTime.tv_sec) * 1000) + ((currentTime.tv_usec - _startTime.tv_usec) / 1000)); // - _timeSuspended;
 }
 #else
 unsigned long millis()

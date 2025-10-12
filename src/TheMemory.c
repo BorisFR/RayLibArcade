@@ -24,12 +24,12 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         CHECK_IF_DIRTY_XY(tempX, tempY)
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
                         }
-                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
@@ -58,12 +58,12 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         CHECK_IF_DIRTY_XY(tempX, tempY)
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
                         }
-                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
@@ -92,12 +92,12 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         CHECK_IF_DIRTY_XY(tempX, tempY)
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
                         }
-                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
@@ -133,12 +133,12 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         color = paletteColor[paletteIndex * 4 + pixel];
                     else
                         color = colorRGB[paletteIndex * 4 + pixel];
-                    if (blackIsTransparent == TRANSPARENCY_REPLACE && color == 255)
+                    if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = replacedColor;
                     }
-                    else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == 255))
+                    else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = color;

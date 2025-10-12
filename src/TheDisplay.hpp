@@ -181,7 +181,6 @@ private:
     // esp_lcd_panel_io_handle_t tp_io_handle = NULL;
     // esp_lcd_touch_handle_t touch_handle;
     gsl3680_touch touch;
-    bool touchInProgress;
     uint16_t touchX;
     uint16_t touchY;
 #else
