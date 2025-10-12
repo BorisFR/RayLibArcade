@@ -15,8 +15,11 @@ void MachineDriver8080bw::Setup(TheDisplay &display, TheSdCard &sdCard)
     MY_DEBUG(TAG, "setup");
     mb14241data = 0;
     mb14241amount = 0;
+#ifdef USE_CPU_I8085
     I8085_Reset();
-    //cpu.Initialize();
+#else
+    cpu.Initialize();
+#endif
     TheGame::Setup(display, sdCard);
 }
 
@@ -24,12 +27,15 @@ void MachineDriver8080bw::Setup(TheDisplay &display, TheSdCard &sdCard)
 
 void MachineDriver8080bw::Loop(TheDisplay &display)
 {
+#ifdef USE_CPU_I8085
     I8085_Execute(16666);
     I8085_Cause_Interrupt(0xcf);
     I8085_Execute(33333);
     I8085_Cause_Interrupt(0xd7);
-    //cpu.EmulateCycles(16666);
-    //cpu.Interrupt(0xcf); // RST 1
-    //cpu.EmulateCycles(33333);
-    //cpu.Interrupt(0xd7); // RST 2
+#else
+    cpu.EmulateCycles(16666);
+    cpu.Interrupt(0xcf); // RST 1
+    cpu.EmulateCycles(33333);
+    cpu.Interrupt(0xd7); // RST 2
+#endif
 }

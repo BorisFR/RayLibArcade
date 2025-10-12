@@ -9,7 +9,7 @@ void invaders_videoram_w(int offset, int data)
     boardMemory[offset] = data;
     uint32_t address = offset - 0x2400;
     uint16_t x = address / 32;
-    uint16_t y = screenHeight - 1 - 8 * (address % 32);
+    uint16_t y = screenHeight - 8 * (address % 32);
     DIRTY_MIN(x, screenDirtyMinX)
     DIRTY_MAX(x, screenDirtyMaxX)
     DIRTY_MIN(y - 8, screenDirtyMinY)

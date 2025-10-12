@@ -5,8 +5,13 @@
 
 #include "../MyDefine.h"
 #include "../TheGame.hpp"
+
+#define USE_CPU_I8085
+#ifdef USE_CPU_I8085
 #include "CpuI8085.h"
-//#include "i8080.hpp"
+#else
+#include "i8080.hpp" // /!\ this one does not work with Space Invaders Part II
+#endif
 
 class MachineDriver8080bw : public TheGame
 {
@@ -17,11 +22,12 @@ public:
     void Loop(TheDisplay &display);
 
 protected:
-
 private:
     const char *TAG = "MachineDriver8080bw";
-    //CPU_8080 cpu;
-
+#ifdef USE_CPU_I8085
+#else
+    CPU_8080 cpu;
+#endif
 };
 
 #endif
