@@ -69,8 +69,8 @@
 // 1 or 2
 #define SCREEN_FRAME_BUFFER (1)
 #else
-#define SCREEN_WIDTH (600)
-#define SCREEN_HEIGHT (600)
+#define SCREEN_WIDTH (1050)
+#define SCREEN_HEIGHT (1160)
 #include "raylib.h"
 #endif
 
