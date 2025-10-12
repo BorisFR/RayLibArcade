@@ -98,7 +98,6 @@ void pacman_watchdog_reset_w(int offset, int data)
 
 void pacman_interrupt_vector_w(int offset, int data)
 {
-    InputPorts[offset] = data;
     Z80InterruptVector[Z80CurrentCpu] = data;
 }
 

@@ -274,7 +274,7 @@ uint8_t keyPort[BUTTON_END + 1];
 // Input port bit number
 uint8_t keyBit[BUTTON_END + 1];
 // Input port default value
-bool keyValuePressed[BUTTON_END + 1];
+uint8_t keyValuePressed[BUTTON_END + 1];
 
 bool IsKeyChanged(uint8_t button)
 {

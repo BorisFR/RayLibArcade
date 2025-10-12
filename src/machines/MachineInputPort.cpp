@@ -6,15 +6,21 @@ MachineInputPort::~MachineInputPort(){MY_DEBUG(TAG, "destroyed");}
 
 void MachineInputPort::InputPortSet(uint8_t port, uint8_t value)
 {
+    // MY_DEBUG2(TAG, "N°port:", port)
+    // MY_DEBUG2(TAG, "=> SET value=", value)
     InputPorts[port] = value;
 }
 
 void MachineInputPort::InputPortUpdate(uint8_t port, uint8_t bit, uint8_t value)
 {
+    // MY_DEBUG2(TAG, "N°port:", port)
+    // MY_DEBUG2(TAG, "=> actual value=", InputPorts[port])
+    // MY_DEBUG2(TAG, "=> UPDATE value=", value)
     if (value == 0)
         INPUT_PORT_SET_PORT_BIT_to0(InputPorts[port], bit);
     else
         INPUT_PORT_SET_PORT_BIT_to1(InputPorts[port], bit);
+    // MY_DEBUG2(TAG, "=> new value=", InputPorts[port])
 }
 
 uint8_t MachineInputPort::InputPortGetValueForBits(uint8_t bit7, uint8_t bit6, uint8_t bit5, uint8_t bit4, uint8_t bit3, uint8_t bit2, uint8_t bit1, uint8_t bit0)

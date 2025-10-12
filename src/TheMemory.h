@@ -132,7 +132,7 @@ extern struct VisibleArea visibleArea;
 	extern bool keyPressed[BUTTON_END + 1];
 	extern uint8_t keyPort[BUTTON_END + 1];
 	extern uint8_t keyBit[BUTTON_END + 1];
-	extern bool keyValuePressed[BUTTON_END + 1];
+	extern uint8_t keyValuePressed[BUTTON_END + 1];
 	extern bool IsKeyChanged(uint8_t button);
 
 	extern THE_COLOR myWhite;

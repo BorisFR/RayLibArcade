@@ -56,7 +56,7 @@ extern uint8_t GetBitFromNumber(uint8_t value);
     }
 
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-    
+
 #define PORT_SWITCH_VALUE MY_DEBUG2(TAG, "Value:", allGames[currentGame].machine.inputPorts[i].default_value)
 #define PORT_SWITCH_DEFAULT_VALUE(value) portValue += value;
 
@@ -66,13 +66,13 @@ extern uint8_t GetBitFromNumber(uint8_t value);
     else                                                                                         \
         portValue |= (1 << GetBitFromNumber(allGames[currentGame].machine.inputPorts[i].mask));
 
-#define PORT_BIT_PARAM(name, key)                                                                     \
-    keyPort[key] = portNumber;                                                                        \
-    keyBit[key] = GetBitFromNumber(allGames[currentGame].machine.inputPorts[i].mask);                 \
-    keyValuePressed[key] = (allGames[currentGame].machine.inputPorts[i].default_value / 255) == HIGH; \
-    PORT_BIT_VALUE                                                                                    \
+#define PORT_BIT_PARAM(name, key)                                                                        \
+    keyPort[key] = portNumber;                                                                           \
+    keyBit[key] = GetBitFromNumber(allGames[currentGame].machine.inputPorts[i].mask);                    \
+    keyValuePressed[key] = allGames[currentGame].machine.inputPorts[i].default_value; \
+    PORT_BIT_VALUE                                                                                       \
     MY_DEBUG2(TAG, name, GetBitFromNumber(allGames[currentGame].machine.inputPorts[i].mask))
 
-//#define PORT_NOT_USE(name) PORT_BIT_PARAM(name, BUTTON_NOT_USED)
+// #define PORT_NOT_USE(name) PORT_BIT_PARAM(name, BUTTON_NOT_USED)
 
 #endif

@@ -47,7 +47,7 @@ void setup()
   //
   // Start a game
   //
-  currentGame = 1; // 0 is invaders :) See file GamesList.h
+  currentGame = 3; // 0 is invaders :) See file GamesList.h
   switch (GAME_MACHINE)
   {
 #ifdef MACHINE_8080BW

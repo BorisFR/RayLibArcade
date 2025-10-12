@@ -92,8 +92,8 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
     }
     // ---------------------------------------------------------------
     // Init ports
-    // Amoong other things, they are used for player's input : credit, start, left, fire, ...
-    // So first init them all to "nothing"
+    // Among other things, they are used for player's input : credit, start, left, fire, ...
+    // First init them all to "nothing"
     for (uint8_t k = 0; k < BUTTON_END; k++)
     {
         keyPressed[k] = false;
@@ -110,9 +110,10 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
     uint8_t i = 0;
     bool finish = false;
     int8_t portNumber = -1;
-    uint8_t portValue;
+    uint8_t portValue = 0;
     while (!finish)
     {
+        MY_DEBUG2(TAG, "portValue=", portValue)
         switch (allGames[currentGame].machine.inputPorts[i].type)
         {
         case IPT_END:
@@ -322,16 +323,14 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
         }
         countMemoryWriteFunction++;
     }
-    /*   for (uint8_t k = 0; k < BUTTON_END; k++)
-        {
-            keyPressed[k] = true;
-            KeyChange(k);
-        }
-        for (uint8_t k = 0; k < BUTTON_END; k++)
-        {
-            keyPressed[k] = false;
-            KeyChange(k);
-        }*/
+    //uint8_t buttons[] = {BUTTON_RIGHT, BUTTON_LEFT, BUTTON_DOWN, BUTTON_UP};
+    //for (uint8_t k = 0; k < 4; k++)
+    //{
+    //    keyPressed[buttons[k]] = true;
+    //    KeyChange(buttons[k]);
+    //    keyPressed[buttons[k]] = false;
+    //    KeyChange(buttons[k]);
+    //}
     isReady = true;
 }
 
@@ -920,16 +919,17 @@ bool TheGame::DecodeAllGfx(const GfxDecodeInfo info[])
 
 void TheGame::KeyChange(uint8_t button)
 {
+    // MY_DEBUG2(TAG, "*** KEY port", keyPort[button])
     // MY_DEBUG2(TAG, "*** KEY before", InputPorts[keyPort[button]])
     if (keyPressed[button])
     {
         // MY_DEBUG2(TAG, "pressed", button)
-        machineInputPort.InputPortUpdate(keyPort[button], keyBit[button], !keyValuePressed[button]);
+        machineInputPort.InputPortUpdate(keyPort[button], keyBit[button], 0xff - keyValuePressed[button]);
     }
     else
     {
         // MY_DEBUG2(TAG, "released", button)
         machineInputPort.InputPortUpdate(keyPort[button], keyBit[button], keyValuePressed[button]);
     }
-    // MY_DEBUG2(TAG, "*** KEY after", InputPorts[keyPort[button]])
+    // MY_DEBUG2(TAG, "KEY after", InputPorts[keyPort[button]])
 }
