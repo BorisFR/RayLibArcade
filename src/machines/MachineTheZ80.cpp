@@ -15,18 +15,18 @@ void Z80PortOut(z80 *const z, uint8_t port, uint8_t value)
 uint8_t Z80MemoryRead(void *xx, uint16_t address)
 {
     return readMemoryHandler(address);
-    //return memoryReadHandler[address].handler(address);
+    // return memoryReadHandler[address].handler(address);
 }
 
 void Z80MemoryWrite(void *xx, uint16_t address, uint8_t value)
 {
     writeMemoryHandler(address, value);
-    //if (memoryWriteHandler[address].handler != NULL)
+    // if (memoryWriteHandler[address].handler != NULL)
     //{
-    //    memoryWriteHandler[address].handler(address, value);
-    //    return;
-    //}
-    //boardMemory[address] = value;
+    //     memoryWriteHandler[address].handler(address, value);
+    //     return;
+    // }
+    // boardMemory[address] = value;
 }
 
 // *******************************************************************
@@ -78,7 +78,7 @@ void MachineTheZ80::Loop(TheDisplay &display)
     }
     if (Z80InterruptEnable[Z80CurrentCpu])
     {
-        //Z80InterruptEnable[Z80CurrentCpu] = false;
+        // Z80InterruptEnable[Z80CurrentCpu] = false;
         z80_gen_int(&cpu[Z80CurrentCpu], Z80InterruptVector[Z80CurrentCpu]);
     }
     allGames[currentGame].video.drawDisplay();

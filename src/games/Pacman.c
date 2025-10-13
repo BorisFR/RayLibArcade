@@ -106,8 +106,6 @@ void pacman_interrupt_vector_w(int offset, int data)
 
 void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)
 {
-    //if (atX < 16 || atX >= (screenWidth - 16) || atY >= screenHeight)
-    //    return;
     uint16_t tileAddress = 0x4000 + offset;
     uint16_t paletteAddress = 0x4400 + offset;
     uint8_t tileIndex = boardMemory[tileAddress];
@@ -125,6 +123,7 @@ void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)
 void PacmanRefreshScreen()
 {
     element = allGfx[0];
+    //visibleArea = VISIBLE_AREA_FULL;
 
     // The playfield uses addresses 040 through 3BF, increasing from top to bottom,
     // right to left, starting at the top right corner of the playfield.
@@ -211,6 +210,7 @@ void PacmanRefreshScreen()
             bool flipY = (state & 0x01) == 0x01;
             uint8_t spriteIndex = (state & 0xFC) >> 2;
             GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+            //GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
         } // something to draw
     }
 }

@@ -350,12 +350,7 @@ void TheDisplay::Loop()
     if (screenHeight + screenWidth == 0)
         return;
     BeginDrawing();
-    // because RAYLIB use double buffering
     ClearBackground(BLACK);
-    // screenDirtyMaxX = screenWidth;
-    // screenDirtyMinX = 0;
-    // screenDirtyMaxY = screenHeight;
-    // screenDirtyMinY = 0;
 #endif
     screenDirtyMaxX++;
     screenDirtyMaxY++;
@@ -364,21 +359,15 @@ void TheDisplay::Loop()
     if (screenDirtyMaxY >= screenHeight)
         screenDirtyMaxY = screenHeight - 1;
 
-    // if(screenDirtyMaxX > screenWidth)  screenDirtyMaxX = screenWidth;
-    // if(screenDirtyMaxY > screenHeight) screenDirtyMaxY = screenHeight;
     //  DRAW SCREEN
-    // screenDirtyMaxX = screenWidth; screenDirtyMinX = 0; screenDirtyMaxY = screenHeight; screenDirtyMinY = 0;
-    // screenPosX=0;screenPosY=0;screenZoomX=1;screenZoomY=1;
     //  currentFrameBuffer = (currentFrameBuffer + 1) % SCREEN_FRAME_BUFFER;
     uint32_t index = 0;
-    // for (uint32_t y = 0; y < screenHeight; y++)
     for (uint32_t y = screenDirtyMinY; y < screenDirtyMaxY; y++)
     {
         uint16_t posY = screenPosY + y * screenZoomY;
-        // for (uint32_t x = 0; x < screenWidth; x++)
         for (uint32_t x = screenDirtyMinX; x < screenDirtyMaxX; x++)
         {
-            index = y * screenWidth + x; // screenDirtyMinX;
+            index = y * screenWidth + x;
             // #ifdef ESP32P4
             if (screenData[index] != screenDataOld[index])
             {
@@ -393,7 +382,6 @@ void TheDisplay::Loop()
                     for (uint16_t zy = 0; zy < screenZoomY; zy++)
                     {
 #ifdef ESP32P4
-                        // newScreen[posX + zx + (posY + zy) * screenWidth * screenZoomX] = color;
                         fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
 #else
                         // DrawPixel(posX + zx, posY + zy, pixelColor);
