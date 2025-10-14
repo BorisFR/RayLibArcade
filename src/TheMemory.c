@@ -1,5 +1,8 @@
 #include "TheMemory.h"
 
+PNG_PTR_TYPE *pngImage = NULL;
+uint32_t pngMemorySize;
+
 // *******************************************************************
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;

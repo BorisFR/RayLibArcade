@@ -11,7 +11,7 @@ void touchCallBack(esp_lcd_touch_handle_t tp)
     lastTouch = millis();
     if (touchedInProgress)
         return;
-    //esp_rom_printf("Touch interrupt callback\n");
+    // esp_rom_printf("Touch interrupt callback\n");
     touched = true;
     touchedInProgress = true;
 }
@@ -206,7 +206,32 @@ uint32_t TheDisplay::GetPaddingLeftForZoom(uint32_t zoomX) { return (SCREEN_WIDT
 
 // *******************************************************************
 
+Color TheDisplay::ConvertRGB565ToRGB888(unsigned short color565)
+{
+    // Extract the red, green, and blue components
+    unsigned char r = (color565 >> 11) & 0x1F; // 5 bits for red
+    unsigned char g = (color565 >> 5) & 0x3F;  // 6 bits for green
+    unsigned char b = color565 & 0x1F;         // 5 bits for blue
+
+    // Scale them to 8-bit values (0-255)
+    r = (r * 255) / 31;
+    g = (g * 255) / 63;
+    b = (b * 255) / 31;
+    // Return as a raylib Color struct
+    return (Color){r, g, b, 255}; // Alpha is set to 255 (fully opaque)
+}
+
 uint32_t TheDisplay::GetPaddingTopForZoom(uint32_t zoomY) { return (SCREEN_HEIGHT - (screenHeight * zoomY)) / 2; }
+
+void TheDisplay::DisplayPng()
+{
+    // memcpy(pixels, pngImage, pngMemorySize);
+    for (uint32_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    {
+        pixels[i] = ConvertRGB565ToRGB888(pngImage[i]);
+        i++;
+    }
+}
 
 // *******************************************************************
 
@@ -237,7 +262,7 @@ void TheDisplay::Loop()
         if (millis() - lastTouch > TOUCH_DELAY_RELEASED)
         {
             touchedInProgress = false;
-            //esp_rom_printf("Touch release\n");
+            // esp_rom_printf("Touch release\n");
             if (touchX < SCREEN_WIDTH / 2)
             {
                 KEY_RELEASED(BUTTON_CREDIT)
@@ -251,8 +276,8 @@ void TheDisplay::Loop()
         {
             if (touch.getTouch(&touchX, &touchY))
             {
-                //std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
-                //MY_DEBUG2TEXT(TAG, "Moving X:", temp.c_str())
+                // std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
+                // MY_DEBUG2TEXT(TAG, "Moving X:", temp.c_str())
             }
         }
     }
@@ -261,8 +286,8 @@ void TheDisplay::Loop()
         touched = false;
         if (touch.getTouch(&touchX, &touchY))
         {
-            //std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
-            //MY_DEBUG2TEXT(TAG, "Touch X:", temp.c_str())
+            // std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
+            // MY_DEBUG2TEXT(TAG, "Touch X:", temp.c_str())
             if (touchX < SCREEN_WIDTH / 2)
             {
                 KEY_PRESSED(BUTTON_CREDIT)
@@ -350,7 +375,8 @@ void TheDisplay::Loop()
     if (screenHeight + screenWidth == 0)
         return;
     BeginDrawing();
-    ClearBackground(BLACK);
+    // ClearBackground(BLACK);
+    // ClearBackground(GREEN);
 #endif
     screenDirtyMaxX++;
     screenDirtyMaxY++;

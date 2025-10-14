@@ -69,8 +69,8 @@
 // 1 or 2
 #define SCREEN_FRAME_BUFFER (1)
 #else
-#define SCREEN_WIDTH (1050)
-#define SCREEN_HEIGHT (1180)
+#define SCREEN_WIDTH (800)
+#define SCREEN_HEIGHT (1280)
 #include "raylib.h"
 #endif
 
@@ -129,6 +129,8 @@ public:
     uint32_t GetMaxZoomY();
     uint32_t GetPaddingLeftForZoom(uint32_t zoomX);
     uint32_t GetPaddingTopForZoom(uint32_t zoomY);
+    Color ConvertRGB565ToRGB888(unsigned short color565);
+    void DisplayPng();
 
 #ifdef ESP32P4
 #else
@@ -189,7 +191,9 @@ private:
     Image fb_image;
     Color *pixels;
     Texture2D fb_texture;
+
 #endif
+
 };
 
 #endif // THE_DISPLAY_HPP

@@ -72,6 +72,10 @@ extern WriteHandler *memoryWriteHandler;
 
 #include "machines/mb14241.h"
 
+#define PNG_PTR_TYPE uint8_t
+extern PNG_PTR_TYPE *pngImage;
+extern uint32_t pngMemorySize;
+
 #ifdef __cplusplus
 extern "C"
 {

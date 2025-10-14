@@ -47,7 +47,7 @@ void setup()
   //
   // Start a game
   //
-  currentGame = 3; // 0 is invaders :) See file GamesList.h
+  currentGame = 0; // 0 is invaders :) See file GamesList.h
 #ifdef ESP32P4
 #else
   display.ChangeTitle(GAME_NAME);
@@ -75,6 +75,9 @@ void setup()
     MY_DEBUG2TEXT(TAG, "*** ERROR ***", "Zoom is 0")
   // zoomFactor=1;
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
+
+  sdCard.LoadPngFile("background/invaders.png");
+  display.DisplayPng();
 }
 
 void loop()

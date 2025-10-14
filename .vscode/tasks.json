@@ -11,6 +11,8 @@
 				"${workspaceFolder}/src/games/*.c",
 				"${workspaceFolder}/src/machines/*.cpp",
 				"${workspaceFolder}/src/machines/*.c",
+				"${workspaceFolder}/src/libpng/*.cpp",
+				"${workspaceFolder}/src/libpng/*.c",
 				"${workspaceFolder}/src/*.cpp",
 				"${workspaceFolder}/src/*.c",
 				"-o",

@@ -34,6 +34,8 @@
 #endif
 #include <string>
 
+#include "libpng/PNGdec.h"
+
 //#define DEBUG_LIST_DIR 1
 
 class TheSdCard
