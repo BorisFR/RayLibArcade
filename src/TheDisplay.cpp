@@ -634,6 +634,12 @@ void TheDisplay::Loop()
 
 #ifdef ESP32P4
 #else
+void TheDisplay::ChangeTitle(std::string text)
+{
+    std::string t = "RayLib Arcade - " + text;
+    SetWindowTitle(t.c_str());
+}
+
 bool TheDisplay::MustExit()
 {
     return mustExit;

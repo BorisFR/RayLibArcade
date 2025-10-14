@@ -1,6 +1,6 @@
 #include "Frogger.h"
 
-// line 954 : void galaxian_state::init_froggers()
+// line 9544 : void galaxian_state::init_froggers()
 
 struct GfxLayout froggerTileLayout = {
         8, 8,             /* 8*8 characters */
@@ -65,13 +65,6 @@ void frogger_interrupt_enable_w(int offset, int data)
         Z80AskForNMI[Z80CurrentCpu] = true;
     else
         Z80AskForNMI[Z80CurrentCpu] = false;
-    // //Z80InterruptEnable[Z80CurrentCpu] = data;// & 1;
-    // // if CLEAR is held low, we must make sure the interrupt signal is clear
-    // if (data == 0)
-    //     Z80AskForNMI = false;
-    // else // TODO: not sure for the else ... DOES not work
-    //    Z80AskForNMI = true;
-    // // m_maincpu->set_input_line(m_irq_line, CLEAR_LINE);
 }
 
 // uint8_t froggerAttributes[0x0040];
@@ -324,7 +317,7 @@ void FroggerRefreshScreen()
         if (base[3])
         {
             uint8_t base0 = ((base[0] >> 4) | (base[0] << 4));
-            uint8_t sy = 240 - (base0 - (spriteNumber >= 3));
+            uint8_t sy = 240 - (base0 - (spriteNumber < 3));
             uint16_t code = base[1] & 0x3f;
             uint8_t flipx = base[1] & 0x40;
             uint8_t flipy = base[1] & 0x80;

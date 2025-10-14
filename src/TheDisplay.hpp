@@ -132,6 +132,7 @@ public:
 
 #ifdef ESP32P4
 #else
+    void ChangeTitle(std::string text);
     bool MustExit();
     void ClearRectangle(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 

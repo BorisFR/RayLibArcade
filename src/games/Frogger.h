@@ -4,7 +4,6 @@
 #pragma once
 
 #include "../MyDefine.h"
-// #include "../TheMemory.h"
 #include "../GameDefinition.h"
 
 // https://github.com/mamedev/mame/blob/master/src/mame/galaxian/galaxian.cpp
@@ -60,7 +59,6 @@ static struct MemoryReadAddress frogger_readmem[] = {
     {0x8000, 0x87ff, MRA_RAM},
     {0x8800, 0x8800, boardMemoryRead0}, // watchdog_reset_r},
     {0xa800, 0xabff, MRA_RAM},          /* video RAM */
-    //{0xb000, 0xb05f, MRA_RAM},          /* screen attributes, sprites */
     {0xb000, 0xb0ff, MRA_RAM},   /* spriteram => screen attributes, sprites */
     {0xe000, 0xe000, readPort0}, /* IN0 */
     {0xe002, 0xe002, readPort1}, /* IN1 */
