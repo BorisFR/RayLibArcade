@@ -4,7 +4,7 @@
 #pragma once
 
 #include "../MyDefine.h"
-//#include "../TheMemory.h"
+// #include "../TheMemory.h"
 #include "../GameDefinition.h"
 
 // https://github.com/mamedev/mame/blob/master/src/mame/galaxian/galaxian.cpp
@@ -13,11 +13,10 @@
 extern struct GfxLayout froggerTileLayout;
 extern struct GfxLayout froggerSpriteLayout;
 
-static struct GfxDecodeInfo froggerGfxDecodeInfo[] =
-    {
-        {ROM_GFX, 0x0000, &froggerTileLayout, 0, 16},
-        {ROM_GFX, 0x0000, &froggerSpriteLayout, 0, 8},
-        {-1}};
+static struct GfxDecodeInfo froggerGfxDecodeInfo[] = {
+    {ROM_GFX, 0x0000, &froggerTileLayout, 0, 16},
+    {ROM_GFX, 0x0000, &froggerSpriteLayout, 0, 8},
+    {-1}};
 
 #ifdef __cplusplus
 extern "C"
@@ -25,7 +24,7 @@ extern "C"
 #endif
 
     extern void frogger_interrupt_enable_w(int offset, int data);
-    //extern void frogger_attributes_w(int offset, int data);
+    // extern void frogger_attributes_w(int offset, int data);
     extern void frogger_videoram_w(int offset, int data);
     extern void frogger_objram_w(int offset, int data);
     extern void frogger_sh_irqtrigger_w(int offset, int data);
@@ -56,62 +55,61 @@ ROM_LOAD("frogger.609", 0x0800, 0x0800, 0x7380a48f)
 ROM_LOAD("frogger.610", 0x1000, 0x0800, 0x31d7eb27)
 ROM_END
 
-static struct MemoryReadAddress frogger_readmem[] =
-    {
-        {0x0000, 0x3fff, MRA_ROM},
-        {0x8000, 0x87ff, MRA_RAM},
-        {0x8800, 0x8800, boardMemoryRead0}, // watchdog_reset_r},
-        {0xa800, 0xabff, MRA_RAM},          /* video RAM */
-        //{0xb000, 0xb05f, MRA_RAM},          /* screen attributes, sprites */
-        {0xb000, 0xb0ff, MRA_RAM},          /* screen attributes, sprites */
-        {0xe000, 0xe000, readPort0},        /* IN0 */
-        {0xe002, 0xe002, readPort1},        /* IN1 */
-        {0xe004, 0xe004, readPort2},        /* IN2 */
-        {-1}};
+static struct MemoryReadAddress frogger_readmem[] = {
+    {0x0000, 0x3fff, MRA_ROM},
+    {0x8000, 0x87ff, MRA_RAM},
+    {0x8800, 0x8800, boardMemoryRead0}, // watchdog_reset_r},
+    {0xa800, 0xabff, MRA_RAM},          /* video RAM */
+    //{0xb000, 0xb05f, MRA_RAM},          /* screen attributes, sprites */
+    {0xb000, 0xb0ff, MRA_RAM},   /* screen attributes, sprites */
+    {0xe000, 0xe000, readPort0}, /* IN0 */
+    {0xe002, 0xe002, readPort1}, /* IN1 */
+    {0xe004, 0xe004, readPort2}, /* IN2 */
+    {-1}};
 
-static struct MemoryWriteAddress frogger_writemem[] =
-    {
-        {0x0000, 0x3fff, MWA_ROM},
-        {0x8000, 0x87ff, MWA_RAM},
-        //{0xa800, 0xabff, MWA_RAM},              // videoram_w, &videoram, &videoram_size},
-        // map(0xa800, 0xabff).mirror(0x0400).ram().w(FUNC(galaxian_state::galaxian_videoram_w)).share("videoram");
-        {0xa800, 0xabff, frogger_videoram_w},
-        //{0xb000, 0xb03f, frogger_attributes_w}, //, &frogger_attributesram},
-        //{0xb040, 0xb05f, MWA_RAM},              //, &spriteram, &spriteram_size},
-        // map(0xb000, 0xb0ff).mirror(0x0700).ram().w(FUNC(galaxian_state::galaxian_objram_w)).share("spriteram");
-        {0xb000, 0xb0ff, frogger_objram_w},
-        {0xb808, 0xb808, frogger_interrupt_enable_w},
-        {0xb818, 0xb818, MWA_ROM}, // coin_counter_w},
-        {0xb81c, 0xb81c, MWA_ROM}, // frogger_counterb_w},
-        {0xd000, 0xd000, MWA_ROM}, // soundlatch_w},
-        {0xd002, 0xd002, frogger_sh_irqtrigger_w},
-        {-1}};
+static struct MemoryWriteAddress frogger_writemem[] = {
+    {0x0000, 0x3fff, MWA_ROM},
+    {0x4400, 0x47ff, MWA_RAM},
+    {0x8000, 0x87ff, MWA_RAM},
+    //{0xa800, 0xabff, MWA_RAM},              // videoram_w, &videoram, &videoram_size},
+    // map(0xa800, 0xabff).mirror(0x0400).ram().w(FUNC(galaxian_state::galaxian_videoram_w)).share("videoram");
+    {0xa800, 0xabff, frogger_videoram_w},
+    //{0xb000, 0xb03f, frogger_attributes_w}, //, &frogger_attributesram},
+    //{0xb040, 0xb05f, MWA_RAM},              //, &spriteram, &spriteram_size},
+    // map(0xb000, 0xb0ff).mirror(0x0700).ram().w(FUNC(galaxian_state::galaxian_objram_w)).share("spriteram");
+    {0xb000, 0xb0ff, frogger_objram_w},
+    {0xb808, 0xb808, frogger_interrupt_enable_w},
+    {0xb818, 0xb818, MWA_ROM}, // coin_counter_w},
+    {0xb81c, 0xb81c, MWA_ROM}, // frogger_counterb_w},
+    {0xd000, 0xd000, MWA_ROM}, // soundlatch_w},
+    {0xd002, 0xd002, frogger_sh_irqtrigger_w},
+    {-1}};
 
 INPUT_PORTS_START(frogger_input_ports)
-PORT_START // IN0 
+PORT_START                                         // IN0
     PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_JOYSTICK_UP) // | IPF_4WAY | IPF_COCKTAIL)
-        PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_UNKNOWN) // 1P shoot2 - unused 
+    PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_UNKNOWN)     // 1P shoot2 - unused
     PORT_BIT(0x04, IP_ACTIVE_LOW, IPT_COIN3)
-        PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_UNKNOWN) // 1P shoot1 - unused 
+        PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_UNKNOWN)    // 1P shoot1 - unused
     PORT_BIT(0x10, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT) // | IPF_4WAY)
-        PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT) // | IPF_4WAY)
-            PORT_BIT(0x40, IP_ACTIVE_LOW, IPT_COIN2)
-                PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_COIN1)
+    PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT)  // | IPF_4WAY)
+    PORT_BIT(0x40, IP_ACTIVE_LOW, IPT_COIN2)
+        PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_COIN1)
 
-                    PORT_START // IN1 
+            PORT_START // IN1
     PORT_DIPNAME(0x03, 0x00, "Lives", IP_KEY_NONE)
         PORT_DIPSETTING(0x00, "3")
             PORT_DIPSETTING(0x01, "5")
                 PORT_DIPSETTING(0x02, "7")
                     PORT_DIPNAME(0, 0x03, "256 (Cheat)", IP_KEY_NONE)
-                        PORT_BIT(0x04, IP_ACTIVE_LOW, IPT_UNKNOWN) // 2P shoot2 - unused 
-    PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_UNKNOWN)                     // 2P shoot1 - unused 
+                        PORT_BIT(0x04, IP_ACTIVE_LOW, IPT_UNKNOWN) // 2P shoot2 - unused
+    PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_UNKNOWN)                     // 2P shoot1 - unused
     PORT_BIT(0x10, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT | IPF_4WAY | IPF_COCKTAIL)
         PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT | IPF_4WAY | IPF_COCKTAIL)
             PORT_BIT(0x40, IP_ACTIVE_LOW, IPT_START2)
                 PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_START1)
 
-                    PORT_START // IN2 
+                    PORT_START // IN2
     PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN | IPF_4WAY | IPF_COCKTAIL)
         PORT_DIPNAME(0x06, 0x00, "Coinage", IP_KEY_NONE)
             PORT_DIPSETTING(0x02, "A 2/1 B 2/1 C 2/1")
@@ -122,11 +120,11 @@ PORT_START // IN0
                                 PORT_DIPSETTING(0x00, "Upright")
                                     PORT_DIPSETTING(0x08, "Cocktail")
                                         PORT_BIT(0x10, IP_ACTIVE_LOW, IPT_JOYSTICK_UP | IPF_4WAY)
-    PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNUSED)
-    PORT_BIT(0x40, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN | IPF_4WAY)
-    PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_UNUSED)
-	PORT_START //("IN3")   // need for some PPI accesses
-	PORT_BIT( 0xff, 0x00, IPT_UNUSED )    
-    INPUT_PORTS_END
+                                            PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNUSED)
+                                                PORT_BIT(0x40, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN | IPF_4WAY)
+                                                    PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_UNUSED)
+                                                        PORT_START //("IN3")   // need for some PPI accesses
+    PORT_BIT(0xff, 0x00, IPT_UNUSED)
+        INPUT_PORTS_END
 
 #endif

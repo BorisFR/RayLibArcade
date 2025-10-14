@@ -28,7 +28,8 @@
 #define THE_COLOR uint32_t
 #endif
 
-#define MAX_GFX_ELEMENTS 32
+#define MAX_GFX_ELEMENTS 5
+//#define MAX_GFX_ELEMENTS 32
 // #define MAX_MEMORY_REGIONS 10
 
 // https://github.com/squidrpi/mame4all-pi/blob/bf71c5fdd2e2bbdccb36995e918b99ae7b01dc7a/src/memory.h#L253
@@ -205,7 +206,8 @@ extern "C"
 	extern uint16_t spriteHeight;
 	extern uint16_t spritesCount;
 
-	extern struct GfxElement *allGfx[2];
+	extern uint8_t countGfxElement;
+	extern struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 	extern THE_COLOR *screenData;
 	extern THE_COLOR *screenDataOld;

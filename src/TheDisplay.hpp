@@ -70,7 +70,7 @@
 #define SCREEN_FRAME_BUFFER (1)
 #else
 #define SCREEN_WIDTH (1050)
-#define SCREEN_HEIGHT (1160)
+#define SCREEN_HEIGHT (1180)
 #include "raylib.h"
 #endif
 

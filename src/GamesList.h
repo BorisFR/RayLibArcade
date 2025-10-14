@@ -24,6 +24,7 @@ extern "C"
 #ifdef MACHINE_Z80
 #include "games/Frogger.h"
 #include "games/Pacman.h"
+#include "games/Galaxian.h"
 //#include "games/Crush.h"
 #endif
 

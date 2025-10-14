@@ -341,7 +341,8 @@ uint32_t tileMemorySize;
 uint8_t *spriteMemory;
 uint32_t spriteMemorySize;
 
-struct GfxElement *allGfx[2];
+uint8_t countGfxElement;
+struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 uint8_t *dirtyMemoryTiles;
 uint8_t *dirtyMemorySprites;

@@ -1,7 +1,8 @@
 #include "Frogger.h"
 
-struct GfxLayout froggerTileLayout =
-    {
+// line 954 : void galaxian_state::init_froggers()
+
+struct GfxLayout froggerTileLayout = {
         8, 8,             /* 8*8 characters */
         256,              /* 256 characters */
         2,                /* 2 bits per pixel */
@@ -10,8 +11,8 @@ struct GfxLayout froggerTileLayout =
         {0, 1, 2, 3, 4, 5, 6, 7},
         8 * 8 /* every char takes 8 consecutive bytes */
 };
-struct GfxLayout froggerSpriteLayout =
-    {
+
+struct GfxLayout froggerSpriteLayout = {
         16, 16,            /* 16*16 sprites */
         64,                /* 64 sprites */
         2,                 /* 2 bits per pixel */
@@ -20,6 +21,7 @@ struct GfxLayout froggerSpriteLayout =
         {0, 1, 2, 3, 4, 5, 6, 7, 8 * 8 + 0, 8 * 8 + 1, 8 * 8 + 2, 8 * 8 + 3, 8 * 8 + 4, 8 * 8 + 5, 8 * 8 + 6, 8 * 8 + 7},
         32 * 8 /* every sprite takes 32 consecutive bytes */
 };
+
 /*
 // I/O line states
 enum line_state

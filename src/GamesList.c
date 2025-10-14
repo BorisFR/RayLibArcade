@@ -9,6 +9,7 @@
 #ifdef MACHINE_Z80
         FROGGER,
         PACMAN,
+        GALAXIAN,
         //CRUSH,
 #endif
 #ifdef MACHINE_xxx

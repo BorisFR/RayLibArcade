@@ -135,7 +135,7 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
             portValue = 0;
             break;
         case IPT_COIN1:
-            PORT_BIT_PARAM("BUTTON_CREDIT", BUTTON_CREDIT)
+            PORT_BIT_PARAM("*** BUTTON_CREDIT", BUTTON_CREDIT)
             break;
         case IPT_COIN2:
             PORT_BIT_PARAM("BUTTON_COIN2", BUTTON_COIN2)
@@ -150,31 +150,31 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
             PORT_BIT_VALUE
             break;
         case IPT_JOYSTICK_LEFT:
-            PORT_BIT_PARAM("BUTTON_LEFT", BUTTON_LEFT)
+            PORT_BIT_PARAM("*** BUTTON_LEFT", BUTTON_LEFT)
             break;
         case IPT_JOYSTICK_LEFT | IPF_PLAYER2:
             PORT_BIT_PARAM("BUTTON_LEFT for player 2", BUTTON_LEFT_P2)
             break;
         case IPT_JOYSTICK_RIGHT:
-            PORT_BIT_PARAM("BUTTON_RIGHT", BUTTON_RIGHT)
+            PORT_BIT_PARAM("*** BUTTON_RIGHT", BUTTON_RIGHT)
             break;
         case IPT_JOYSTICK_RIGHT | IPF_PLAYER2:
             PORT_BIT_PARAM("BUTTON_RIGHT for player 2", BUTTON_RIGHT_P2)
             break;
         case IPT_JOYSTICK_UP:
-            PORT_BIT_PARAM("BUTTON_UP", BUTTON_UP)
+            PORT_BIT_PARAM("*** BUTTON_UP", BUTTON_UP)
             break;
         case IPT_JOYSTICK_UP | IPF_PLAYER2:
             PORT_BIT_PARAM("BUTTON_UP for player 2", BUTTON_UP_P2)
             break;
         case IPT_JOYSTICK_DOWN:
-            PORT_BIT_PARAM("BUTTON_DOWN", BUTTON_DOWN)
+            PORT_BIT_PARAM("*** BUTTON_DOWN", BUTTON_DOWN)
             break;
         case IPT_JOYSTICK_DOWN | IPF_PLAYER2:
             PORT_BIT_PARAM("BUTTON_DOWN for player 2", BUTTON_DOWN_P2)
             break;
         case IPT_BUTTON1:
-            PORT_BIT_PARAM("BUTTON_FIRE", BUTTON_FIRE)
+            PORT_BIT_PARAM("*** BUTTON_FIRE", BUTTON_FIRE)
             break;
         case IPT_UNKNOWN:
             PORT_BIT_VALUE
@@ -278,6 +278,9 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
             finish = true;
             continue;
         }
+        if(allGames[currentGame].machine.readAddress[countMemoryReadFunction].size)
+            *allGames[currentGame].machine.readAddress[countMemoryReadFunction].size = allGames[currentGame].machine.readAddress[countMemoryReadFunction].end - allGames[currentGame].machine.readAddress[countMemoryReadFunction].start;
+
         // MY_DEBUG2(TAG, "MemoryRead Start:", allGames[currentGame].readAddress[countMemoryReadFunction].start)
         // MY_DEBUG2(TAG, "MemoryRead End:", allGames[currentGame].readAddress[countMemoryReadFunction].end)
         for (uint32_t p = allGames[currentGame].machine.readAddress[countMemoryReadFunction].start; p <= allGames[currentGame].machine.readAddress[countMemoryReadFunction].end; p++)
@@ -313,6 +316,8 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
         if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base)
         {
             uint32_t size = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].end - allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start;
+            if(allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size)
+                *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size = size;
             *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base = (uint8_t *)malloc(size * sizeof(uint8_t));
             if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base == NULL)
             {
@@ -898,11 +903,13 @@ void TheGame::osd_clearbitmap(osd_bitmap *bitmap)
 
 bool TheGame::DecodeAllGfx(const GfxDecodeInfo info[])
 {
+    countGfxElement = 0;
     for (uint8_t i = 0; i < MAX_GFX_ELEMENTS; i++)
     {
         if (info[i].memory_region == -1)
             break;
         MY_DEBUG2(TAG, "GFX ELEMENT ", i)
+        countGfxElement++;
         switch (info[i].memory_region)
         {
         case ROM_GFX:

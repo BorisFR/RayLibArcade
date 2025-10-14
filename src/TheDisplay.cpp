@@ -399,7 +399,7 @@ void TheDisplay::Loop()
 #ifdef DEBUG_DISPLAY_GFX
     if (hasGfx)
     {
-        for (uint8_t g = 0; g < 2; g++)
+        for (uint8_t g = 0; g < countGfxElement; g++)
         {
             GfxElement *element = allGfx[g];
             for (uint16_t z = 0; z < element->total_elements; z++)

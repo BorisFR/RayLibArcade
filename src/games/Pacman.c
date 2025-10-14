@@ -22,13 +22,7 @@ struct GfxLayout pacmanSpriteLayout = {
     64 * 8 /* every sprite takes 64 bytes */
 };
 
-
-
 // *******************************************************************
-
-void pacman_videoram_w(int offset, int data) { boardMemory[offset] = data; }
-
-void pacman_colorram_w(int offset, int data) { boardMemory[offset] = data; }
 
 void pacman_interrupt_enable_w(int offset, int data) { Z80InterruptEnable[Z80CurrentCpu] = (data & 0x01) == 0x01; }
 
@@ -123,7 +117,7 @@ void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)
 void PacmanRefreshScreen()
 {
     element = allGfx[0];
-    //visibleArea = VISIBLE_AREA_FULL;
+    // visibleArea = VISIBLE_AREA_FULL;
 
     // The playfield uses addresses 040 through 3BF, increasing from top to bottom,
     // right to left, starting at the top right corner of the playfield.
@@ -196,11 +190,11 @@ void PacmanRefreshScreen()
         int16_t posX = boardMemory[addressPosition];
         int32_t atX = screenWidth - posX - 1;
         int32_t atY = screenHeight - element->height - posY;
-        //if ((atX + element->width) < element->width || atX >= (screenWidth - element->width) || atY < 0 || atY >= screenHeight)
+        // if ((atX + element->width) < element->width || atX >= (screenWidth - element->width) || atY < 0 || atY >= screenHeight)
         //{
-        //    // nothing to draw
-        //}
-        //else
+        //     // nothing to draw
+        // }
+        // else
         { // something to draw
             uint32_t addressState = 0x4FFF - offset * 2;
             uint8_t paletteIndex = boardMemory[addressState];
@@ -210,7 +204,7 @@ void PacmanRefreshScreen()
             bool flipY = (state & 0x01) == 0x01;
             uint8_t spriteIndex = (state & 0xFC) >> 2;
             GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
-            //GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            // GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
         } // something to draw
     }
 }

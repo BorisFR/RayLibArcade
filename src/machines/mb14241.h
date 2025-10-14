@@ -20,8 +20,8 @@
 extern uint16_t mb14241data;
 extern uint8_t mb14241amount;
 
-void mb14241_amount(int offset, int value);
-void mb14241_data(int offset, int value);
-int mb14241_shift(int offset);
+void mb14241_shift_count_w(int offset, int value);
+void mb14241_shift_data_w(int offset, int value);
+int mb14241_shift_result_r(int offset);
 
 #endif

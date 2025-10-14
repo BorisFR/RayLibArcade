@@ -12,17 +12,13 @@ extern "C"
 {
 #endif
 
-extern void invadpt2_videoram_w(int offset, int data);
+	extern void invadpt2_videoram_w(int offset, int data);
 
 #ifdef __cplusplus
 }
 #endif
 
-#define INVADPT2 {"invadpt2", "Space Invaders II", \
-	{224, 256, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING }, \
-	3000000 / 60, \
-	{ invadpt2_rom, NOTHING, invaders_readmem, invadpt2_writemem, invadpt2_input_ports, invadpt2_readport, invadpt2_writeport }, \
-	MACHINE_8080BW}
+#define INVADPT2 {"invadpt2", "Space Invaders II", {224, 256, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING}, 3000000 / 60, {invadpt2_rom, NOTHING, invaders_readmem, invadpt2_writemem, invadpt2_input_ports, invadpt2_readport, invadpt2_writeport}, MACHINE_8080BW}
 
 ROM_START(invadpt2_rom)
 ROM_REGION(0x10000)
@@ -37,34 +33,28 @@ ROM_LOAD("pv06.1", 0x0000, 0x0400, 0xa732810b)
 ROM_LOAD("pv07.2", 0x0400, 0x0400, 0x2c5b91cb)
 ROM_END
 
-static struct MemoryWriteAddress invadpt2_writemem[] =
-{
-	{ 0x2000, 0x23ff, MWA_RAM },
-	{ 0x2400, 0x3fff, invadpt2_videoram_w },
+static struct MemoryWriteAddress invadpt2_writemem[] = {
+	{0x2000, 0x23ff, MWA_RAM},
+	{0x2400, 0x3fff, invadpt2_videoram_w},
 	//{ 0x2400, 0x3fff, lrescue_videoram_w, &invaders_videoram },
-	{ 0x0000, 0x1fff, MWA_ROM },
-	{ 0x4000, 0x57ff, MWA_ROM },
-	{ -1 }
-};
+	{0x0000, 0x1fff, MWA_ROM},
+	{0x4000, 0x57ff, MWA_ROM},
+	{-1}};
 
-static struct IOReadPort invadpt2_readport[] =
-	{
-		{0x00, 0x00, readPort0},
-		{0x01, 0x01, readPort1},
-		{0x02, 0x02, readPort2},
-		{0x03, 0x03, mb14241_shift},
-		{-1}
-};
+static struct IOReadPort invadpt2_readport[] = {
+	{0x00, 0x00, readPort0},
+	{0x01, 0x01, readPort1},
+	{0x02, 0x02, readPort2},
+	{0x03, 0x03, mb14241_shift_result_r},
+	{-1}};
 
-static struct IOWritePort invadpt2_writeport[] =
-	{
-		{0x02, 0x02, mb14241_amount},
-		{0x03, 0x03, writePort3},
-		{0x04, 0x04, mb14241_data},
-		{0x05, 0x05, writePort5},
-		{0x06, 0x06, writePortNone},
-		{-1}
-};
+static struct IOWritePort invadpt2_writeport[] = {
+	{0x02, 0x02, mb14241_shift_count_w},
+	{0x03, 0x03, writePort3},
+	{0x04, 0x04, mb14241_shift_data_w},
+	{0x05, 0x05, writePort5},
+	{0x06, 0x06, writePortNone},
+	{-1}};
 
 INPUT_PORTS_START(invadpt2_input_ports)
 PORT_START /* IN0 */

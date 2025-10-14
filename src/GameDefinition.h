@@ -246,6 +246,7 @@ extern "C"
 #define PORT_BIT(mask, default, type) {mask, default, type, IP_NAME_DEFAULT, IP_KEY_DEFAULT, IP_JOY_DEFAULT, 0},
 #define PORT_DIPNAME(mask, default, name, key) {mask, default, IPT_DIPSWITCH_NAME, name, key, IP_JOY_NONE, 0},
 #define PORT_DIPSETTING(default, name) {0, default, IPT_DIPSWITCH_SETTING, name, IP_KEY_NONE, IP_JOY_NONE, 0},
+#define PORT_BITX(a, b, dip, text, key, joy, x) PORT_DIPNAME(a, b, text, IP_KEY_NONE)
 
 	// #define IORP_NOP 0 /* don't care, return 0 */
 	// #define IOWP_NOP 0 /* do nothing */

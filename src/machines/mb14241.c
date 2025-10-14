@@ -25,14 +25,14 @@
 uint16_t mb14241data = 0;
 uint8_t mb14241amount = 0;
 
-void mb14241_amount(int offset, int value) {
+void mb14241_shift_count_w(int offset, int value) {
     mb14241amount = (~value & 0x7);
 }
 
-void mb14241_data(int offset, int value) {
+void mb14241_shift_data_w(int offset, int value) {
     mb14241data = (value << 7) | (mb14241data >> 8);
 }
 
-int mb14241_shift(int offset) {
+int mb14241_shift_result_r(int offset) {
     return (mb14241data >> mb14241amount) & 0xFF;
 }
