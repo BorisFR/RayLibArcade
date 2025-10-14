@@ -112,7 +112,8 @@
 // #define DEBUG_DISPLAY_TILES
 // #define DEBUG_DISPLAY_SPRITES
 
-// #define LIMIT_FPS
+#define FPS_LIMIT 120
+#define LIMIT_FPS
  //#define NO_FPS
 #define NO_FPS_ON_CONSOLE
 

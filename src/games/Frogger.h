@@ -61,7 +61,7 @@ static struct MemoryReadAddress frogger_readmem[] = {
     {0x8800, 0x8800, boardMemoryRead0}, // watchdog_reset_r},
     {0xa800, 0xabff, MRA_RAM},          /* video RAM */
     //{0xb000, 0xb05f, MRA_RAM},          /* screen attributes, sprites */
-    {0xb000, 0xb0ff, MRA_RAM},   /* screen attributes, sprites */
+    {0xb000, 0xb0ff, MRA_RAM},   /* spriteram => screen attributes, sprites */
     {0xe000, 0xe000, readPort0}, /* IN0 */
     {0xe002, 0xe002, readPort1}, /* IN1 */
     {0xe004, 0xe004, readPort2}, /* IN2 */

@@ -161,7 +161,7 @@ void TheDisplay::Setup()
     fb_image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
     fb_texture = LoadTextureFromImage(fb_image);
 #ifdef LIMIT_FPS
-    SetTargetFPS(60);
+    SetTargetFPS(FPS_LIMIT);
 #endif
 #endif
     myWhite = Rgb888ToRgb565(255, 255, 255);
@@ -354,10 +354,10 @@ void TheDisplay::Loop()
 #endif
     screenDirtyMaxX++;
     screenDirtyMaxY++;
-    if (screenDirtyMaxX >= screenWidth)
-        screenDirtyMaxX = screenWidth - 1;
-    if (screenDirtyMaxY >= screenHeight)
-        screenDirtyMaxY = screenHeight - 1;
+    if (screenDirtyMaxX > screenWidth)
+        screenDirtyMaxX = screenWidth;
+    if (screenDirtyMaxY > screenHeight)
+        screenDirtyMaxY = screenHeight;
 
     //  DRAW SCREEN
     //  currentFrameBuffer = (currentFrameBuffer + 1) % SCREEN_FRAME_BUFFER;

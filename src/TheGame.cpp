@@ -278,7 +278,7 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
             finish = true;
             continue;
         }
-        if(allGames[currentGame].machine.readAddress[countMemoryReadFunction].size)
+        if (allGames[currentGame].machine.readAddress[countMemoryReadFunction].size)
             *allGames[currentGame].machine.readAddress[countMemoryReadFunction].size = allGames[currentGame].machine.readAddress[countMemoryReadFunction].end - allGames[currentGame].machine.readAddress[countMemoryReadFunction].start;
 
         // MY_DEBUG2(TAG, "MemoryRead Start:", allGames[currentGame].readAddress[countMemoryReadFunction].start)
@@ -316,7 +316,7 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
         if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base)
         {
             uint32_t size = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].end - allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start;
-            if(allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size)
+            if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size)
                 *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size = size;
             *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base = (uint8_t *)malloc(size * sizeof(uint8_t));
             if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base == NULL)
@@ -405,6 +405,13 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         return false;
     }
     memset(screenDataOld, 0, screenLength);
+    screenBitmap = (THE_COLOR *)malloc(screenLength);
+    if (screenBitmap == NULL)
+    {
+        MY_DEBUG(TAG, "Error allocating bitmap screen memory");
+        return false;
+    }
+    memset(screenBitmap, 0, screenLength);
     uint8_t *toMemory = NULL;
     uint8_t i = 0;
     bool finish = false;
@@ -572,6 +579,8 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
             GeneratePalette(display);
         }
     }
+    if (allGames[currentGame].machine.gameInit)
+        allGames[currentGame].machine.gameInit();
     return true;
 }
 
@@ -617,8 +626,8 @@ bool TheGame::DecodeColors(TheDisplay &display)
         uint8_t green = (uint8_t)((((colorByte >> 3U) & 0b1) * 0x21) + (((colorByte >> 4U) & 0b1) * 0x47) + (((colorByte >> 5U) & 0b1) * 0x97));
         uint8_t blue = (uint8_t)((((colorByte >> 6U) & 0b1) * 0x51) + (((colorByte >> 7U) & 0b1) * 0xAE));
         colorRGB[c] = display.Rgb888ToRgb565(red, green, blue);
-         std::string t = std::to_string(red) + "/" + std::to_string(green) + "/" + std::to_string(blue) + " => " + std::to_string(colorRGB[c]);
-         MY_DEBUG(TAG, t.c_str())
+        // std::string t = std::to_string(red) + "/" + std::to_string(green) + "/" + std::to_string(blue) + " => " + std::to_string(colorRGB[c]);
+        // MY_DEBUG(TAG, t.c_str())
     }
     return true;
 }

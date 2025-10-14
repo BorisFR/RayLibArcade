@@ -105,6 +105,7 @@ extern "C"
 #define CHECK_IF_DIRTY_Y(y) DIRTY_MIN(y, screenDirtyMinY) DIRTY_MAX(y, screenDirtyMaxY)
 #define CHECK_IF_DIRTY_XY(x, y) CHECK_IF_DIRTY_X(x) CHECK_IF_DIRTY_Y(y)
 
+	extern void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height);
 	extern void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
 
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
@@ -211,6 +212,7 @@ extern "C"
 
 	extern THE_COLOR *screenData;
 	extern THE_COLOR *screenDataOld;
+	extern THE_COLOR *screenBitmap;
 	extern uint32_t screenWidth;
 	extern uint32_t screenHeight;
 	extern uint32_t screenLength;

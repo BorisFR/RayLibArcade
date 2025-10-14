@@ -332,7 +332,8 @@ extern "C"
 		const struct InputPort *inputPorts;
 		const struct IOReadPort *readPorts;
 		const struct IOWritePort *writePorts;
-	};
+		void (*gameInit)();
+};
 
 	struct OneGame
 	{

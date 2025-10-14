@@ -131,7 +131,8 @@ void frogger_objram_w(int offset, int data)
         {
             // Frogger: top and bottom 4 bits swapped entering the adder
             // if (m_frogger_adjust)
-            froggerScrollLine[address >> 1] = ((data << 4) & 0xf0) | ((data >> 4) & 0x0f);
+            //froggerScrollLine[address >> 1] = ((data << 4) & 0xf0) | ((data >> 4) & 0x0f);
+            froggerScrollLine[address >> 1] = (data >> 4) | (data << 4);
             // froggerScrollSpeed[data];
             //  if (!m_sfx_adjust)
             //  	m_bg_tilemap->set_scrolly(offset >> 1, data);
@@ -190,9 +191,6 @@ uint8_t maxc2 = 0;
 
 void FroggerRefreshScreen()
 {
-    // memcpy(screenDataOld, screenData, screenLength);
-    //for (uint32_t i = 0; i < screenLength; i++)
-    //    screenDataOld[i] = screenData[i];
     // videoram_size = 0x03FF;
     // frogger_attributesram => boardMemory from 0xb000
     element = allGfx[0];
@@ -222,7 +220,7 @@ void FroggerRefreshScreen()
         uint8_t tileIndex = boardMemory[tileAddress];
         if (sy < 16)
         {
-            GameDrawElement(screenData, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_REPLACE, froggerWater);
+            GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_REPLACE, froggerWater);
             // if (last != col)
             //{
             //     last = col;
@@ -231,7 +229,7 @@ void FroggerRefreshScreen()
         }
         else
         {
-            GameDrawElement(screenData, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
             // if (last != col)
             //{
             //     last = col;
@@ -239,6 +237,13 @@ void FroggerRefreshScreen()
             // } // 0 ou 4
         }
         //}
+    }
+    // scroll
+    visibleArea = allGames[currentGame].video.visibleArea;
+    for (uint8_t l = 0; l < 32; l++)
+    {
+        uint8_t scroll = froggerScrollLine[l] % screenWidth;
+        GameScrollLine(l, scroll, 8);
     }
     /*
         // copy the temporary bitmap to the screen

@@ -4,7 +4,21 @@
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;
 
-// uint8_t maxp = 0;
+void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height)
+{
+    for (uint8_t y = 0; y < height; y++)
+    {
+        uint32_t currentLine = (line * height + y) * screenWidth;
+        for (int x = screenWidth - 1; x >= 0; x--)
+        {
+            uint32_t shiftX = (x + scroll) % screenWidth;
+            if (shiftX >= visibleArea.minX && shiftX <= visibleArea.maxX)
+            {
+                screenData[shiftX + currentLine] = screenBitmap[x + currentLine];
+            }
+        }
+    }
+}
 
 void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
 {
@@ -123,11 +137,6 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                 {
                     CHECK_IF_DIRTY_XY(tempX, tempY)
                     uint8_t pixel = pointerLine[x];
-                    // if (pixel > maxp)
-                    // {
-                    //     maxp = pixel;
-                    //     MY_DEBUG2("PIX", "Pixel:", maxp)
-                    // }
                     THE_COLOR color;
                     if (hasPalette)
                         color = paletteColor[paletteIndex * 4 + pixel];
@@ -211,24 +220,24 @@ WriteHandler *memoryWriteHandler;
 
 int readMemoryHandler(int address)
 {
-     if (address < 0)
-     {
-         MY_DEBUG2("MEMORY READ ERROR", "address neg:", address)
-         //ESP_LOGE("MEMORY READ ERROR", "address neg: %x", address);
-         return 0;
-     }
-     if (address >= boardMemorySize)
-     {
-         MY_DEBUG2("MEMORY READ ERROR", "address:", address)
-         //ESP_LOGE("MEMORY READ ERROR", "address: %x", address);
-         return 0;
-     }
-     if (memoryReadHandler == NULL)
-     {
-         MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler is NULL:", address)
-         //ESP_LOGE("MEMORY READ ERROR", "memoryReadHandler NULL : %x", address);
-         return 0;
-     }
+    if (address < 0)
+    {
+        MY_DEBUG2("MEMORY READ ERROR", "address neg:", address)
+        // ESP_LOGE("MEMORY READ ERROR", "address neg: %x", address);
+        return 0;
+    }
+    if (address >= boardMemorySize)
+    {
+        MY_DEBUG2("MEMORY READ ERROR", "address:", address)
+        // ESP_LOGE("MEMORY READ ERROR", "address: %x", address);
+        return 0;
+    }
+    if (memoryReadHandler == NULL)
+    {
+        MY_DEBUG2("MEMORY READ ERROR", "memoryReadHandler is NULL:", address)
+        // ESP_LOGE("MEMORY READ ERROR", "memoryReadHandler NULL : %x", address);
+        return 0;
+    }
     if (memoryReadHandler[address].handler == NULL)
     {
         return boardMemory[address];
@@ -364,6 +373,7 @@ uint16_t spritesCount;
 
 THE_COLOR *screenData = NULL;
 THE_COLOR *screenDataOld = NULL;
+THE_COLOR *screenBitmap = NULL;
 uint32_t screenWidth;
 uint32_t screenHeight;
 uint32_t screenLength;

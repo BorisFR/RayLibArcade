@@ -24,15 +24,17 @@ extern "C"
 
     extern void galaxian_interrupt_enable_w(int offset, int data);
     extern void galaxian_stars_w(int offset, int data);
+    extern void galaxian_flipx_w(int offset, int data);
+    extern void galaxian_flipy_w(int offset, int data);
 
+    extern void GalaxianInit();
     extern void GalaxianRefreshScreen();
 
 #ifdef __cplusplus
 }
 #endif
 
-#define GALAXIAN {"galaxian", "Galaxian", {32 * 8, 32 * 8, {0 * 8, 32 * 8 - 1, 2 * 8, 30 * 8 - 1}, ORIENTATION_ROTATE_90, GalaxianRefreshScreen, galaxianGfxDecodeInfo}, 3072000 / 60, {galaxian_rom, NOTHING, galaxian_readmem, galaxian_writemem, galaxian_input_ports, NOTHING, NOTHING}, MACHINE_Z80}
-//#define GALAXIAN {"galaxian", "Galaxian", {32 * 8, 32 * 8, {0 * 8, 32 * 8 - 1, 2 * 8, 30 * 8 - 1}, ORIENTATION_DEFAULT, GalaxianRefreshScreen, galaxianGfxDecodeInfo}, 3072000 / 60, {galaxian_rom, NOTHING, galaxian_readmem, galaxian_writemem, galaxian_input_ports, NOTHING, NOTHING}, MACHINE_Z80}
+#define GALAXIAN {"galaxian", "Galaxian", {32 * 8, 32 * 8, {0 * 8, 32 * 8 - 0, 2 * 8, 30 * 8 - 0}, ORIENTATION_ROTATE_90, GalaxianRefreshScreen, galaxianGfxDecodeInfo}, 3072000 / 60, {galaxian_rom, NOTHING, galaxian_readmem, galaxian_writemem, galaxian_input_ports, NOTHING, NOTHING, GalaxianInit}, MACHINE_Z80}
 
 ROM_START(galaxian_rom)
 ROM_REGION(0x10000)
@@ -52,7 +54,7 @@ ROM_END
 
 static struct MemoryReadAddress galaxian_readmem[] = {
     {0x0000, 0x3fff, MRA_ROM},
-    {0x4000, 0x47ff, MRA_RAM},
+    {0x4000, 0x43ff, MRA_RAM},
     {0x5000, 0x5fff, MRA_RAM},   // video RAM, screen attributes, sprites, bullets
     {0x6000, 0x6000, readPort0}, // IN0
     {0x6800, 0x6800, readPort1}, // IN1
@@ -63,7 +65,7 @@ static struct MemoryReadAddress galaxian_readmem[] = {
 
 static struct MemoryWriteAddress galaxian_writemem[] = {
     {0x0000, 0x3fff, MWA_ROM},
-    {0x4000, 0x47ff, MWA_RAM},
+    {0x4000, 0x43ff, MWA_RAM},
     {0x5000, 0x53ff, MWA_RAM}, // galaxian_videoram_w},   //, &videoram, &videoram_size },
     {0x5800, 0x583f, MWA_RAM}, // galaxian_attributes_w}, //, &galaxian_attributesram },
     {0x5840, 0x585f, MWA_RAM}, //, &spriteram, &spriteram_size },
@@ -77,8 +79,8 @@ static struct MemoryWriteAddress galaxian_writemem[] = {
     //{ 0x6000, 0x6001, osd_led_w },
     //{ 0x6004, 0x6007, mooncrst_lfo_freq_w },
     {0x7004, 0x7004, galaxian_stars_w},
-    //{0x7006, 0x7006, galaxian_flipx_w},
-    //{0x7007, 0x7007, galaxian_flipy_w},
+    {0x7006, 0x7006, galaxian_flipx_w},
+    {0x7007, 0x7007, galaxian_flipy_w},
     {-1}};
 
 INPUT_PORTS_START(galaxian_input_ports)
@@ -124,6 +126,58 @@ PORT_START // IN0
                                                     INPUT_PORTS_END
 
 /*
+
+0000-3fff
+
+
+4000-7fff
+  4000-47ff -> RAM read/write (10 bits = 0x400)
+  4800-4fff -> n/c
+  5000-57ff -> /VRAM RD or /VRAM WR (10 bits = 0x400)
+  5800-5fff -> /OBJRAM RD or /OBJRAM WR (8 bits = 0x100)
+  6000-67ff -> /SW0 or /DRIVER
+  6800-6fff -> /SW1 or /SOUND
+  7000-77ff -> /DIPSW or LATCH
+  7800-7fff -> /WDR or /PITCH
+
+/DRIVER: (write 6000-67ff)
+  D0 = data bit
+  A0-A2 = decoder
+  6000 -> 1P START
+  6001 -> 2P START
+  6002 -> COIN LOCKOUT
+  6003 -> COIN COUNTER
+  6004 -> 1M resistor (controls 555 timer @ 9R)
+  6005 -> 470k resistor (controls 555 timer @ 9R)
+  6006 -> 220k resistor (controls 555 timer @ 9R)
+  6007 -> 100k resistor (controls 555 timer @ 9R)
+
+/SOUND: (write 6800-6fff)
+  D0 = data bit
+  A0-A2 = decoder
+  6800 -> FS1 (enables 555 timer at 8R)
+  6801 -> FS2 (enables 555 timer at 8S)
+  6802 -> FS3 (enables 555 timer at 8T)
+  6803 -> HIT
+  6804 -> n/c
+  6805 -> FIRE
+  6806 -> VOL1
+  6807 -> VOL2
+
+LATCH: (write 7000-77ff)
+  D0 = data bit
+  A0-A2 = decoder
+  7000 -> n/c
+  7001 -> NMI ON
+  7002 -> n/c
+  7003 -> n/c
+  7004 -> STARS ON
+  7005 -> n/c
+  7006 -> HFLIP
+  7007 -> VFLIP
+
+/PITCH: (write 7800-7fff)
+  loads latch at 9J
 
 static struct MachineDriver galaxian_machine_driver =
 {
