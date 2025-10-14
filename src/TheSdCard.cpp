@@ -146,7 +146,7 @@ bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t
     }
     fclose(file);
 #else
-    std::string fullPath = std::string(PC_PATH) + "roms/" + filename;
+    std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
     MY_DEBUG2TEXT(TAG, "Loading file... ", fullPath.c_str());
     const char *fname = fullPath.c_str();
     FILE *pFile = fopen(fname, "rb");

@@ -8,7 +8,6 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"${workspaceFolder}/src/games/*.cpp",
 				"${workspaceFolder}/src/games/*.c",
 				"${workspaceFolder}/src/machines/*.cpp",
 				"${workspaceFolder}/src/machines/*.c",
