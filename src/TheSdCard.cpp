@@ -8,7 +8,7 @@ static FILE *myfile;
 PNG myPng;
 // JPEGDEC jpeg;
 
-static void *myOpen(const char *filename, int32_t *size)
+static void *myOpen(const char *filename, uint32_t *size)
 {
     printf("file: %s\n", filename);
     myfile = (FILE *)fopen(filename, "rb");
@@ -26,7 +26,7 @@ static void myClose(void *handle)
     fclose(myfile);
 }
 
-static int32_t myRead(PNGFILE *handle, uint8_t *buffer, int32_t length)
+static uint32_t myRead(PNGFILE *handle, uint8_t *buffer, uint32_t length)
 {
     printf("file read: %d\n", length);
     return fread(buffer, 1, length, myfile);

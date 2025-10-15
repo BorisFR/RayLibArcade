@@ -19,9 +19,9 @@
 // limitations under the License.
 //===========================================================================
 //
+#define __LINUX__
 #ifndef __PNGDEC__
 #define __PNGDEC__
-#define __LINUX__
 #if defined( __MACH__ ) || defined( __LINUX__ ) || defined( __MCUXPRESSO )
 #include <stdlib.h>
 #include <string.h>
@@ -97,8 +97,8 @@ enum {
 
 typedef struct png_file_tag
 {
-  int32_t iPos; // current file position
-  int32_t iSize; // file size
+  uint32_t iPos; // current file position
+  uint32_t iSize; // file size
   uint8_t *pData; // memory file pointer
   void * fHandle; // class pointer to File/SdFat or whatever you want
 } PNGFILE;
@@ -131,9 +131,9 @@ typedef struct png_draw_tag
 } PNGDRAW;
 
 // Callback function prototypes
-typedef int32_t (PNG_READ_CALLBACK)(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen);
+typedef uint32_t (PNG_READ_CALLBACK)(PNGFILE *pFile, uint8_t *pBuf, uint32_t iLen);
 typedef uint32_t (PNG_SEEK_CALLBACK)(PNGFILE *pFile, uint32_t iPosition);
-typedef void * (PNG_OPEN_CALLBACK)(const char *szFilename, int32_t *pFileSize);
+typedef void * (PNG_OPEN_CALLBACK)(const char *szFilename, uint32_t *pFileSize);
 typedef int (PNG_DRAW_CALLBACK)(PNGDRAW *);
 typedef void (PNG_CLOSE_CALLBACK)(void *pHandle);
 

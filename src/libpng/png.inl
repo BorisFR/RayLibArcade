@@ -61,8 +61,8 @@ static const uint16_t usGrayTo565[] = {0x0000,0x0000,0x0000,0x0000,0x0020,0x0020
 //
 #ifndef __cplusplus
 // Forward references
-PNG_STATIC int32_t readFLASH(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen);
-PNG_STATIC int32_t seekMem(PNGFILE *pFile, int32_t iPosition);
+PNG_STATIC uint32_t readFLASH(PNGFILE *pFile, uint8_t *pBuf, uint32_t iLen);
+PNG_STATIC uint32_t seekMem(PNGFILE *pFile, uint32_t iPosition);
 PNG_STATIC int PNGInit(PNGIMAGE *pPNG);
 
 // C API
@@ -81,11 +81,11 @@ int PNG_openRAM(PNGIMAGE *pPNG, uint8_t *pData, int iDataSize, PNG_DRAW_CALLBACK
 } /* PNG_openRAM() */
 
 #ifdef __LINUX__
-int32_t readFile(PNGFILE *handle, uint8_t *buffer, int32_t length) {
+uint32_t readFile(PNGFILE *handle, uint8_t *buffer, uint32_t length) {
   if (!handle->fHandle) return 0;
-  return (int32_t)fread(buffer, 1, length, (FILE *)handle->fHandle);
+  return (uint32_t)fread(buffer, 1, length, (FILE *)handle->fHandle);
 }
-int32_t seekFile(PNGFILE *handle, int32_t position) {
+uint32_t seekFile(PNGFILE *handle, uint32_t position) {
   if (!handle->fHandle) return 0;
   return fseek((FILE *)handle->fHandle, position, SEEK_SET);
 }
@@ -553,9 +553,9 @@ PNG_STATIC uint32_t seekMem(PNGFILE *pFile, uint32_t iPosition)
     return iPosition;
 } /* seekMem() */
 
-PNG_STATIC int32_t readFLASH(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen)
+PNG_STATIC uint32_t readFLASH(PNGFILE *pFile, uint8_t *pBuf, uint32_t iLen)
 {
-    int32_t iBytesRead;
+    uint32_t iBytesRead;
 
     iBytesRead = iLen;
     if ((pFile->iSize - pFile->iPos) < iLen)
@@ -567,9 +567,9 @@ PNG_STATIC int32_t readFLASH(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen)
     return iBytesRead;
 } /* readFLASH() */
 
-PNG_STATIC int32_t readRAM(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen)
+PNG_STATIC uint32_t readRAM(PNGFILE *pFile, uint8_t *pBuf, uint32_t iLen)
 {
-    int32_t iBytesRead;
+    uint32_t iBytesRead;
 
     iBytesRead = iLen;
     if ((pFile->iSize - pFile->iPos) < iLen)

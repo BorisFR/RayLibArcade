@@ -76,8 +76,8 @@ void setup()
   // zoomFactor=1;
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
 
-  sdCard.LoadPngFile("invaders/marquee8.png");
-  //sdCard.LoadPngFile("background/test.png");
+  //sdCard.LoadPngFile("invaders/marquee8.png");
+  sdCard.LoadPngFile("background/test.png");
   display.DisplayPng();
 }
 
