@@ -28,8 +28,10 @@ static void myClose(void *handle)
 
 static uint32_t myRead(PNGFILE *handle, uint8_t *buffer, uint32_t length)
 {
-    printf("file read: %d\n", length);
-    return fread(buffer, 1, length, myfile);
+    printf("file must read: %d", length);
+    size_t x = fread(buffer, 1, length, myfile);
+    printf(" and read: %d\n", (uint32_t)x);
+    return (uint32_t)x;
 }
 
 static uint32_t mySeek(PNGFILE *handle, uint32_t position)

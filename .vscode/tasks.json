@@ -13,7 +13,6 @@
 				"${workspaceFolder}/src/machines/*.c",
 				"${workspaceFolder}/src/libpng/*.cpp",
 				"${workspaceFolder}/src/libpng/*.c",
-				"${workspaceFolder}/src/libjpg/*.cpp",
 				"${workspaceFolder}/src/*.cpp",
 				"${workspaceFolder}/src/*.c",
 				"-o",
