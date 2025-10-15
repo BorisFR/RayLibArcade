@@ -225,12 +225,20 @@ uint32_t TheDisplay::GetPaddingTopForZoom(uint32_t zoomY) { return (SCREEN_HEIGH
 
 void TheDisplay::DisplayPng()
 {
-    // memcpy(pixels, pngImage, pngMemorySize);
-    for (uint32_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    uint32_t index = 0;
+        for (uint32_t y = 0; y < pngHeight; y++)
+        {
+    for (uint32_t x = 0; x < pngWidth; x++)
     {
-        pixels[i] = ConvertRGB565ToRGB888(pngImage[i]);
-        i++;
+            uint32_t pos = x + y * SCREEN_WIDTH;
+            pixels[pos] = ConvertRGB565ToRGB888(pngImage[index++]);
+        }
     }
+    // memcpy(pixels, pngImage, pngMemorySize);
+    //for (uint32_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    //{
+    //    pixels[i] = ConvertRGB565ToRGB888(pngImage[i]);
+    //}
 }
 
 // *******************************************************************

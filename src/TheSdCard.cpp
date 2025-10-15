@@ -6,72 +6,82 @@
 
 static FILE *myfile;
 PNG myPng;
+// JPEGDEC jpeg;
 
 static void *myOpen(const char *filename, int32_t *size)
 {
-    // Serial.printf("Attempting to open %s\n", filename);
-    // myfile = SD.open(filename);
-    //*size = myfile.size();
-    // return &myfile;
     printf("file: %s\n", filename);
     myfile = (FILE *)fopen(filename, "rb");
     fseek(myfile, 0, SEEK_END);
     *size = ftell(myfile);
     rewind(myfile);
+    // fseek(myfile, 0, 0);
     printf("size: %d\n", *size);
-    // if (myfile == NULL)
-    //{
-    //  MY_DEBUG2TEXT(TAG, "File not found: ", filename.c_str());
-    //  return false;
-    //}
     return &myfile;
 }
 
 static void myClose(void *handle)
 {
-    // if (myfile) myfile.close();
+    printf("file: close\n");
     fclose(myfile);
 }
 
 static int32_t myRead(PNGFILE *handle, uint8_t *buffer, int32_t length)
 {
-    // if (!myfile) return 0;
-    // return myfile.read(buffer, length);
+    printf("file read: %d\n", length);
     return fread(buffer, 1, length, myfile);
 }
 
-static int32_t mySeek(PNGFILE *handle, int32_t position)
+static uint32_t mySeek(PNGFILE *handle, uint32_t position)
 {
-    // if (!myfile) return 0;
-    // return myfile.seek(position);
+    printf("file seek: %d\n", position);
     return fseek(myfile, 0, position);
 }
 
 // Function to draw pixels to the display
 static int PNGDraw(PNGDRAW *pDraw)
 {
-    // uint16_t usPixels[320];
-    // myPng.getLineAsRGB565(pDraw, usPixels, PNG_RGB565_LITTLE_ENDIAN, 0xffffffff);
-    //// tft.writeRect(0, pDraw->y + 24, pDraw->iWidth, 1, usPixels);
-    // return 1;
     printf("Width: %d, y=%d ", pDraw->iWidth, pDraw->y);
     uint16_t lineBuffer[pDraw->iWidth];
-    // myPng.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff); // PNG_RGB565_BIG_ENDIAN // PNG_RGB565_LITTLE_ENDIAN
-    myPng.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_LITTLE_ENDIAN, -1); // PNG_RGB565_BIG_ENDIAN // PNG_RGB565_LITTLE_ENDIAN
+    myPng.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_LITTLE_ENDIAN, 0xffffffff); // PNG_RGB565_BIG_ENDIAN // PNG_RGB565_LITTLE_ENDIAN
     uint32_t pos = pDraw->y * pDraw->iWidth;
     for (uint32_t x = 0; x < pDraw->iWidth; x++)
-    {
-        if (pos < pngMemorySize)
-        {
-            pngImage[pos++] = lineBuffer[x];
-        }
-        else
-        {
-            // Serial.printf("Warning: PNG image data exceeds allocated memory (pos: %d, memorySize: %d)\n", pos, pngMemorySize);
-        }
-    }
+        pngImage[pos++] = lineBuffer[x];
     return 1;
 }
+
+// static int32_t myRead(JPEGFILE *handle, uint8_t *buffer, int32_t length)
+//{
+//    printf("file read: %d\n", length);
+//    return fread(buffer, 1, length, myfile);
+// }
+
+// static int32_t mySeek(JPEGFILE *handle, int32_t position)
+//{
+//     printf("file seek: %d\n", position);
+//     return fseek(myfile, 0, position);
+// }
+
+// int JPEGDraw(JPEGDRAW *pDraw)
+// {
+//     //  Serial.printf("jpeg draw: x,y=%d,%d, cx,cy = %d,%d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+//     //  Serial.printf("Pixel 0 = 0x%04x\n", pDraw->pPixels[0]);
+//     // tft.dmaWait(); // Wait for prior writePixels() to finish
+//     // tft.setAddrWindow(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+//     // tft.writePixels(pDraw->pPixels, pDraw->iWidth * pDraw->iHeight, true, false); // Use DMA, big-endian
+//     // return 1;
+//     printf("jpeg draw: x,y=%d,%d, cx,cy = %d,%d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+//     uint16_t index = 0;
+//     for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
+//     {
+//         for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
+//         {
+//             uint32_t pos = x + y * 800;
+//             pngImage[pos] = pDraw->pPixels[index++];
+//         }
+//     }
+//     return 1;
+// }
 
 // *******************************************************************
 // *******************************************************************
@@ -81,7 +91,11 @@ TheSdCard::TheSdCard() { isOk = false; }
 
 // *******************************************************************
 
-TheSdCard::~TheSdCard() {}
+TheSdCard::~TheSdCard()
+{
+    if (pngWidth + pngHeight > 0)
+        free(pngImage);
+}
 
 // *******************************************************************
 
@@ -182,8 +196,6 @@ bool TheSdCard::IsOk() { return isOk; }
 
 bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t size, uint64_t offset)
 {
-    // ESP_LOGI(TAG, "Loading file: %s", filename.c_str());
-    // MY_DEBUG(TAG, "Loading file: " + filename);
     if (!isOk)
     {
         MY_DEBUG(TAG, "SdCard not ready");
@@ -293,17 +305,23 @@ bool TheSdCard::LoadPngFile(const char *filename)
 // }
 // png.close();
 #else
+    if (pngWidth + pngHeight > 0)
+        free(pngImage);
     std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
     const char *fname = fullPath.c_str();
     MY_DEBUG2TEXT(TAG, "Loading PNG file:", fname);
     int rc = myPng.open(fname, myOpen, myClose, myRead, mySeek, PNGDraw);
-    //int rc = myPng.open(fname, myOpen, myClose, myRead, mySeek, NULL);
-    if (rc == PNG_SUCCESS)
+    // int rc = myPng.open(fname, myOpen, myClose, myRead, mySeek, NULL);
+    // int rc = jpeg.open(fname, myOpen, myClose, myRead, mySeek, JPEGDraw);
+    if (rc == PNG_SUCCESS) // JPEG_SUCCESS) // PNG_SUCCESS)
     {
-        pngMemorySize = myPng.getBufferSize();
-        //pngMemorySize = myPng.getWidth() * myPng.getHeight() * sizeof(PNG_PTR_TYPE);
+        // jpg.setPixelType(RGB565_BIG_ENDIAN);
+        // pngMemorySize = myPng.getBufferSize();
+        pngMemorySize = myPng.getWidth() * myPng.getHeight() * sizeof(PNG_PTR_TYPE);
         printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d\n", myPng.getWidth(), myPng.getHeight(), myPng.getBpp(), myPng.getPixelType(), pngMemorySize);
-        // ESP_LOGI(TAG, "image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d", png.getWidth(), png.getHeight(), png.getBpp(), png.getPixelType(), pngMemorySize);
+        // pngMemorySize = jpeg.getWidth() * jpeg.getHeight() * sizeof(PNG_PTR_TYPE);
+        // printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d\n", jpeg.getWidth(), jpeg.getHeight(), jpeg.getBpp(), jpeg.getPixelType(), pngMemorySize);
+        //  ESP_LOGI(TAG, "image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d", png.getWidth(), png.getHeight(), png.getBpp(), png.getPixelType(), pngMemorySize);
         pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
         if (pngImage == NULL)
         {
@@ -311,17 +329,20 @@ bool TheSdCard::LoadPngFile(const char *filename)
             myPng.close();
             return false;
         }
-        //myPng.setBuffer(pngImage);
-        myPng.setBuffer(NULL);
-        // Serial.printf("image specs: (%d x %d), %d bpp, pixel type: %d\n", png.getWidth(), png.getHeight(), png.getBpp(), png.getPixelType());
-        //rc = myPng.decode(pngImage, 0);
+        memset(pngImage, 0xFFFF, pngMemorySize);
+        // myPng.setBuffer(pngImage);
+        // myPng.setBuffer(NULL);
+        // rc = myPng.decode(pngImage, 0);
         rc = myPng.decode(NULL, 0);
+        // rc = jpeg.decode(0, 0, 0);
         if (rc != 0)
         {
             MY_DEBUG2(TAG, "PNG decode failed with error code:", rc);
             myPng.close();
             return false;
         }
+        pngWidth = myPng.getWidth();
+        pngHeight = myPng.getHeight();
         myPng.close();
     }
 #endif

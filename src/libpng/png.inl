@@ -545,7 +545,7 @@ PNG_STATIC void PNGRGB565(PNGDRAW *pDraw, uint16_t *pPixels, int iEndiannes, uin
 //
 // Helper functions for memory based images
 //
-PNG_STATIC int32_t seekMem(PNGFILE *pFile, int32_t iPosition)
+PNG_STATIC uint32_t seekMem(PNGFILE *pFile, uint32_t iPosition)
 {
     if (iPosition < 0) iPosition = 0;
     else if (iPosition >= pFile->iSize) iPosition = pFile->iSize-1;

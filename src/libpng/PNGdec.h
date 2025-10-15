@@ -35,9 +35,6 @@
 #include "zutil.h"
 #include "inftrees.h"
 #include "inflate.h"
-
-#define PNG_MAX_BUFFERED_PIXELS ((800*4 + 1)*2)
-
 //
 // PNG Decoder
 // Written by Larry Bank
@@ -135,7 +132,7 @@ typedef struct png_draw_tag
 
 // Callback function prototypes
 typedef int32_t (PNG_READ_CALLBACK)(PNGFILE *pFile, uint8_t *pBuf, int32_t iLen);
-typedef int32_t (PNG_SEEK_CALLBACK)(PNGFILE *pFile, int32_t iPosition);
+typedef uint32_t (PNG_SEEK_CALLBACK)(PNGFILE *pFile, uint32_t iPosition);
 typedef void * (PNG_OPEN_CALLBACK)(const char *szFilename, int32_t *pFileSize);
 typedef int (PNG_DRAW_CALLBACK)(PNGDRAW *);
 typedef void (PNG_CLOSE_CALLBACK)(void *pHandle);

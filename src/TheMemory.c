@@ -2,6 +2,8 @@
 
 PNG_PTR_TYPE *pngImage = NULL;
 uint32_t pngMemorySize;
+uint32_t pngWidth;
+uint32_t pngHeight;
 
 // *******************************************************************
 struct VisibleArea visibleArea;

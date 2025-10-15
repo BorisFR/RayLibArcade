@@ -35,6 +35,7 @@
 #include <string>
 
 #include "libpng/PNGdec.h"
+//#include "libjpg/JPEGDEC.h"
 
 //#define DEBUG_LIST_DIR 1
 
