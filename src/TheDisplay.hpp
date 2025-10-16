@@ -129,8 +129,9 @@ public:
     uint32_t GetMaxZoomY();
     uint32_t GetPaddingLeftForZoom(uint32_t zoomX);
     uint32_t GetPaddingTopForZoom(uint32_t zoomY);
-    Color ConvertRGB565ToRGB888(unsigned short color565);
-    void DisplayPng();
+    Color ConvertRGB565ToRGB888(uint16_t color565);
+    Color ConvertRGB888ToRGBA8888(uint32_t rgb888);
+    void DisplayPng(uint32_t atX, uint32_t atY);
 
 #ifdef ESP32P4
 #else

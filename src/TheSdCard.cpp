@@ -5,12 +5,16 @@
 #endif
 
 static FILE *myfile;
+#ifdef USE_LIB_PNG
 PNG myPng;
-// JPEGDEC jpeg;
+#endif
+#ifdef USE_LIB_JPG
+JPEGDEC myJpeg;
+#endif
 
-static void *myOpen(const char *filename, uint32_t *size)
+static void *myOpen(const char *filename, int *size)
 {
-    printf("file: %s\n", filename);
+    printf("file open: %s, ", filename);
     myfile = (FILE *)fopen(filename, "rb");
     fseek(myfile, 0, SEEK_END);
     *size = ftell(myfile);
@@ -26,64 +30,82 @@ static void myClose(void *handle)
     fclose(myfile);
 }
 
-static uint32_t myRead(PNGFILE *handle, uint8_t *buffer, uint32_t length)
+#ifdef USE_LIB_PNG
+static int64_t myReadPNG(PNGFILE *handle, uint8_t *buffer, int64_t length)
 {
     printf("file must read: %d", length);
     size_t x = fread(buffer, 1, length, myfile);
-    printf(" and read: %d\n", (uint32_t)x);
-    return (uint32_t)x;
+    printf(" and read: %d\n", x);
+    return x;
 }
 
-static uint32_t mySeek(PNGFILE *handle, uint32_t position)
+static int64_t mySeekPNG(PNGFILE *handle, int64_t position)
 {
     printf("file seek: %d\n", position);
-    return fseek(myfile, 0, position);
+    // return fseek(myfile, 0, position);
+    fseek(myfile, 0, position);
+    return 1;
 }
 
 // Function to draw pixels to the display
 static int PNGDraw(PNGDRAW *pDraw)
 {
-    printf("Width: %d, y=%d ", pDraw->iWidth, pDraw->y);
+    // printf("Width: %d, y=%d ", pDraw->iWidth, pDraw->y);
     uint16_t lineBuffer[pDraw->iWidth];
     myPng.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_LITTLE_ENDIAN, 0xffffffff); // PNG_RGB565_BIG_ENDIAN // PNG_RGB565_LITTLE_ENDIAN
     uint32_t pos = pDraw->y * pDraw->iWidth;
+    pngHeight = pDraw->y;
+    pngWidth = pDraw->iWidth;
     for (uint32_t x = 0; x < pDraw->iWidth; x++)
         pngImage[pos++] = lineBuffer[x];
     return 1;
 }
+#endif
 
-// static int32_t myRead(JPEGFILE *handle, uint8_t *buffer, int32_t length)
-//{
-//    printf("file read: %d\n", length);
-//    return fread(buffer, 1, length, myfile);
-// }
+#ifdef USE_LIB_JPG
+static int32_t myReadJPEG(JPEGFILE *handle, uint8_t *buffer, int32_t length)
+{
+    //printf("file must read: %d", length);
+    size_t x = fread(buffer, 1, length, myfile);
+    //printf(" and read: %d\n", x);
+    return x;
+}
 
-// static int32_t mySeek(JPEGFILE *handle, int32_t position)
-//{
-//     printf("file seek: %d\n", position);
-//     return fseek(myfile, 0, position);
-// }
-
-// int JPEGDraw(JPEGDRAW *pDraw)
-// {
-//     //  Serial.printf("jpeg draw: x,y=%d,%d, cx,cy = %d,%d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
-//     //  Serial.printf("Pixel 0 = 0x%04x\n", pDraw->pPixels[0]);
-//     // tft.dmaWait(); // Wait for prior writePixels() to finish
-//     // tft.setAddrWindow(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
-//     // tft.writePixels(pDraw->pPixels, pDraw->iWidth * pDraw->iHeight, true, false); // Use DMA, big-endian
-//     // return 1;
-//     printf("jpeg draw: x,y=%d,%d, cx,cy = %d,%d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
-//     uint16_t index = 0;
-//     for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
-//     {
-//         for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
-//         {
-//             uint32_t pos = x + y * 800;
-//             pngImage[pos] = pDraw->pPixels[index++];
-//         }
-//     }
-//     return 1;
-// }
+static int32_t mySeekJPEG(JPEGFILE *handle, int32_t position)
+{
+    //printf("file seek: %d\n", position);
+    return fseek(myfile, 0, position);
+}
+bool isfirst = true;
+int JPEGDraw(JPEGDRAW *pDraw)
+{
+    //  Serial.printf("jpeg draw: x,y=%d,%d, cx,cy = %d,%d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+    //  Serial.printf("Pixel 0 = 0x%04x\n", pDraw->pPixels[0]);
+    // tft.dmaWait(); // Wait for prior writePixels() to finish
+    // tft.setAddrWindow(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+    // tft.writePixels(pDraw->pPixels, pDraw->iWidth * pDraw->iHeight, true, false); // Use DMA, big-endian
+    // return 1;
+    //if (!isfirst)
+    //    return 1;
+    //isfirst = false;
+    //printf("jpeg draw: x,y=%d / %d, cx,cy = %d / %d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+    uint32_t index = 0;
+        for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
+    {
+        //        uint32_t pos = y * pngWidth + pDraw->x;
+    for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
+        {
+            uint32_t pos = y * pngWidth + x;
+            // uint16_t red = pDraw->pPixels[index++];
+            // uint16_t green = pDraw->pPixels[index++];
+            // uint16_t blue = pDraw->pPixels[index++];
+            // pngImage[pos++] = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
+            pngImage[pos] = pDraw->pPixels[index++];
+        }
+    }
+    return 1;
+}
+#endif
 
 // *******************************************************************
 // *******************************************************************
@@ -276,6 +298,7 @@ bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t
 
 // *******************************************************************
 
+#ifdef USE_LIB_PNG
 bool TheSdCard::LoadPngFile(const char *filename)
 {
 #ifdef ESP32P4
@@ -312,7 +335,7 @@ bool TheSdCard::LoadPngFile(const char *filename)
     std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
     const char *fname = fullPath.c_str();
     MY_DEBUG2TEXT(TAG, "Loading PNG file:", fname);
-    int rc = myPng.open(fname, myOpen, myClose, myRead, mySeek, PNGDraw);
+    int rc = myPng.open(fname, myOpen, myClose, myReadPNG, mySeekPNG, PNGDraw);
     // int rc = myPng.open(fname, myOpen, myClose, myRead, mySeek, NULL);
     // int rc = jpeg.open(fname, myOpen, myClose, myRead, mySeek, JPEGDraw);
     if (rc == PNG_SUCCESS) // JPEG_SUCCESS) // PNG_SUCCESS)
@@ -335,7 +358,7 @@ bool TheSdCard::LoadPngFile(const char *filename)
         // myPng.setBuffer(pngImage);
         // myPng.setBuffer(NULL);
         // rc = myPng.decode(pngImage, 0);
-        rc = myPng.decode(NULL, 0);
+        rc = myPng.decode(NULL, PNG_FAST_PALETTE);
         // rc = jpeg.decode(0, 0, 0);
         if (rc != 0)
         {
@@ -350,3 +373,45 @@ bool TheSdCard::LoadPngFile(const char *filename)
 #endif
     return true;
 }
+#endif
+
+#ifdef USE_LIB_JPG
+bool TheSdCard::LoadJpgFile(const char *filename)
+{
+    if (pngWidth + pngHeight > 0)
+        free(pngImage);
+    std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
+    const char *fname = fullPath.c_str();
+    MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
+    int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDraw);
+    if (rc == JPEG_SUCCESS)
+    {
+        printf("Error opening JPEG\n");
+        return false;
+    }
+    // myJpeg.setPixelType(RGB565_BIG_ENDIAN);
+    pngMemorySize = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
+    printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), pngMemorySize);
+    pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
+    if (pngImage == NULL)
+    {
+        //     ESP_LOGI(TAG, "Not enough memory for loading png");
+        myJpeg.close();
+        return false;
+    }
+    memset(pngImage, 0xFFFF, pngMemorySize);
+    pngWidth = myJpeg.getWidth();
+    pngHeight = myJpeg.getHeight();
+    rc = myJpeg.decode(0, 0, 0);
+    if (rc == 0)
+    {
+        MY_DEBUG2(TAG, "JPEG decode failed with error code:", rc);
+        myJpeg.close();
+        return false;
+    }
+    //printf("Dimension: %d/%d\n", pngWidth, pngHeight);
+    myJpeg.close();
+
+    return true;
+}
+#endif

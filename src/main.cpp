@@ -47,7 +47,7 @@ void setup()
   //
   // Start a game
   //
-  currentGame = 0; // 0 is invaders :) See file GamesList.h
+  currentGame = 3; // 0 is invaders :) See file GamesList.h
 #ifdef ESP32P4
 #else
   display.ChangeTitle(GAME_NAME);
@@ -76,10 +76,14 @@ void setup()
   // zoomFactor=1;
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
 
-  //sdCard.LoadPngFile("invaders/marquee8.png");
-  //sdCard.LoadPngFile("background/test.png");
-  sdCard.LoadPngFile("background/invaders_m.png");
-  display.DisplayPng();
+  std::string temp = "background/" + std::string(GAME_FOLDER) + ".jpg";
+  bool bgOk = sdCard.LoadJpgFile(temp.c_str());
+  //sdCard.LoadJpgFile("background/invadpt2.jpg");
+  //sdCard.LoadJpgFile("background/invaders.jpg");
+  if(bgOk) display.DisplayPng(0, 0);
+  //sdCard.LoadJpgFile("background/test.jpg");
+  //sdCard.LoadJpgFile("background/coin.jpg");
+  //display.DisplayPng(0, SCREEN_HEIGHT - pngHeight - 1);
 }
 
 void loop()

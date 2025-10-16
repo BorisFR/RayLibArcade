@@ -206,7 +206,7 @@ uint32_t TheDisplay::GetPaddingLeftForZoom(uint32_t zoomX) { return (SCREEN_WIDT
 
 // *******************************************************************
 
-Color TheDisplay::ConvertRGB565ToRGB888(unsigned short color565)
+Color TheDisplay::ConvertRGB565ToRGB888(uint16_t color565)
 {
     // Extract the red, green, and blue components
     unsigned char r = (color565 >> 11) & 0x1F; // 5 bits for red
@@ -221,21 +221,36 @@ Color TheDisplay::ConvertRGB565ToRGB888(unsigned short color565)
     return (Color){r, g, b, 255}; // Alpha is set to 255 (fully opaque)
 }
 
+Color TheDisplay::ConvertRGB888ToRGBA8888(uint32_t rgb888) {
+    // Extract the red, green, and blue components
+    uint8_t red   = (rgb888 >> 16) & 0xFF;
+    uint8_t green = (rgb888 >> 8) & 0xFF;
+    uint8_t blue  = rgb888 & 0xFF;
+    // Add the alpha channel (e.g., 255 for full opacity)
+    uint8_t alpha = 0xFF;
+    // Combine into RGBA8888 format
+    //uint32_t rgba8888 = (red << 24) | (green << 16) | (blue << 8) | alpha;
+    //return rgba8888;
+    return Color{red, green, blue, alpha};
+}
+
 uint32_t TheDisplay::GetPaddingTopForZoom(uint32_t zoomY) { return (SCREEN_HEIGHT - (screenHeight * zoomY)) / 2; }
 
-void TheDisplay::DisplayPng()
+void TheDisplay::DisplayPng(uint32_t atX, uint32_t atY)
 {
-    uint32_t index = 0;
-        for (uint32_t y = 0; y < pngHeight; y++)
-        {
+    //uint32_t index = 0;
     for (uint32_t x = 0; x < pngWidth; x++)
     {
-            uint32_t pos = x + y * SCREEN_WIDTH;
-            pixels[pos] = ConvertRGB565ToRGB888(pngImage[index++]);
+        for (uint32_t y = 0; y < pngHeight; y++)
+        {
+            uint32_t pos = atX + x + (atY + y) * SCREEN_WIDTH;
+            uint32_t index = x + y*pngWidth;
+            pixels[pos] = ConvertRGB565ToRGB888(pngImage[index]);
+            //pixels[pos] = ConvertRGB888ToRGBA8888(pngImage[index++]);
         }
     }
     // memcpy(pixels, pngImage, pngMemorySize);
-    //for (uint32_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
+    // for (uint32_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
     //{
     //    pixels[i] = ConvertRGB565ToRGB888(pngImage[i]);
     //}
@@ -392,7 +407,6 @@ void TheDisplay::Loop()
         screenDirtyMaxX = screenWidth;
     if (screenDirtyMaxY > screenHeight)
         screenDirtyMaxY = screenHeight;
-
     //  DRAW SCREEN
     //  currentFrameBuffer = (currentFrameBuffer + 1) % SCREEN_FRAME_BUFFER;
     uint32_t index = 0;
