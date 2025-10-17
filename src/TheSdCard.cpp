@@ -12,7 +12,7 @@ PNG myPng;
 JPEGDEC myJpeg;
 #endif
 
-static void *myOpen(const char *filename, int *size)
+static void *myOpen(const char *filename, int32_t *size)
 {
     printf("file open: %s, ", filename);
     myfile = (FILE *)fopen(filename, "rb");
@@ -20,7 +20,7 @@ static void *myOpen(const char *filename, int *size)
     *size = ftell(myfile);
     rewind(myfile);
     // fseek(myfile, 0, 0);
-    printf("size: %d\n", *size);
+    printf("size: %lu\n", *size);
     return &myfile;
 }
 
@@ -366,8 +366,14 @@ bool TheSdCard::LoadJpgFile(const char *filename)
 {
     if (pngWidth + pngHeight > 0)
         free(pngImage);
+
+    const char *fname;
+#ifdef ESP32P4
+    std::string fullPath = std::string(MOUNT_POINT) + std::string("/") + filename;
+#else        
     std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
-    const char *fname = fullPath.c_str();
+#endif    
+    fname = fullPath.c_str();
     MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
     int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDraw);
     if (rc == JPEG_SUCCESS)
@@ -377,7 +383,7 @@ bool TheSdCard::LoadJpgFile(const char *filename)
     }
     // myJpeg.setPixelType(RGB565_BIG_ENDIAN);
     pngMemorySize = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
-    printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), pngMemorySize);
+    printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), pngMemorySize);
     pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
     if (pngImage == NULL)
     {

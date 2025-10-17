@@ -211,6 +211,13 @@ uint32_t TheDisplay::GetPaddingLeftForZoom(uint32_t zoomX) { return (SCREEN_WIDT
 
 // *******************************************************************
 
+
+#ifdef ESP32P4
+THE_COLOR TheDisplay::ConvertRGB565ToRGB888(uint16_t color565)
+{
+    return color565;
+}
+#else
 Color TheDisplay::ConvertRGB565ToRGB888(uint16_t color565)
 {
     // Extract the red, green, and blue components
@@ -226,40 +233,38 @@ Color TheDisplay::ConvertRGB565ToRGB888(uint16_t color565)
     return (Color){r, g, b, 255}; // Alpha is set to 255 (fully opaque)
 }
 
-Color TheDisplay::ConvertRGB888ToRGBA8888(uint32_t rgb888)
-{
-    // Extract the red, green, and blue components
-    uint8_t red = (rgb888 >> 16) & 0xFF;
-    uint8_t green = (rgb888 >> 8) & 0xFF;
-    uint8_t blue = rgb888 & 0xFF;
-    // Add the alpha channel (e.g., 255 for full opacity)
-    uint8_t alpha = 0xFF;
-    // Combine into RGBA8888 format
-    // uint32_t rgba8888 = (red << 24) | (green << 16) | (blue << 8) | alpha;
-    // return rgba8888;
-    return Color{red, green, blue, alpha};
-}
+// Color TheDisplay::ConvertRGB888ToRGBA8888(uint32_t rgb888)
+// {
+//     // Extract the red, green, and blue components
+//     uint8_t red = (rgb888 >> 16) & 0xFF;
+//     uint8_t green = (rgb888 >> 8) & 0xFF;
+//     uint8_t blue = rgb888 & 0xFF;
+//     // Add the alpha channel (e.g., 255 for full opacity)
+//     uint8_t alpha = 0xFF;
+//     // Combine into RGBA8888 format
+//     // uint32_t rgba8888 = (red << 24) | (green << 16) | (blue << 8) | alpha;
+//     // return rgba8888;
+//     return Color{red, green, blue, alpha};
+// }
+#endif
 
 uint32_t TheDisplay::GetPaddingTopForZoom(uint32_t zoomY) { return (SCREEN_HEIGHT - (screenHeight * zoomY)) / 2; }
 
 void TheDisplay::DisplayPng(uint32_t atX, uint32_t atY)
 {
-    // uint32_t index = 0;
     for (uint32_t x = 0; x < pngWidth; x++)
     {
         for (uint32_t y = 0; y < pngHeight; y++)
         {
             uint32_t pos = atX + x + (atY + y) * SCREEN_WIDTH;
             uint32_t index = x + y * pngWidth;
+#ifdef ESP32P4
+            fbs[currentFrameBuffer][pos] = pngImage[index];
+#else
             pixels[pos] = ConvertRGB565ToRGB888(pngImage[index]);
-            // pixels[pos] = ConvertRGB888ToRGBA8888(pngImage[index++]);
+#endif
         }
     }
-    // memcpy(pixels, pngImage, pngMemorySize);
-    // for (uint32_t i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++)
-    //{
-    //    pixels[i] = ConvertRGB565ToRGB888(pngImage[i]);
-    //}
 }
 
 // *******************************************************************

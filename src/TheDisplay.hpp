@@ -108,14 +108,20 @@
 
 // #define DEBUG_DISPLAY_COLOR
 // #define DEBUG_DISPLAY_PALETTE
-//#define DEBUG_DISPLAY_GFX
+// #define DEBUG_DISPLAY_GFX
 // #define DEBUG_DISPLAY_TILES
 // #define DEBUG_DISPLAY_SPRITES
 
-#define FPS_LIMIT 120
+#ifdef ESP32P4
+// #define LIMIT_FPS
+//  #define NO_FPS
+// #define NO_FPS_ON_CONSOLE
+#else
+#define FPS_LIMIT 60
 #define LIMIT_FPS
- //#define NO_FPS
+// #define NO_FPS
 #define NO_FPS_ON_CONSOLE
+#endif
 
 class TheDisplay
 {
@@ -130,11 +136,10 @@ public:
     uint32_t GetMaxZoomY();
     uint32_t GetPaddingLeftForZoom(uint32_t zoomX);
     uint32_t GetPaddingTopForZoom(uint32_t zoomY);
-    Color ConvertRGB565ToRGB888(uint16_t color565);
-    Color ConvertRGB888ToRGBA8888(uint32_t rgb888);
     void DisplayPng(uint32_t atX, uint32_t atY);
 
 #ifdef ESP32P4
+    THE_COLOR ConvertRGB565ToRGB888(uint16_t color565);
 #else
     void ChangeTitle(std::string text);
     bool MustExit();
@@ -147,6 +152,8 @@ public:
     void Pixel(uint16_t x, uint16_t y, uint16_t color);
 
     void Print(std::string text, uint32_t x, uint32_t y);
+    Color ConvertRGB565ToRGB888(uint16_t color565);
+    // Color ConvertRGB888ToRGBA8888(uint32_t rgb888);
 
 #endif
     THE_COLOR Rgb888ToRgb565(uint8_t red, uint8_t green, uint8_t blue);
@@ -193,7 +200,6 @@ private:
     Texture2D fb_texture;
 
 #endif
-
 };
 
 #endif // THE_DISPLAY_HPP

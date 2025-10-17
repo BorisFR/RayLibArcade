@@ -6,7 +6,8 @@
 #include "MyDefine.h"
 
 #include "TheMemory.h"
-#define USE_LIB_JPG
+#define USE_LIB_JPG 1
+#undef USE_LIB_PNG
 
 #ifdef ESP32P4
 #define CONFIG_EXAMPLE_SDMMC_BUS_WIDTH_4 
