@@ -125,6 +125,7 @@ public:
     void Setup();
     void Loop();
     void SetDisplayForGame(uint32_t zoomX, uint32_t zoomY, uint32_t atX = 0, uint32_t atY = 0);
+    void SetVerticalPositionForGame(uint32_t y);
     uint32_t GetMaxZoomX();
     uint32_t GetMaxZoomY();
     uint32_t GetPaddingLeftForZoom(uint32_t zoomX);

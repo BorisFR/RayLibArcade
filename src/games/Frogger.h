@@ -35,7 +35,7 @@ extern "C"
 }
 #endif
 
-#define FROGGER {"frogger", "Frogger", {32 * 8, 32 * 8, {2 * 8, 30 * 8 - 1, 0 * 8, 32 * 8 - 1}, ORIENTATION_DEFAULT, FroggerRefreshScreen, froggerGfxDecodeInfo}, 3072000 / 60, {frogger_rom, frogger_decode_rom, frogger_readmem, frogger_writemem, frogger_input_ports, NOTHING, NOTHING}, MACHINE_Z80}
+#define FROGGER {"frogger", "Frogger", {295, 32 * 8, 32 * 8, {2 * 8, 30 * 8 - 1, 0 * 8, 32 * 8 - 1}, ORIENTATION_DEFAULT, FroggerRefreshScreen, froggerGfxDecodeInfo}, 3072000 / 60, {frogger_rom, frogger_decode_rom, frogger_readmem, frogger_writemem, frogger_input_ports, NOTHING, NOTHING}, MACHINE_Z80}
 
 ROM_START(frogger_rom) // CPU 1
 ROM_REGION(0x10000)    /* 64k for code */

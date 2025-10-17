@@ -316,6 +316,7 @@ extern "C"
 	#define NOTHING 0
 
 	struct TheVideo {
+		const uint32_t top;
 		const uint32_t screenWidth;
 		const uint32_t screenHeight;
 		const struct VisibleArea visibleArea;

@@ -192,6 +192,11 @@ void TheDisplay::SetDisplayForGame(uint32_t zoomX, uint32_t zoomY, uint32_t atX,
     screenPosY = atY;
 }
 
+void TheDisplay::SetVerticalPositionForGame(uint32_t y)
+{
+    screenPosY = y;
+}
+
 // *******************************************************************
 
 uint32_t TheDisplay::GetMaxZoomX() { return SCREEN_WIDTH / screenWidth; }
