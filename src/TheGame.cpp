@@ -619,7 +619,7 @@ bool TheGame::DecodeColors(TheDisplay &display)
         MY_DEBUG(TAG, "Error allocating color buffers");
         return false;
     }
-    for (uint16_t c = 0; c < colorMemorySize; c++)
+    for (uint32_t c = 0; c < colorMemorySize; c++)
     {
         uint8_t colorByte = colorMemory[c];
         uint8_t red = (uint8_t)((((colorByte >> 0U) & 0b1) * 0x21) + (((colorByte >> 1U) & 0b1) * 0x47) + (((colorByte >> 2U) & 0b1) * 0x97));
@@ -648,7 +648,7 @@ bool TheGame::GeneratePalette(TheDisplay &display)
     }
     memset(paletteColor, 0, paletteColorSize);
     // uint8_t indexColor = 0;
-    for (uint8_t i = 0; i < colorMemorySize; i++)
+    for (uint32_t i = 0; i < colorMemorySize; i++)
     {
         paletteColor[i] = colorRGB[i];
     }
@@ -671,7 +671,7 @@ bool TheGame::DecodePalette()
     }
     memset(paletteColor, 0, paletteMemorySize);
     paletteColorSize = paletteMemorySize;
-    for (uint16_t p = 0; p < paletteMemorySize; p++)
+    for (uint32_t p = 0; p < paletteMemorySize; p++)
     {
         paletteColor[p] = colorRGB[paletteMemory[p]];
         // if (paletteColor[p] != 255)
@@ -744,11 +744,11 @@ void TheGame::DecodeElement(struct GfxElement *element, uint16_t index, const ui
     for (uint8_t plane = 0; plane < gfxLayout->planes; plane++)
     {
         uint32_t offset = index * gfxLayout->charincrement + gfxLayout->planeoffset[plane];
-        for (uint16_t y = 0; y < element->height; y++)
+        for (uint32_t y = 0; y < element->height; y++)
         {
             // int yoffs = offset + gfxLayout->yoffset[y];
             uint8_t *pointerLine = element->gfxdata->line[index * element->height + y];
-            for (uint16_t x = 0; x < element->width; x++)
+            for (uint32_t x = 0; x < element->width; x++)
             {
                 int xoffs = x;
                 int yoffs = y;
@@ -784,10 +784,10 @@ void TheGame::DecodeElement(struct GfxElement *element, uint16_t index, const ui
     {
         /* fill the pen_usage array with info on the used pens */
         element->pen_usage[index] = 0;
-        for (uint16_t y = 0; y < element->height; y++)
+        for (uint32_t y = 0; y < element->height; y++)
         {
             uint8_t *pointerLine = element->gfxdata->line[index * element->height + y];
-            for (uint16_t x = 0; x < element->width; x++)
+            for (uint32_t x = 0; x < element->width; x++)
             {
                 element->pen_usage[index] |= 1 << pointerLine[x];
             }
@@ -830,7 +830,7 @@ GfxElement *TheGame::DecodeGfxElement(const uint8_t *fromMemory, uint32_t offset
         element->pen_usage = (unsigned int *)malloc(element->total_elements * sizeof(int));
     /* no need to check for failure, the code can work without pen_usage */
     MY_DEBUG2(TAG, "color_granularity ", element->color_granularity)
-    for (uint16_t index = 0; index < gfxLayout->total; index++)
+    for (uint32_t index = 0; index < gfxLayout->total; index++)
     {
         // MY_DEBUG2(TAG, "GFX LAYOUT ", index)
         DecodeElement(element, index, fromMemory, offset, gfxLayout);

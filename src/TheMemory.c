@@ -6,6 +6,11 @@ uint32_t pngWidth;
 uint32_t pngHeight;
 
 // *******************************************************************
+
+
+uint16_t screenPosX = 0;
+uint16_t screenPosY = 0;
+
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;
 
@@ -151,6 +156,9 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = replacedColor;
+
+                        //uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
+                        //theScreen[index] = pngImage[bg];
                     }
                     else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                     {
@@ -362,7 +370,7 @@ uint8_t *dirtyMemoryTiles;
 uint8_t *dirtyMemorySprites;
 
 THE_COLOR *colorRGB;
-uint16_t paletteColorSize;
+uint32_t paletteColorSize;
 THE_COLOR *paletteColor;
 
 struct GfxElement *element;

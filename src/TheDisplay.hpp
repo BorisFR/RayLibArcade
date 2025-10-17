@@ -168,8 +168,6 @@ private:
 #endif
     uint16_t screenZoomX = 1;
     uint16_t screenZoomY = 1;
-    uint16_t screenPosX = 0;
-    uint16_t screenPosY = 0;
 
 #ifdef ESP32P4
     uint8_t byte_per_pixel;

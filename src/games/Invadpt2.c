@@ -11,9 +11,9 @@ void invadpt2_videoram_w(int offset, int data)
     uint16_t x = address / 32;
     uint16_t y = screenHeight - 8 * (address % 32);
     DIRTY_MIN(x, screenDirtyMinX)
-    DIRTY_MAX(x, screenDirtyMaxX)
+    DIRTY_MAX(x + 1, screenDirtyMaxX)
     DIRTY_MIN(y - 8, screenDirtyMinY)
-    DIRTY_MAX(y - 1, screenDirtyMaxY)
+    DIRTY_MAX(y - 1 + 1, screenDirtyMaxY)
     THE_COLOR c = myWhite;
     if (y >= INVADERS_INVERT_Y(248) && y < INVADERS_INVERT_Y(240))
     {

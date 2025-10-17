@@ -65,41 +65,27 @@ static int PNGDraw(PNGDRAW *pDraw)
 #ifdef USE_LIB_JPG
 static int32_t myReadJPEG(JPEGFILE *handle, uint8_t *buffer, int32_t length)
 {
-    //printf("file must read: %d", length);
+    // printf("file must read: %d", length);
     size_t x = fread(buffer, 1, length, myfile);
-    //printf(" and read: %d\n", x);
+    // printf(" and read: %d\n", x);
     return x;
 }
 
 static int32_t mySeekJPEG(JPEGFILE *handle, int32_t position)
 {
-    //printf("file seek: %d\n", position);
+    // printf("file seek: %d\n", position);
     return fseek(myfile, 0, position);
 }
-bool isfirst = true;
+
 int JPEGDraw(JPEGDRAW *pDraw)
 {
-    //  Serial.printf("jpeg draw: x,y=%d,%d, cx,cy = %d,%d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
-    //  Serial.printf("Pixel 0 = 0x%04x\n", pDraw->pPixels[0]);
-    // tft.dmaWait(); // Wait for prior writePixels() to finish
-    // tft.setAddrWindow(pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
-    // tft.writePixels(pDraw->pPixels, pDraw->iWidth * pDraw->iHeight, true, false); // Use DMA, big-endian
-    // return 1;
-    //if (!isfirst)
-    //    return 1;
-    //isfirst = false;
-    //printf("jpeg draw: x,y=%d / %d, cx,cy = %d / %d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+    // printf("jpeg draw: x,y=%d / %d, cx,cy = %d / %d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
     uint32_t index = 0;
-        for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
+    for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
     {
-        //        uint32_t pos = y * pngWidth + pDraw->x;
-    for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
+        for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
         {
             uint32_t pos = y * pngWidth + x;
-            // uint16_t red = pDraw->pPixels[index++];
-            // uint16_t green = pDraw->pPixels[index++];
-            // uint16_t blue = pDraw->pPixels[index++];
-            // pngImage[pos++] = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
             pngImage[pos] = pDraw->pPixels[index++];
         }
     }
@@ -409,7 +395,7 @@ bool TheSdCard::LoadJpgFile(const char *filename)
         myJpeg.close();
         return false;
     }
-    //printf("Dimension: %d/%d\n", pngWidth, pngHeight);
+    // printf("Dimension: %d/%d\n", pngWidth, pngHeight);
     myJpeg.close();
 
     return true;

@@ -10,6 +10,7 @@
         FROGGER,
         PACMAN,
         GALAXIAN,
+        PENGO,
         //CRUSH,
 #endif
 #ifdef MACHINE_xxx

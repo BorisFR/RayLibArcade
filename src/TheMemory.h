@@ -107,9 +107,12 @@ extern "C"
 
 	extern THE_COLOR froggerWater;
 
-#define CHECK_IF_DIRTY_X(x) DIRTY_MIN(x, screenDirtyMinX) DIRTY_MAX(x, screenDirtyMaxX)
-#define CHECK_IF_DIRTY_Y(y) DIRTY_MIN(y, screenDirtyMinY) DIRTY_MAX(y, screenDirtyMaxY)
+#define CHECK_IF_DIRTY_X(x) DIRTY_MIN(x, screenDirtyMinX) DIRTY_MAX(x+1, screenDirtyMaxX)
+#define CHECK_IF_DIRTY_Y(y) DIRTY_MIN(y, screenDirtyMinY) DIRTY_MAX(y+1, screenDirtyMaxY)
 #define CHECK_IF_DIRTY_XY(x, y) CHECK_IF_DIRTY_X(x) CHECK_IF_DIRTY_Y(y)
+
+	extern uint16_t screenPosX;
+	extern uint16_t screenPosY;
 
 	extern void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height);
 	extern void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
@@ -199,7 +202,7 @@ extern "C"
 	extern uint8_t *dirtyMemorySprites;
 
 	extern THE_COLOR *colorRGB;
-	extern uint16_t paletteColorSize;
+	extern uint32_t paletteColorSize;
 	extern THE_COLOR *paletteColor;
 
 	extern struct GfxElement *element;

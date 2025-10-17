@@ -25,6 +25,7 @@ extern "C"
 #include "games/Frogger.h"
 #include "games/Pacman.h"
 #include "games/Galaxian.h"
+#include "games/Pengo.h"
 //#include "games/Crush.h"
 #endif
 
