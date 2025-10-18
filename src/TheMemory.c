@@ -259,7 +259,6 @@ int readMemoryHandler(int address)
         // return 0;
     }
     else
-    // if (memoryReadHandler[address].handler != NULL)
     {
         return memoryReadHandler[address].handler(address);
     }

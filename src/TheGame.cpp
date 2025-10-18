@@ -926,6 +926,8 @@ bool TheGame::DecodeAllGfx(const GfxDecodeInfo info[])
             allGfx[i]->total_colors = info[i].total_color_codes;
             MY_DEBUG2(TAG, "total_colors ", allGfx[i]->total_colors)
             break;
+        default:
+            MY_DEBUG2(TAG,"*** GfxDecodeInfo, bad rom index:", info[i].memory_region)
         }
     }
     return true;

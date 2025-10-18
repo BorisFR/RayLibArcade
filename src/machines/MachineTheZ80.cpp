@@ -64,6 +64,7 @@ void MachineTheZ80::Setup(TheDisplay &display, TheSdCard &sdCard)
 
 void MachineTheZ80::Loop(TheDisplay &display)
 {
+    //return;
     unsigned long count = 0;
     while (count < allGames[currentGame].frequency)
     {

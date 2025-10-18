@@ -34,12 +34,24 @@ void pengo_interrupt_enable_w(int offset, int data)
         Z80AskForNMI[Z80CurrentCpu] = false;
 }
 
+uint8_t pengo_gfx_bank  = 0;
+
 void pengo_gfxbank_w(int offset, int data)
 {
+	/* the Pengo hardware can set independently the palette bank, color lookup */
+	/* table, and chars/sprites. However the game always set them together (and */
+	/* the only place where this is used is the intro screen) so I don't bother */
+	/* emulating the whole thing. */
+	if (pengo_gfx_bank != (data & 1))
+	{
+		pengo_gfx_bank = data & 1;
+		//memset(dirtybuffer,1,videoram_size);
+	}    
 }
 
 void PengoDecodeRoms()
 {
+    return;
 	static const unsigned char xortable[32][4] =
 	{
 		/*       opcode                   data                     address      */
@@ -97,59 +109,61 @@ void PengoInit()
 
 void PengoRefreshScreen()
 {
-    element = allGfx[0];
+    //return;
+    element = allGfx[pengo_gfx_bank * 2];
     visibleArea = VISIBLE_AREA_FULL;
+    int sx,sy;
     for (int offs = 0x400 - 1; offs >= 0; offs--)
     {
-        // int sx = offs % 32;
-        // int sy = offs / 32;
-        // int sx = (31 - offs / 32);
-        // int sy = (offs % 32);
-        // Because screen is rotate
-        int sy = offs % 32;
-        int sx = offs / 32;
-       //if (!galaxianFlipX)
-       //    sx = 31 - sx;
-       //if (galaxianFlipY)
-       //    sy = 31 - sy;
-        int tileIndex = boardMemory[0x5000 + offs];
-        int paletteIndex = boardMemory[0x5800 + 2 * (offs % 32) + 1] & 0x07;
-        //GameDrawElement(screenBitmap, sx * 8, sy * 8, galaxianFlipX, galaxianFlipY, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
-        GameDrawElement(screenBitmap, sx * 8, sy * 8, false, false, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+        int mx = offs % 32;
+        int my = offs / 32;
+			if (my < 2)
+			{
+				if (mx < 2 || mx >= 30) continue; /* not visible */
+				sx = my + 34;
+				sy = mx - 2;
+			}
+			else if (my >= 30)
+			{
+				if (mx < 2 || mx >= 30) continue; /* not visible */
+				sx = my - 30;
+				sy = mx - 2;
+			}
+			else
+			{
+				sx = mx + 2;
+				sy = my - 2;
+			}
+            //if (flipscreen)
+			//{
+			//	sx = 35 - sx;
+			//	sy = 27 - sy;
+			//}
+
+        int tileIndex = boardMemory[0x8000 + offs];
+        int paletteIndex = boardMemory[0x8400+offs] & 0x17;
+        GameDrawElement(screenData, sx * 8, sy * 8, false, false, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
     }
-    // scroll
-    for (uint8_t l = 0; l < 32; l++)
-    {
-        uint8_t scroll = boardMemory[0x5800 + 2 * l] % screenWidth;
-        GameScrollLine(l, scroll, 8);
-    }
-    /* Draw the bullets */
-    element = allGfx[2];
-    visibleArea = allGames[currentGame].video.visibleArea;
-    for (int offs = 0; offs < 0x20; offs += 4)
-    {
-        int color = 6; // 1; /* white */
-        if (offs == 7 * 4)
-            color = 7;                                    // 0; /* yellow */
-        int y = 255 - boardMemory[0x5860 + offs + 3] - 1; // Machine->drv->gfxdecodeinfo[2].gfxlayout->width;
-        int x = boardMemory[0x5860 + offs + 1];
-        //if (galaxianFlipY)
-        //    y = 255 - y;
-        //GameDrawElement(screenData, x, y, galaxianFlipX, galaxianFlipY, 0, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
-        GameDrawElement(screenData, x, y, false, false, 0, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
-    }
+			//drawgfx(tmpbitmap,Machine->gfx[gfx_bank*2],
+			//		videoram[offs],
+			//		colorram[offs] & 0x1f,
+			//		flipscreen,flipscreen,
+			//		sx*8,sy*8,
+			//		&Machine->drv->visible_area,TRANSPARENCY_NONE,0);
+
     /* Draw the sprites */
-    element = allGfx[1];
+    element = allGfx[pengo_gfx_bank * 2+1];
     visibleArea = allGames[currentGame].video.visibleArea;
     for (int spriteNumber = 7; spriteNumber >= 0; spriteNumber--)
     {
-        const uint8_t *base = &boardMemory[0x5840 + spriteNumber * 4];
-        uint8_t sx = base[0];
-        uint16_t code = base[1] & 0x3f;
-        uint8_t flipx = base[1] & 0x40;
-        uint8_t flipy = base[1] & 0x80;
-        uint8_t color = base[2] & 7;
-        uint8_t sy = base[3];
+        const uint8_t *base = &boardMemory[0x9020 + spriteNumber * 2];
+        uint8_t sx = 272 - base[1];
+        uint8_t sy = base[0];
+        uint8_t temp = boardMemory[0x8ff0 + spriteNumber * 2];
+        uint16_t code = temp >> 2;
+        uint8_t color = boardMemory[0x8ff0 + spriteNumber * 2 + 1] & 0x1f;
+        uint8_t flipx = temp & 1;
+        uint8_t flipy = temp & 2;
         GameDrawElement(screenData, sx, sy, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
     }    
 }

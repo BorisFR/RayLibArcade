@@ -106,9 +106,9 @@
         keyChanged[button] = true;  \
     }
 
-// #define DEBUG_DISPLAY_COLOR
-// #define DEBUG_DISPLAY_PALETTE
-// #define DEBUG_DISPLAY_GFX
+ #define DEBUG_DISPLAY_COLOR
+ #define DEBUG_DISPLAY_PALETTE
+ #define DEBUG_DISPLAY_GFX
 // #define DEBUG_DISPLAY_TILES
 // #define DEBUG_DISPLAY_SPRITES
 
@@ -117,8 +117,8 @@
 //  #define NO_FPS
 // #define NO_FPS_ON_CONSOLE
 #else
-#define FPS_LIMIT 60
-#define LIMIT_FPS
+//#define FPS_LIMIT 60
+//#define LIMIT_FPS
 // #define NO_FPS
 #define NO_FPS_ON_CONSOLE
 #endif
@@ -163,6 +163,7 @@ protected:
 private:
     const char *TAG = "TheDisplay";
     struct timeval theStartTime;
+    bool gfxDebug = false;
 
     bool mustExit;
 #ifdef LIMIT_FPS
@@ -198,8 +199,8 @@ private:
     Image fb_image;
     Color *pixels;
     Texture2D fb_texture;
-
 #endif
+
 };
 
 #endif // THE_DISPLAY_HPP
