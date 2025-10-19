@@ -28,19 +28,14 @@ WRITE_HANDLER(invaders_videoram_w)
     }
     for (uint8_t bit = 0; bit < 8; bit++)
     {
-        uint32_t index = x + (y - bit - 1) * screenWidth;
         if (!(data & 0x01))
         {
-            screenData[index] = myBlack;
-            // uint32_t bg = x + screenPosX + ((y - bit - 1) + screenPosY) * pngWidth;
-            // screenData[index] = pngImage[bg];
-            // screenData[index] = myRed;
+            GameClearPixel(x, y - bit - 1);
         }
         else
         {
-            screenData[index] = c;
+            GamePlotPixel(x, y - bit - 1, c);
         }
-        index++;
         data >>= 1;
     }
 }

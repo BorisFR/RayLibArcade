@@ -7,9 +7,8 @@ WRITE_HANDLER(invadpt2_videoram_w)
     if (data == videoram[offset])
         return;
     videoram[offset] = data;
-    uint32_t address = offset;
-    uint16_t x = address / 32;
-    uint16_t y = screenHeight - 8 * (address % 32);
+    uint16_t x = offset / 32;
+    uint16_t y = screenHeight - 8 * (offset % 32);
     DIRTY_MIN(x, screenDirtyMinX)
     DIRTY_MAX(x + 1, screenDirtyMaxX)
     DIRTY_MIN(y - 8, screenDirtyMinY)
@@ -71,16 +70,14 @@ WRITE_HANDLER(invadpt2_videoram_w)
         c = myBlack;
     for (uint8_t bit = 0; bit < 8; bit++)
     {
-        uint32_t index = x + (y - bit - 1) * screenWidth;
-        if (!(data & 0x01))
+        if ((data & 0x01))
         {
-            screenData[index] = myBlack;
+            GamePlotPixel(x, y - bit - 1, c);
         }
         else
         {
-            screenData[index] = c;
+            GameClearPixel(x, y - bit - 1);
         }
-        index++;
         data >>= 1;
     }
 }

@@ -137,6 +137,7 @@ public:
     uint32_t GetPaddingLeftForZoom(uint32_t zoomX);
     uint32_t GetPaddingTopForZoom(uint32_t zoomY);
     void DisplayPng(uint32_t atX, uint32_t atY);
+    void FillScreen(THE_COLOR color);
 
 #ifdef ESP32P4
     THE_COLOR ConvertRGB565ToRGB888(uint16_t color565);
@@ -148,8 +149,8 @@ public:
     void Clear();
     void BeginWrite();
     void EndWrite();
-    void DrawPng(uint8_t *pngImage, int16_t width, int16_t height);
-    void Pixel(uint16_t x, uint16_t y, uint16_t color);
+    //void DrawPng(uint8_t *pngImage, int16_t width, int16_t height);
+    //void Pixel(uint16_t x, uint16_t y, uint16_t color);
 
     void Print(std::string text, uint32_t x, uint32_t y);
     Color ConvertRGB565ToRGB888(uint16_t color565);

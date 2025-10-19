@@ -133,6 +133,8 @@ extern "C"
 	extern uint16_t screenPosY;
 
 	extern void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height);
+	extern void GamePlotPixel(uint32_t x, uint32_t y, THE_COLOR color);
+	extern void GameClearPixel(uint32_t x, uint32_t y);
 	extern void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
 
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];

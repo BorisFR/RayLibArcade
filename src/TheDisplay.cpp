@@ -266,6 +266,18 @@ void TheDisplay::DisplayPng(uint32_t atX, uint32_t atY)
     }
 }
 
+void TheDisplay::FillScreen(THE_COLOR color)
+{
+    Color c = Color{0,100,0,255}; // ConvertRGB565ToRGB888(color);
+    for(uint32_t x=0; x<SCREEN_WIDTH; x++) {
+        for(uint32_t y=0; y<SCREEN_HEIGHT; y++){
+            uint32_t pos = x + y * SCREEN_WIDTH;
+            pixels[pos] = c;
+        }
+    }
+    //memset(screenData, color, screenLength);
+}
+
 // *******************************************************************
 
 THE_COLOR TheDisplay::GetColorFromPalette(uint8_t colorIndex, uint8_t paletteIndex)
@@ -434,8 +446,9 @@ void TheDisplay::Loop()
             index = y * screenWidth + x;
             // #ifdef ESP32P4
             //if (screenData[index] != screenDataOld[index])
-            if (screenData[index] != dirtybuffer[index])
+            if (dirtybuffer[index])
             {
+                dirtybuffer[index] = 0;
                 // #endif
                 uint16_t posX = screenPosX + x * screenZoomX;
                 THE_COLOR color = screenData[index];
@@ -449,7 +462,6 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                         fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
 #else
-                        // DrawPixel(posX + zx, posY + zy, pixelColor);
                         pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
 #endif
                     }
@@ -505,7 +517,6 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                                 fbs[currentFrameBuffer][x + zx + deltaX + (y + zy + deltaY) * SCREEN_WIDTH] = c;
 #else
-                                // DrawPixel(x + zx + (p % spriteWidth), y + zy + (p / spriteWidth), GetColor(c));
                                 DrawPixel(x + zx + deltaX, y + zy + deltaY, GetColor(c));
 #endif
                             }
@@ -517,7 +528,7 @@ void TheDisplay::Loop()
         }
     }*/
     //memcpy(screenDataOld, screenData, screenLength);
-    memcpy(dirtybuffer, screenData, screenLength);
+    //memcpy(dirtybuffer, screenData, screenLength);
     screenDirtyMinX = screenWidth;
     screenDirtyMaxX = 0;
     screenDirtyMinY = screenHeight;
@@ -547,7 +558,6 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                         fbs[currentFrameBuffer][posX + x + (posY + y) * SCREEN_WIDTH] = color;
 #else
-                        // DrawPixel(posX + x, posY + y, pixelColor);
                         pixels[posX + x + (posY + y) * SCREEN_WIDTH] = pixelColor;
 #endif
                     }
@@ -579,13 +589,11 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                         fbs[currentFrameBuffer][posX + x + (posY + y) * SCREEN_WIDTH] = color;
 #else
-                        // DrawPixel(posX + x, posY + y, pixelColor);
                         pixels[posX + x + (posY + y) * SCREEN_WIDTH] = pixelColor;
 
 #endif
                     }
                 }
-                // DrawPixel(posX, posY, WHITE);
             }
         }
 #endif
@@ -622,7 +630,6 @@ void TheDisplay::Loop()
                             {
                                 for (uint16_t zy = 0; zy < screenZoomY; zy++)
                                 {
-                                    // DrawPixel(posX + x * screenZoomX + zx, posY + zy, pixelColor);
                                     pixels[posX + x * screenZoomX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
                                 }
                             }
@@ -676,7 +683,6 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                     fbs[currentFrameBuffer][posX + (p % spriteWidth) + (posY + (p / spriteWidth)) * SCREEN_WIDTH] = GetColor(GetColorFromPalette(colorIndex, 1));
 #else
-                    // DrawPixel(posX + (p % spriteWidth), posY + (p / spriteWidth), GetColor(GetColorFromPalette(colorIndex, 1)));
                     THE_COLOR color = colorRGB[colorIndex];
                     DrawPixel(posX + (p % spriteWidth), posY + (p / spriteWidth), GetColor(color)); // colorIndex));
 #endif
@@ -778,23 +784,23 @@ void TheDisplay::EndWrite()
 
 // *******************************************************************
 
-void TheDisplay::DrawPng(uint8_t *pngImage, int16_t width, int16_t height)
-{
-#ifdef ESP32P4
-    //// gfx->draw24bitRGBBitmap(0, 0, pngImage, width, height);
-    // gfx->draw16bitRGBBitmap(0, 0, reinterpret_cast<uint16_t *>(pngImage), width, height);
-#endif
-}
+//void TheDisplay::DrawPng(uint8_t *pngImage, int16_t width, int16_t height)
+//{
+//#ifdef ESP32P4
+//    //// gfx->draw24bitRGBBitmap(0, 0, pngImage, width, height);
+//    // gfx->draw16bitRGBBitmap(0, 0, reinterpret_cast<uint16_t *>(pngImage), width, height);
+//#endif
+//}
 
 // *******************************************************************
 
-void TheDisplay::Pixel(uint16_t x, uint16_t y, uint16_t color)
-{
-#ifdef ESP32P4
-    // gfx->writePixel(x, y, color);
-    //// gfx->drawPixel(x, y, color);
-#endif
-}
+//void TheDisplay::Pixel(uint16_t x, uint16_t y, uint16_t color)
+//{
+//#ifdef ESP32P4
+//    // gfx->writePixel(x, y, color);
+//    //// gfx->drawPixel(x, y, color);
+//#endif
+//}
 #endif
 
 // *******************************************************************

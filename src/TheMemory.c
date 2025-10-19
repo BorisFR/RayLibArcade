@@ -37,6 +37,21 @@ void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height)
     }
 }
 
+void GamePlotPixel(uint32_t x, uint32_t y, THE_COLOR color)
+{
+    uint32_t index = x + y * screenWidth;
+    screenData[index] = color;
+    dirtybuffer[index] = 1;
+}
+
+void GameClearPixel(uint32_t x, uint32_t y)
+{
+    uint32_t index = x + y * screenWidth;
+    //screenData[index] = myBlack;
+    screenData[index] = pngImage[index];
+    dirtybuffer[index] = 1;
+}
+
 void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
 {
     if (flipX && flipY)
@@ -59,11 +74,13 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
+                            dirtybuffer[index] = 1;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
+                            dirtybuffer[index] = 1;
                         }
                     }
                 }
@@ -93,11 +110,13 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
+                            dirtybuffer[index] = 1;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
+                            dirtybuffer[index] = 1;
                         }
                     }
                 }
@@ -127,11 +146,13 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
+                            dirtybuffer[index] = 1;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
+                            dirtybuffer[index] = 1;
                         }
                     }
                 }
@@ -163,7 +184,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = replacedColor;
-
+                        dirtybuffer[index] = 1;
                         // uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
                         // theScreen[index] = pngImage[bg];
                     }
@@ -171,6 +192,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = color;
+                        dirtybuffer[index] = 1;
                     }
                 }
             }
@@ -365,11 +387,11 @@ void boardMemoryWriteNone(int address, int value)
         }
 */
 
-//uint8_t *romptr[MAX_CPU];
+// uint8_t *romptr[MAX_CPU];
 
-void memory_set_opcode_base(int cpu,unsigned char *base)
+void memory_set_opcode_base(int cpu, unsigned char *base)
 {
-	//romptr[cpu] = base;
+    // romptr[cpu] = base;
 }
 
 uint8_t *gfxMemory;
@@ -408,7 +430,7 @@ uint16_t spritesCount;
 
 THE_COLOR *screenData = NULL;
 THE_COLOR *dirtybuffer = NULL;
-//THE_COLOR *screenDataOld = NULL;
+// THE_COLOR *screenDataOld = NULL;
 THE_COLOR *screenBitmap = NULL;
 uint32_t screenWidth;
 uint32_t screenHeight;
