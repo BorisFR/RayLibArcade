@@ -1,12 +1,19 @@
 #include "TheMemory.h"
 
+uint8_t *videoram;
+int videoram_size;
+uint8_t *colorram;
+uint8_t *spriteram;
+int spriteram_size;
+uint8_t *spriteram_2;
+int spriteram_size_2;
+
 PNG_PTR_TYPE *pngImage = NULL;
 uint32_t pngMemorySize;
 uint32_t pngWidth;
 uint32_t pngHeight;
 
 // *******************************************************************
-
 
 uint16_t screenPosX = 0;
 uint16_t screenPosY = 0;
@@ -157,8 +164,8 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = replacedColor;
 
-                        //uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
-                        //theScreen[index] = pngImage[bg];
+                        // uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
+                        // theScreen[index] = pngImage[bg];
                     }
                     else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                     {
@@ -265,6 +272,9 @@ int readMemoryHandler(int address)
     // return boardMemory[address];
 }
 
+WRITE_HANDLER(videoram_w) { videoram[offset] = data; }
+WRITE_HANDLER(colorram_w) { colorram[offset] = data; }
+
 void writeMemoryHandler(int address, int value)
 {
     // if (address < 0)
@@ -284,7 +294,7 @@ void writeMemoryHandler(int address, int value)
     // }
     if (memoryWriteHandler[address].handler != NULL)
     {
-        memoryWriteHandler[address].handler(address, value);
+        memoryWriteHandler[address].handler(address - memoryWriteHandler[address].toZero, value);
         return;
     }
     boardMemory[address] = value;
@@ -331,9 +341,15 @@ uint32_t boardMemorySize;
 // uint32_t boardMemoryWriteMax;
 int boardMemoryRead0(int address) { return 0; }
 int boardMemoryRead(int address) { return boardMemory[address]; }
+int boardMemoryReadDecode(int address) { return boardMemory[address + 0x10000]; /*romptr[0][address];*/ }
 void boardMemoryWrite(int address, int value)
 {
     boardMemory[address] = value;
+}
+void boardMemoryWriteDecode(int address, int value)
+{
+    boardMemory[address] = value;
+    boardMemory[address + 0x10000] = value;
 }
 void boardMemoryWriteNone(int address, int value)
 {
@@ -348,6 +364,13 @@ void boardMemoryWriteNone(int address, int value)
             Write(address + 1, upper);
         }
 */
+
+//uint8_t *romptr[MAX_CPU];
+
+void memory_set_opcode_base(int cpu,unsigned char *base)
+{
+	//romptr[cpu] = base;
+}
 
 uint8_t *gfxMemory;
 uint32_t gfxMemorySize;
@@ -384,7 +407,8 @@ uint16_t spriteHeight;
 uint16_t spritesCount;
 
 THE_COLOR *screenData = NULL;
-THE_COLOR *screenDataOld = NULL;
+THE_COLOR *dirtybuffer = NULL;
+//THE_COLOR *screenDataOld = NULL;
 THE_COLOR *screenBitmap = NULL;
 uint32_t screenWidth;
 uint32_t screenHeight;

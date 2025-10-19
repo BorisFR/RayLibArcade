@@ -99,14 +99,17 @@ void frogger_interrupt_enable_w(int offset, int data)
 bool froggerScreenDirty[0x0400];
 int froggerScrollLine[32];
 
-void frogger_videoram_w(int offset, int data)
+//void frogger_videoram_w(int offset, int data)
+WRITE_HANDLER(frogger_videoram_w)
 {
     // update any video up to the current scanline
     // m_screen->update_partial(m_screen->vpos());
     // store the data and mark the corresponding tile dirty
-    boardMemory[offset] = data;
+    //boardMemory[offset] = data;
+    videoram[offset] = data;
     // m_bg_tilemap->mark_tile_dirty(offset - 0xa800);
-    froggerScreenDirty[offset - 0xa800] = true;
+    //froggerScreenDirty[offset - 0xa800] = true;
+    froggerScreenDirty[offset] = true;
 }
 
 void frogger_objram_w(int offset, int data)

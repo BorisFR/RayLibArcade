@@ -54,7 +54,8 @@ TheGame::~TheGame()
     screenWidth = 0;
     screenHeight = 0;
     free(screenData);
-    free(screenDataOld);
+    free(dirtybuffer);
+    //free(screenDataOld);
     free(boardMemory);
     free(gfxMemory);
     free(colorMemory);
@@ -309,22 +310,25 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
             finish = true;
             continue;
         }
+        // point a user variable here
+        if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base != NULL)
+        {
+            *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base = &boardMemory[allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start];
+        }
+        // calculate the memory size of this area
+        if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size != NULL)
+        {
+            *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].end - allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start;
+        }
+        // create the handler for the full area
         for (uint32_t p = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start; p <= allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].end; p++)
         {
             memoryWriteHandler[p].handler = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].handler;
-        }
-        if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base)
-        {
-            uint32_t size = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].end - allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start;
-            if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size)
-                *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].size = size;
-            *allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base = (uint8_t *)malloc(size * sizeof(uint8_t));
-            if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base == NULL)
-            {
-                MY_DEBUG(TAG, "Error allocation video memory")
-                return;
-            }
-            memset(*allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base, 0, size);
+            // if user put a variable, we adapt the offset
+            if (allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].base != NULL)
+                memoryWriteHandler[p].toZero = allGames[currentGame].machine.writeAddress[countMemoryWriteFunction].start;
+            else
+                memoryWriteHandler[p].toZero = 0;
         }
         countMemoryWriteFunction++;
     }
@@ -398,13 +402,20 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         return false;
     }
     memset(screenData, 0, screenLength);
-    screenDataOld = (THE_COLOR *)malloc(screenLength);
-    if (screenDataOld == NULL)
+    dirtybuffer = (THE_COLOR *)malloc(screenLength);
+    if (dirtybuffer == NULL)
     {
-        MY_DEBUG(TAG, "Error allocating old screen memory");
+        MY_DEBUG(TAG, "Error allocating dirtybuffer memory");
         return false;
     }
-    memset(screenDataOld, 0, screenLength);
+    memset(dirtybuffer, 0, screenLength);
+    // screenDataOld = (THE_COLOR *)malloc(screenLength);
+    // if (screenDataOld == NULL)
+    // {
+    //     MY_DEBUG(TAG, "Error allocating old screen memory");
+    //     return false;
+    // }
+    // memset(screenDataOld, 0, screenLength);
     screenBitmap = (THE_COLOR *)malloc(screenLength);
     if (screenBitmap == NULL)
     {
@@ -436,6 +447,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
                     return false;
                 }
                 memset(boardMemory, 0, boardMemorySize);
+                //romptr[0] = boardMemory;
                 toMemory = boardMemory;
                 break;
             case ROM_GFX:
@@ -927,7 +939,7 @@ bool TheGame::DecodeAllGfx(const GfxDecodeInfo info[])
             MY_DEBUG2(TAG, "total_colors ", allGfx[i]->total_colors)
             break;
         default:
-            MY_DEBUG2(TAG,"*** GfxDecodeInfo, bad rom index:", info[i].memory_region)
+            MY_DEBUG2(TAG, "*** GfxDecodeInfo, bad rom index:", info[i].memory_region)
         }
     }
     return true;

@@ -433,7 +433,8 @@ void TheDisplay::Loop()
         {
             index = y * screenWidth + x;
             // #ifdef ESP32P4
-            if (screenData[index] != screenDataOld[index])
+            //if (screenData[index] != screenDataOld[index])
+            if (screenData[index] != dirtybuffer[index])
             {
                 // #endif
                 uint16_t posX = screenPosX + x * screenZoomX;
@@ -515,7 +516,8 @@ void TheDisplay::Loop()
             }
         }
     }*/
-    memcpy(screenDataOld, screenData, screenLength);
+    //memcpy(screenDataOld, screenData, screenLength);
+    memcpy(dirtybuffer, screenData, screenLength);
     screenDirtyMinX = screenWidth;
     screenDirtyMaxX = 0;
     screenDirtyMinY = screenHeight;

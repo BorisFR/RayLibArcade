@@ -12,7 +12,7 @@ extern "C"
 {
 #endif
 
-	extern void invadpt2_videoram_w(int offset, int data);
+    WRITE_HANDLER(invadpt2_videoram_w);
 
 #ifdef __cplusplus
 }
@@ -35,8 +35,7 @@ ROM_END
 
 static struct MemoryWriteAddress invadpt2_writemem[] = {
 	{0x2000, 0x23ff, MWA_RAM},
-	{0x2400, 0x3fff, invadpt2_videoram_w},
-	//{ 0x2400, 0x3fff, lrescue_videoram_w, &invaders_videoram },
+	{0x2400, 0x3fff, invadpt2_videoram_w, &videoram, &videoram_size },
 	{0x0000, 0x1fff, MWA_ROM},
 	{0x4000, 0x57ff, MWA_ROM},
 	{-1}};

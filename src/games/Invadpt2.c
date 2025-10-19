@@ -2,12 +2,12 @@
 
 #define INVADERS_INVERT_Y(value) 264 - value
 
-void invadpt2_videoram_w(int offset, int data)
+WRITE_HANDLER(invadpt2_videoram_w)
 {
-    if (data == boardMemory[offset])
+    if (data == videoram[offset])
         return;
-    boardMemory[offset] = data;
-    uint32_t address = offset - 0x2400;
+    videoram[offset] = data;
+    uint32_t address = offset;
     uint16_t x = address / 32;
     uint16_t y = screenHeight - 8 * (address % 32);
     DIRTY_MIN(x, screenDirtyMinX)

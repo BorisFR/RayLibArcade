@@ -29,8 +29,8 @@
 #endif
 
 #define MAX_GFX_ELEMENTS 5
-//#define MAX_GFX_ELEMENTS 32
-// #define MAX_MEMORY_REGIONS 10
+// #define MAX_GFX_ELEMENTS 32
+//  #define MAX_MEMORY_REGIONS 10
 
 // https://github.com/squidrpi/mame4all-pi/blob/bf71c5fdd2e2bbdccb36995e918b99ae7b01dc7a/src/memory.h#L253
 // #define INLINE inline
@@ -39,14 +39,32 @@
 #define UINT16 uint16_t
 #define UINT32 uint32_t
 
+extern uint8_t *videoram;
+extern int videoram_size;
+extern uint8_t *colorram;
+extern uint8_t *spriteram;
+extern int spriteram_size;
+extern uint8_t *spriteram_2;
+extern int spriteram_size_2;
+
+#define input_port_0_r readPort0
+#define input_port_1_r readPort1
+#define input_port_2_r readPort2
+#define input_port_3_r readPort3
+
 typedef struct
 {
 	int (*handler)(int offset);
 } ReadHandler;
 
+#define WRITE_HANDLER(function) void function(int offset, int data)
+WRITE_HANDLER(videoram_w);
+WRITE_HANDLER(colorram_w);
+
 typedef struct
 {
 	void (*handler)(int offset, int data);
+	uint32_t toZero;
 } WriteHandler;
 
 extern ReadHandler *InputPortRead[BUTTON_END + 1];
@@ -107,8 +125,8 @@ extern "C"
 
 	extern THE_COLOR froggerWater;
 
-#define CHECK_IF_DIRTY_X(x) DIRTY_MIN(x, screenDirtyMinX) DIRTY_MAX(x+1, screenDirtyMaxX)
-#define CHECK_IF_DIRTY_Y(y) DIRTY_MIN(y, screenDirtyMinY) DIRTY_MAX(y+1, screenDirtyMaxY)
+#define CHECK_IF_DIRTY_X(x) DIRTY_MIN(x, screenDirtyMinX) DIRTY_MAX(x + 1, screenDirtyMaxX)
+#define CHECK_IF_DIRTY_Y(y) DIRTY_MIN(y, screenDirtyMinY) DIRTY_MAX(y + 1, screenDirtyMaxY)
 #define CHECK_IF_DIRTY_XY(x, y) CHECK_IF_DIRTY_X(x) CHECK_IF_DIRTY_Y(y)
 
 	extern uint16_t screenPosX;
@@ -176,8 +194,16 @@ extern "C"
 	// extern uint32_t boardMemoryWriteMax;
 	extern int boardMemoryRead0(int address);
 	extern int boardMemoryRead(int address);
+	extern int boardMemoryReadDecode(int address);
 	extern void boardMemoryWrite(int address, int value);
+	extern void boardMemoryWriteDecode(int address, int value);
 	extern void boardMemoryWriteNone(int address, int value);
+
+	/* use this to set the a different opcode base address when using a CPU with
+   opcodes and data encrypted separately */
+#define MAX_CPU 3
+	// extern uint8_t *romptr[MAX_CPU];
+	extern void memory_set_opcode_base(int cpu, unsigned char *base);
 
 	// graphics memory
 	extern uint8_t *gfxMemory;
@@ -220,7 +246,8 @@ extern "C"
 	extern struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 	extern THE_COLOR *screenData;
-	extern THE_COLOR *screenDataOld;
+	extern THE_COLOR *dirtybuffer;
+	// extern THE_COLOR *screenDataOld;
 	extern THE_COLOR *screenBitmap;
 	extern uint32_t screenWidth;
 	extern uint32_t screenHeight;

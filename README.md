@@ -15,7 +15,16 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 
 ## Jeux  
 
-![Space Invaders](roms/RLarcade_invaders.png) ![Space Invaders Part II](roms/RLarcade_invadpt2.png) ![Pacman](roms/RLarcade_pacman.png) ![Frogger](roms/RLarcade_frogger.png)
+J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipper les fichiers dans le nom de dossier correspondant.  
+- ~~Crush Roller (set 1) : crush.zip~~  
+- Frogger : frogger.zip  
+- Galaxian (Namco set 1) : galaxian.zip  
+- Pac-Man (Midway) : pacman.zip  
+- Pengo (World, not encrypted, rev A) : pengo.zip
+- Space Invaders / Space Invaders M : invaders.zip  
+- Space Invaders Part II : invadpt2.zip  
+
+![Space Invaders](sdcard/RLarcade_invaders.png) ![Space Invaders Part II](sdcard/RLarcade_invadpt2.png) ![Pacman](sdcard/RLarcade_pacman.png) ![Frogger](sdcard/RLarcade_frogger.png)
 
 ## Remerciements
 

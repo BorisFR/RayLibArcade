@@ -12,7 +12,7 @@ extern "C"
 {
 #endif
 
-    extern void invaders_videoram_w(int offset, int data);
+    WRITE_HANDLER(invaders_videoram_w);
 
 #ifdef __cplusplus
 }
@@ -37,7 +37,7 @@ static struct MemoryReadAddress invaders_readmem[] = {
 static struct MemoryWriteAddress invaders_writemem[] = {
     {0x0000, 0x1fff, MWA_ROM},
     {0x2000, 0x23ff, MWA_RAM},
-    { 0x2400, 0x3fff, invaders_videoram_w }, //, &invaders_videoram },
+	{ 0x2400, 0x3fff, invaders_videoram_w, &videoram, &videoram_size },
     {0x4000, 0x57ff, MWA_ROM},
     {-1}};
 

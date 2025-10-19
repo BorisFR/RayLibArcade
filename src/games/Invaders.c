@@ -2,21 +2,16 @@
 
 #define INVADERS_INVERT_Y(value) 264 - value
 
-void invaders_videoram_w(int offset, int data)
+WRITE_HANDLER(invaders_videoram_w)
 {
-    if (data == boardMemory[offset])
+    if (data == videoram[offset])
         return;
-    boardMemory[offset] = data;
-    uint32_t address = offset - 0x2400;
-    uint16_t x = address / 32;
-    uint16_t y = screenHeight - 8 * (address % 32);
-    // DIRTY_MIN(x, screenDirtyMinX)
-    // DIRTY_MAX(x, screenDirtyMaxX)
-    // DIRTY_MIN(y - 8, screenDirtyMinY)
-    // DIRTY_MAX(y - 1, screenDirtyMaxY)
-    DIRTY_MIN(x -0, screenDirtyMinX)
+    videoram[offset] = data;
+    uint16_t x = offset / 32;
+    uint16_t y = screenHeight - 8 * (offset % 32);
+    DIRTY_MIN(x - 0, screenDirtyMinX)
     DIRTY_MAX(x + 1, screenDirtyMaxX)
-    DIRTY_MIN(y - 8 -0, screenDirtyMinY)
+    DIRTY_MIN(y - 8 - 0, screenDirtyMinY)
     DIRTY_MAX(y - 1 + 1, screenDirtyMaxY)
     THE_COLOR c = myWhite;
     if (y >= INVADERS_INVERT_Y(72) && y < INVADERS_INVERT_Y(16))
@@ -37,9 +32,9 @@ void invaders_videoram_w(int offset, int data)
         if (!(data & 0x01))
         {
             screenData[index] = myBlack;
-            //uint32_t bg = x + screenPosX + ((y - bit - 1) + screenPosY) * pngWidth;
-            //screenData[index] = pngImage[bg];
-            //screenData[index] = myRed;
+            // uint32_t bg = x + screenPosX + ((y - bit - 1) + screenPosY) * pngWidth;
+            // screenData[index] = pngImage[bg];
+            // screenData[index] = myRed;
         }
         else
         {

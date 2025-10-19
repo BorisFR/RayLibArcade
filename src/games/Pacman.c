@@ -90,12 +90,8 @@ void pacman_watchdog_reset_w(int offset, int data)
     // need to implement this.
 }
 
-void pacman_interrupt_vector_w(int offset, int data)
-{
-    Z80InterruptVector[Z80CurrentCpu] = data;
-}
+void pacman_interrupt_vector_w(int offset, int data) { Z80InterruptVector[Z80CurrentCpu] = data; }
 
-// {16, 256, 0, 288}
 // *******************************************************************
 
 void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)

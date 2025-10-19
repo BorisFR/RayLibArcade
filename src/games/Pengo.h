@@ -17,7 +17,7 @@ static struct GfxDecodeInfo pengoGfxDecodeInfo[] =
 		{ROM_GFX, 0x2000, &pengoTileLayout, 4 * 32, 32}, /* second bank */
 		{ROM_GFX, 0x3000, &pengoSpriteLayout, 4 * 32, 32},
 		{-1}};
-//static struct GfxDecodeInfo pengoGfxDecodeInfo[] =
+// static struct GfxDecodeInfo pengoGfxDecodeInfo[] =
 //	{
 //		{ROM_GFX, 0x0000, &pengoTileLayout, 0, 128},
 //		{ROM_GFX, 0x2000, &pengoSpriteLayout, 0, 128},
@@ -28,8 +28,9 @@ extern "C"
 {
 #endif
 
-	extern void pengo_interrupt_enable_w(int offset, int data);
-	extern void pengo_gfxbank_w(int offset, int data);
+	WRITE_HANDLER(pengo_interrupt_enable_w);
+	WRITE_HANDLER(pengo_gfxbank_w);
+	WRITE_HANDLER(pengo_flipscreen_w);
 
 	extern void PengoDecodeRoms();
 	extern void PengoInit();
@@ -42,7 +43,7 @@ extern "C"
 #define PENGO {"pengo", "Pengo", {350, 36 * 8, 28 * 8, {0 * 8, 36 * 8 - 1, 0 * 8, 28 * 8 - 1}, ORIENTATION_ROTATE_90, PengoRefreshScreen, pengoGfxDecodeInfo}, 3072000 / 60, {pengo_rom, PengoDecodeRoms, pengo_readmem, pengo_writemem, pengo_input_ports, NOTHING, NOTHING, PengoInit}, MACHINE_Z80}
 
 ROM_START(pengo_rom)
-ROM_REGION(0x10000)
+ROM_REGION(2 * 0x10000)
 ROM_LOAD("epr-5128.ic8", 0x0000, 0x1000, 0x3dfeb20e)
 ROM_LOAD("epr-5129.ic7", 0x1000, 0x1000, 0x1db341bd)
 ROM_LOAD("epr-5130.ic15", 0x2000, 0x1000, 0x7c2842d5)
@@ -70,27 +71,27 @@ ROM_END
 
 static struct MemoryReadAddress pengo_readmem[] =
 	{
-		{0x0000, 0x7fff, MRA_ROM},
-		{0x8000, 0x8fff, MRA_RAM},	 /* video and color RAM, scratchpad RAM, sprite codes */
-		{0x9000, 0x903f, readPort3}, /* DSW1 */
-		{0x9040, 0x907f, readPort2}, /* DSW0 */
-		{0x9080, 0x90bf, readPort1}, /* IN1 */
-		{0x90c0, 0x90ff, readPort0}, /* IN0 */
+		{0x0000, 0x7fff, MRA_ROM_DECODE},
+		{0x8000, 0x8fff, MRA_RAM},		  /* video and color RAM, scratchpad RAM, sprite codes */
+		{0x9000, 0x903f, input_port_3_r}, /* DSW1 */
+		{0x9040, 0x907f, input_port_2_r}, /* DSW0 */
+		{0x9080, 0x90bf, input_port_1_r}, /* IN1 */
+		{0x90c0, 0x90ff, input_port_0_r}, /* IN0 */
 		{-1}};
 
 static struct MemoryWriteAddress pengo_writemem[] =
 	{
 		{0x0000, 0x7fff, MWA_ROM},
-		{0x8000, 0x83ff, MWA_RAM}, // videoram_w, &videoram, &videoram_size },
-		{0x8400, 0x87ff, MWA_RAM}, // colorram_w, &colorram },
-		{0x8800, 0x8fef, MWA_RAM}, // MWA_RAMROM },
-		{0x8ff0, 0x8fff, MWA_RAM}, //&spriteram, &spriteram_size},
+		{0x8000, 0x83ff, videoram_w, &videoram, &videoram_size},
+		{0x8400, 0x87ff, colorram_w, &colorram},
+		{0x8800, 0x8fef, MWA_RAMROM },
+		{0x8ff0, 0x8fff, MWA_RAM, &spriteram, &spriteram_size},
 		{0x9000, 0x901f, MWA_RAM}, // pengo_sound_w, &pengo_soundregs },
-		{0x9020, 0x902f, MWA_RAM}, //&spriteram_2 },
+		{0x9020, 0x902f, MWA_RAM, &spriteram_2},
 		{0x9040, 0x9040, pengo_interrupt_enable_w},
 		{0x9041, 0x9041, MWA_RAM}, // pengo_sound_enable_w },
 		{0x9042, 0x9042, MWA_NOP},
-		{0x9043, 0x9043, MWA_RAM}, // pengo_flipscreen_w },
+		{0x9043, 0x9043, pengo_flipscreen_w},
 		{0x9044, 0x9046, MWA_NOP},
 		{0x9047, 0x9047, pengo_gfxbank_w},
 		{0x9070, 0x9070, MWA_NOP},

@@ -192,9 +192,11 @@ extern "C"
 	***************************************************************************/
 
 #define MRA_ROM boardMemoryRead
+#define MRA_ROM_DECODE boardMemoryReadDecode
 #define MRA_RAM boardMemoryRead
 #define MWA_ROM boardMemoryWriteNone
 #define MWA_RAM boardMemoryWrite
+#define MWA_RAMROM boardMemoryWriteDecode
 #define MWA_NOP boardMemoryWriteNone
 
 	// #define MRA_NOP 0						/* don't care, return 0 */
