@@ -402,13 +402,13 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         return false;
     }
     memset(screenData, 0, screenLength);
-    dirtybuffer = (THE_COLOR *)malloc(screenLength);
+    dirtybuffer = (uint8_t *)malloc(screenLength);
     if (dirtybuffer == NULL)
     {
         MY_DEBUG(TAG, "Error allocating dirtybuffer memory");
         return false;
     }
-    memset(dirtybuffer, 0, screenLength);
+    memset(dirtybuffer, 1, screenLength);
     // screenDataOld = (THE_COLOR *)malloc(screenLength);
     // if (screenDataOld == NULL)
     // {

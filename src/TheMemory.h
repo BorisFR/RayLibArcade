@@ -25,7 +25,7 @@
 #define THE_COLOR uint16_t
 #else
 #define COLOR_TYPE Color
-#define THE_COLOR uint32_t
+#define THE_COLOR uint16_t
 #endif
 
 #define MAX_GFX_ELEMENTS 5
@@ -248,7 +248,7 @@ extern "C"
 	extern struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 	extern THE_COLOR *screenData;
-	extern THE_COLOR *dirtybuffer;
+	extern uint8_t *dirtybuffer;
 	// extern THE_COLOR *screenDataOld;
 	extern THE_COLOR *screenBitmap;
 	extern uint32_t screenWidth;

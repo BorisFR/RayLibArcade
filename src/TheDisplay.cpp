@@ -268,14 +268,16 @@ void TheDisplay::DisplayPng(uint32_t atX, uint32_t atY)
 
 void TheDisplay::FillScreen(THE_COLOR color)
 {
-    Color c = Color{0,100,0,255}; // ConvertRGB565ToRGB888(color);
-    for(uint32_t x=0; x<SCREEN_WIDTH; x++) {
-        for(uint32_t y=0; y<SCREEN_HEIGHT; y++){
+    Color c = Color{0, 100, 0, 255}; // ConvertRGB565ToRGB888(color);
+    for (uint32_t x = 0; x < SCREEN_WIDTH; x++)
+    {
+        for (uint32_t y = 0; y < SCREEN_HEIGHT; y++)
+        {
             uint32_t pos = x + y * SCREEN_WIDTH;
             pixels[pos] = c;
         }
     }
-    //memset(screenData, color, screenLength);
+    // memset(screenData, color, screenLength);
 }
 
 // *******************************************************************
@@ -445,15 +447,15 @@ void TheDisplay::Loop()
         {
             index = y * screenWidth + x;
             // #ifdef ESP32P4
-            //if (screenData[index] != screenDataOld[index])
+            // if (screenData[index] != screenDataOld[index])
             if (dirtybuffer[index])
             {
-                dirtybuffer[index] = 0;
                 // #endif
                 uint16_t posX = screenPosX + x * screenZoomX;
                 THE_COLOR color = screenData[index];
 #ifndef ESP32P4
-                Color pixelColor = GetColor(color);
+                // Color pixelColor = GetColor(color);
+                Color pixelColor = ConvertRGB565ToRGB888(color);
 #endif
                 for (uint16_t zx = 0; zx < screenZoomX; zx++)
                 {
@@ -462,11 +464,20 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                         fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
 #else
-                        pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
+                        if (dirtybuffer[index] == 2)
+                        {
+                            uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
+                            pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = ConvertRGB565ToRGB888(pngImage[p]);
+                        }
+                        else
+                        {
+                            pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
+                        }
 #endif
                     }
                 }
                 // #ifdef ESP32P4
+                dirtybuffer[index] = 0;
             }
             // #endif
             index++;
@@ -527,8 +538,8 @@ void TheDisplay::Loop()
             }
         }
     }*/
-    //memcpy(screenDataOld, screenData, screenLength);
-    //memcpy(dirtybuffer, screenData, screenLength);
+    // memcpy(screenDataOld, screenData, screenLength);
+    // memcpy(dirtybuffer, screenData, screenLength);
     screenDirtyMinX = screenWidth;
     screenDirtyMaxX = 0;
     screenDirtyMinY = screenHeight;
@@ -784,23 +795,23 @@ void TheDisplay::EndWrite()
 
 // *******************************************************************
 
-//void TheDisplay::DrawPng(uint8_t *pngImage, int16_t width, int16_t height)
+// void TheDisplay::DrawPng(uint8_t *pngImage, int16_t width, int16_t height)
 //{
-//#ifdef ESP32P4
-//    //// gfx->draw24bitRGBBitmap(0, 0, pngImage, width, height);
-//    // gfx->draw16bitRGBBitmap(0, 0, reinterpret_cast<uint16_t *>(pngImage), width, height);
-//#endif
-//}
+// #ifdef ESP32P4
+//     //// gfx->draw24bitRGBBitmap(0, 0, pngImage, width, height);
+//     // gfx->draw16bitRGBBitmap(0, 0, reinterpret_cast<uint16_t *>(pngImage), width, height);
+// #endif
+// }
 
 // *******************************************************************
 
-//void TheDisplay::Pixel(uint16_t x, uint16_t y, uint16_t color)
+// void TheDisplay::Pixel(uint16_t x, uint16_t y, uint16_t color)
 //{
-//#ifdef ESP32P4
-//    // gfx->writePixel(x, y, color);
-//    //// gfx->drawPixel(x, y, color);
-//#endif
-//}
+// #ifdef ESP32P4
+//     // gfx->writePixel(x, y, color);
+//     //// gfx->drawPixel(x, y, color);
+// #endif
+// }
 #endif
 
 // *******************************************************************
@@ -815,8 +826,11 @@ THE_COLOR TheDisplay::Rgb888ToRgb565(uint8_t red, uint8_t green, uint8_t blue)
     // Combine into a single 16-bit value
     return (r << 11) | (g << 5) | b;
 #else
-    return (red << 24) | (green << 16) | (blue << 8) | 255;
-    // Color color = (Color){red, green, blue, 255};
-    // return color;
+    // return (red << 24) | (green << 16) | (blue << 8) | 255;
+    uint16_t r = (red >> 3) & 0x1F;   // 5 bits for red
+    uint16_t g = (green >> 2) & 0x3F; // 6 bits for green
+    uint16_t b = (blue >> 3) & 0x1F;  // 5 bits for blue
+    // Combine into a single 16-bit value
+    return (r << 11) | (g << 5) | b;
 #endif
 }
