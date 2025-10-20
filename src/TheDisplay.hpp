@@ -71,6 +71,9 @@
 #else
 #define SCREEN_WIDTH (800)
 #define SCREEN_HEIGHT (1280)
+#define SCREEN_RATIO (float)((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)
+#define WINDOW_HEIGHT (float)(800.0f)
+#define WINDOW_WIDTH ((float)WINDOW_HEIGHT * (float)SCREEN_RATIO)
 #include "raylib.h"
 #endif
 
@@ -200,6 +203,11 @@ private:
     Image fb_image;
     Color *pixels;
     Texture2D fb_texture;
+    Rectangle srcRec;
+    Rectangle dstRec;
+    Vector2 origin;
+    uint32_t actualScreenWidth;
+    uint32_t actualScreenHeight;
 #endif
 
 };

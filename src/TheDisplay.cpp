@@ -151,7 +151,8 @@ void TheDisplay::Setup()
     touched = false;
     touchedInProgress = false;
 #else
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Raylib Arcade");
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Arcade");
     pixels = (Color *)malloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Color));
     memset(pixels, 0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(Color));
     fb_image.width = SCREEN_WIDTH;
@@ -160,6 +161,11 @@ void TheDisplay::Setup()
     fb_image.data = pixels;
     fb_image.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
     fb_texture = LoadTextureFromImage(fb_image);
+    srcRec = {0.0f, 0.0f, (float)fb_texture.width, (float)fb_texture.height};
+    origin = {0.0f, 0.0f};
+    actualScreenWidth = GetScreenWidth();
+    actualScreenHeight = GetScreenHeight();
+    dstRec = {0.0f, 0.0f, (float)actualScreenWidth, (float)actualScreenHeight};
 #ifdef LIMIT_FPS
     SetTargetFPS(FPS_LIMIT);
 #endif
@@ -426,8 +432,19 @@ void TheDisplay::Loop()
     if (screenHeight + screenWidth == 0)
         return;
     BeginDrawing();
-    // ClearBackground(BLACK);
-    // ClearBackground(GREEN);
+    if (actualScreenHeight != GetScreenHeight() || actualScreenWidth != GetScreenWidth())
+    {
+        actualScreenHeight = GetScreenHeight();
+        actualScreenWidth = actualScreenHeight * SCREEN_RATIO;
+        if (actualScreenWidth > GetScreenWidth())
+        {
+            actualScreenWidth = GetScreenWidth();
+            actualScreenHeight = actualScreenWidth / SCREEN_RATIO;
+        }
+        dstRec = {0.0f, 0.0f, (float)actualScreenWidth, (float)actualScreenHeight};
+        ClearBackground(BLACK);
+        // ClearBackground(GREEN);
+    }
 #endif
     // if(screenDirtyMinX > 0) screenDirtyMinX--;
     // if(screenDirtyMinY > 0) screenDirtyMinY--;
@@ -711,7 +728,8 @@ void TheDisplay::Loop()
 #else
 #ifndef NO_FPS
     UpdateTexture(fb_texture, pixels);
-    DrawTexture(fb_texture, 0, 0, WHITE);
+    // DrawTexture(fb_texture, 0, 0, WHITE);
+    DrawTexturePro(fb_texture, srcRec, dstRec, origin, 0.0f, WHITE);
     // ClearRectangle(10, SCREEN_HEIGHT - 20, 30, 20);
     //  Print(std::to_string(lastFrameCount), 10, SCREEN_HEIGHT - 20);
     // ClearRectangle(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 20, 80, 20);
