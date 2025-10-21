@@ -36,7 +36,7 @@ extern "C"
 }
 #endif
 
-#define PACMAN {"pacman", "Pacman", {326, 256, 288, {16, 256 - 16, 0, 288}, ORIENTATION_ROTATE_90, PacmanRefreshScreen, pacmanGfxDecodeInfo}, 3072000 / 60, {pacman_rom, NOTHING, pacman_readmem, pacman_writemem, pacman_input_ports, NOTHING, pacman_writeport}, MACHINE_Z80}
+#define PACMAN {"pacman", "Pacman", {356, 256, 288, {16, 256 - 16, 0, 288}, ORIENTATION_ROTATE_90, PacmanRefreshScreen, pacmanGfxDecodeInfo}, 3072000 / 60, {pacman_rom, NOTHING, pacman_readmem, pacman_writemem, pacman_input_ports, NOTHING, pacman_writeport}, MACHINE_Z80}
 
 ROM_START(pacman_rom)
 ROM_REGION(0x10000)
