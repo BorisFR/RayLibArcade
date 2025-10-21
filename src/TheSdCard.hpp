@@ -32,7 +32,6 @@
 #include <sys/dirent.h>
 #include <algorithm>
 #else
-#define PC_PATH "D:/DEV/RayLibArcade/"
 #endif
 #include <string>
 

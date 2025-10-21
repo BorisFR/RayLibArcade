@@ -14,6 +14,7 @@
 #include "esp_log.h"
 #include <sys/time.h>
 #else
+#define PC_PATH "D:/DEV/RayLibArcade/"
 #endif
 #include <stdbool.h>
 #include <stdint.h>
@@ -118,7 +119,7 @@ extern "C"
 #ifdef ESP32P4
 #define TRANSPARENCY_BLACK_COLOR 0
 #else
-#define TRANSPARENCY_BLACK_COLOR 255
+#define TRANSPARENCY_BLACK_COLOR 0
 #endif
 #define TRANSPARENCY_REPLACE 2
 #define TRANSPARENT_NONE_COLOR 0

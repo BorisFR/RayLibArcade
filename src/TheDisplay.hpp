@@ -41,6 +41,7 @@
 #endif
 #include "TheMemory.h"
 #include "TheTools.hpp"
+#include "GameDefinition.h"
 #include <string>
 
 #ifdef ESP32P4
@@ -120,9 +121,9 @@
 //  #define NO_FPS
 // #define NO_FPS_ON_CONSOLE
 #else
-//#define FPS_LIMIT 60
-//#define LIMIT_FPS
-// #define NO_FPS
+#define FPS_LIMIT 60
+#define LIMIT_FPS
+ #define NO_FPS
 #define NO_FPS_ON_CONSOLE
 #endif
 

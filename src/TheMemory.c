@@ -75,7 +75,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
-                            dirtybuffer[index] = 2;
+                            dirtybuffer[index] = 1;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
@@ -111,7 +111,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
-                            dirtybuffer[index] = 2;
+                            dirtybuffer[index] = 1;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
@@ -147,7 +147,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
-                            dirtybuffer[index] = 2;
+                            dirtybuffer[index] = 1;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
@@ -185,7 +185,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = replacedColor;
-                        dirtybuffer[index] = 2;
+                        dirtybuffer[index] = 1;
                         // uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
                         // theScreen[index] = pngImage[bg];
                     }

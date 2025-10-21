@@ -18,7 +18,7 @@ extern "C"
 }
 #endif
 
-#define INVADERS {"invaders", "Space Invaders", {266, 224, 256, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING}, 3000000 / 60, {invaders_rom, NOTHING, invaders_readmem, invaders_writemem, invaders_input_ports, invaders_readport, invaders_writeport}, MACHINE_8080BW}
+#define INVADERS {"invaders", "Space Invaders", {307, 224, 256, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING}, 3000000 / 60, {invaders_rom, NOTHING, invaders_readmem, invaders_writemem, invaders_input_ports, invaders_readport, invaders_writeport}, MACHINE_8080BW}
 
 ROM_START(invaders_rom)
 ROM_REGION(0x10000)                                // 64k for code

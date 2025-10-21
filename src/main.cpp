@@ -47,7 +47,7 @@ void setup()
   //
   // Start a game
   //
-  currentGame = 0; // 0 is invaders. See file GamesList.h
+  currentGame = 1; // 0 is invaders. See file GamesList.h
 #ifdef ESP32P4
 #else
   display.ChangeTitle(GAME_NAME);
@@ -84,7 +84,8 @@ void setup()
   {
     display.DisplayPng(0, 0);
     //display.SetVerticalPositionForGame(pngHeight + 50);
-    display.SetVerticalPositionForGame(247 + 50);
+    //display.SetVerticalPositionForGame(247 + 60);
+    display.SetVerticalPositionForGame(allGames[currentGame].video.top);
   }
   else
   {

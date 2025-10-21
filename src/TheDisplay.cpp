@@ -422,8 +422,19 @@ void TheDisplay::Loop()
     {
         gfxDebug = !gfxDebug;
     }
-    IS_KEY_PRESSED(KEY_C, BUTTON_CREDIT)
-    IS_KEY_PRESSED(KEY_S, BUTTON_START)
+    if (IsKeyPressed(KEY_S)) {
+            std::string temp = std::string(PC_PATH) + "sdcard/ss/" + std::string(allGames[currentGame].folder) + ".png";
+            Image screenshot = LoadImageFromScreen(); // Capture current framebuffer
+            if (ExportImage(screenshot, temp.c_str())) {
+                printf("Screenshot saved as %s\n", temp.c_str());
+            } else {
+                printf("Failed to save screenshot.\n");
+            }
+            UnloadImage(screenshot); // Free image memory
+            //TakeScreenshot(temp.c_str());
+    }
+    IS_KEY_PRESSED(KEY_FIVE, BUTTON_CREDIT)
+    IS_KEY_PRESSED(KEY_ONE, BUTTON_START)
     IS_KEY_PRESSED(KEY_LEFT, BUTTON_LEFT)
     IS_KEY_PRESSED(KEY_RIGHT, BUTTON_RIGHT)
     IS_KEY_PRESSED(KEY_UP, BUTTON_UP)
@@ -441,6 +452,7 @@ void TheDisplay::Loop()
             actualScreenWidth = GetScreenWidth();
             actualScreenHeight = actualScreenWidth / SCREEN_RATIO;
         }
+        SetWindowSize(actualScreenWidth, actualScreenHeight);
         dstRec = {0.0f, 0.0f, (float)actualScreenWidth, (float)actualScreenHeight};
         ClearBackground(BLACK);
         // ClearBackground(GREEN);
@@ -726,16 +738,16 @@ void TheDisplay::Loop()
     esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, fbs[currentFrameBuffer]);
     xSemaphoreTake(refresh_finish, portMAX_DELAY);
 #else
-#ifndef NO_FPS
     UpdateTexture(fb_texture, pixels);
     // DrawTexture(fb_texture, 0, 0, WHITE);
     DrawTexturePro(fb_texture, srcRec, dstRec, origin, 0.0f, WHITE);
+#ifndef NO_FPS
     // ClearRectangle(10, SCREEN_HEIGHT - 20, 30, 20);
     //  Print(std::to_string(lastFrameCount), 10, SCREEN_HEIGHT - 20);
     // ClearRectangle(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 20, 80, 20);
     // DrawFPS(SCREEN_WIDTH - 80, SCREEN_HEIGHT - 20);
-    ClearRectangle(SCREEN_WIDTH - 80, 10, 80, 20);
-    DrawFPS(SCREEN_WIDTH - 80, 10);
+    ClearRectangle(actualScreenWidth - 80, 10, 80, 20);
+    DrawFPS(actualScreenWidth - 80, 10);
 #endif
     EndDrawing();
 #endif
