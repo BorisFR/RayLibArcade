@@ -47,7 +47,7 @@ void setup()
   //
   // Start a game
   //
-  currentGame = 2; // 0 is invaders. See file GamesList.h
+  currentGame = 5; // 0 is invaders. See file GamesList.h
 #ifdef ESP32P4
 #else
   display.ChangeTitle(GAME_NAME);

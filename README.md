@@ -24,7 +24,8 @@ J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipp
 - Space Invaders / Space Invaders M : invaders.zip  
 - Space Invaders Part II : invadpt2.zip  
 
-![Space Invaders](sdcard/RLarcade_invaders.png) ![Space Invaders Part II](sdcard/RLarcade_invadpt2.png) ![Pacman](sdcard/RLarcade_pacman.png) ![Frogger](sdcard/RLarcade_frogger.png)
+<img src="sdcard/ss/invaders.png" alt="Space Invaders" width="400" /> <img src="sdcard/ss/invadpt2.png" alt="Space InvadersPart II" width="400" />  
+![Space Invaders](sdcard/ss/invaders.png) ![Space Invaders Part II](sdcard/ss/invadpt2.png) ![Pacman](sdcard/ss/pacman.png) ![Galaxian](sdcard/ss/galaxian.png) ![Frogger](sdcard/ss/frogger.png) ![Pengo](sdcard/ss/pengo.png)
 
 ## Remerciements
 
@@ -42,6 +43,7 @@ J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipp
 <details>
 <summary>Octobre 2025</summary>  
 
+* Background & RayLib : l'implémentation de la transparence est maintenant normalement terminé, au moins pour les jeux fonctionnels actuellement. J'ai redessiné un background sur base de marquee et de contour d'écran pour chacun. Concernant l'utilisation de RayLib, la fenetre est maintenant redimensionable et je fais en sorte que le ratio d'écran soit maintenu. Ce ratio est basé sur l'implémentation finale pour l'ESP32-P4 avec un écran de 800x1280. J'ai également implémenté la prise de screenshot pour alimenter cette page, l'ajout de crédit se fait via la touche '5' et le démarrage d'une partie par la touche '1'.  
 * Galaxian & background : L'implémentation de Galaxian fût relativement facile. Elle est presque terminé, il reste à développer le champs d'étoiles qui défile. Pour "background", l'objectif est d'ajouter une image de fond plein écran derrière l'écran du jeu. J'ai commencé en utilisant l'excellente bibliothèque PNGdec de BitBank2. Manifestement, j'ai un beau souci d'intégration avec mon code. Après de nombreuses heures, j'ai utilisé son autre bibliothèque JPEGdec : succès ! J'ai réalisé rapidement quelques fonds d'écran pour chacun des jeux implémentés, ajouté un positionnement vertical des écrans et ça roule. Il faut encore affiné le graphisme de ces fonds d'écran, mais pour le moment, j'en suis satisfait et je peux passer à la suite. Il faut encore que j'implémente le redessin de ce fond d'écran quand il y a une couleur transparente sur l'écran.  
 * Point de situation : le texte "credit" n'apparait pas dans le jeu Pacman, le nombre de crédits, lui, apparaît bien. Bizarre... ⁉️ Concernant Frogger, toujours le souci des couleurs, le nombre de vies qui n'apparaît pas, le jeu est en mode vie infini, gros travail sur le scrolling à faire, ... Bref, du boulot pour Frogger 😁 Et c'est à ce moment que je me rend compte que Frogger n'est pas sur le PCB de Pacman mais de Galaxian. Je me dis que pour avoir un Frogger opérationnel, je dois passer d'aord par l'implémentation de Galaxian. C'est parti!  
 * J'ai trouvé le souci des inputs pour Pacman : un bug dans la gestion de l'interruption car j'écrasais la valeur du port 0, comme je le faisais avec Space Invaders. La logique est ici différente. J'ai maintenant corrigé le souci avec RayLib et les premiers jeux (sans limite de fps) fonctionne à plus de 1000 fps...  
