@@ -4,7 +4,7 @@
 Emulateur logiciel en C / C++, basé sur le principe de M.A.M.E.  
 L'objectif est de réaliser un émulateur software pour un ESP32-P4. Cependant, ce projet existe pour "simplifier" le développement afin de ne pas avoir à flasher le micro-controleur et aussi de pouvoir avancer sur le développement sans avoir l'ESP32-P4.  
 
-J'ai choisi d'utiliser le framework RayLib car c'est un framework que j'ai déjà utilisé pour faire de la 3D. Au final, en pur gestion bitmap 2D, cela ne se révèle pas être un bon choix car j'ai un framerate complétement à la ramasse quand je change la résolution du jeu en doublant les dimensions. C'est ok dans la résolution de base des jeux. ~~La gestion du double buffer de RayLib est en "conflit" avec mon moteur graphique d'émulation. Pour tester c'est ok, mais cela ne sera pas utilisable en vrai sur ordinateur. Vu mon besoin, un SFML ou SDL aurait été un meilleur choix. Cela n'est pas bien grâve. J'adapterai peut-être un jour.~~  
+J'ai choisi d'utiliser le framework RayLib car c'est un framework que j'ai déjà utilisé pour faire de la 3D. ~~Au final, en pur gestion bitmap 2D, cela ne se révèle pas être un bon choix car j'ai un framerate complétement à la ramasse quand je change la résolution du jeu en doublant les dimensions. C'est ok dans la résolution de base des jeux. La gestion du double buffer de RayLib est en "conflit" avec mon moteur graphique d'émulation. Pour tester c'est ok, mais cela ne sera pas utilisable en vrai sur ordinateur. Vu mon besoin, un SFML ou SDL aurait été un meilleur choix. Cela n'est pas bien grâve. J'adapterai peut-être un jour.~~  
 
 Le projet "réel" est **[EspArcade](https://github.com/BorisFR/EspArcade)**. Il partage l'ensemble des fichiers sources de ce projet. Seul la partie compilation est différente.
 
@@ -16,11 +16,11 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 ## Jeux  
 
 J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipper les fichiers dans le nom de dossier correspondant.  
-- ~~Crush Roller (set 1) : crush.zip~~  
+- ~~Crush Roller (set 1) : crush.zip~~ (abandon pour le moment)  
 - Frogger : frogger.zip  
 - Galaxian (Namco set 1) : galaxian.zip  
 - Pac-Man (Midway) : pacman.zip  
-- Pengo (World, not encrypted, rev A) : pengo.zip
+- Pengo (World, not encrypted, rev A) : pengo.zip (ne fonctionne pas du tout)
 - Space Invaders / Space Invaders M : invaders.zip  
 - Space Invaders Part II : invadpt2.zip  
 
