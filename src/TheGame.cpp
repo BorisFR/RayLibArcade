@@ -85,7 +85,7 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
 {
     this->display = &display;
     MY_DEBUG2TEXT(TAG, GAME_NAME, "setup");
-    froggerWater = display.Rgb888ToRgb565(0x00, 0x00, 0x47);
+    //froggerWater = display.Rgb888ToRgb565(0x00, 0x00, 0x47);
     if (!Initialize(display, sdCard))
     {
         MY_DEBUG2TEXT(TAG, GAME_NAME, "could not be setup");
@@ -408,7 +408,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         MY_DEBUG(TAG, "Error allocating dirtybuffer memory");
         return false;
     }
-    memset(dirtybuffer, 2, screenLength);
+    memset(dirtybuffer, DIRTY_TRANSPARENT, screenLength);
     // screenDataOld = (THE_COLOR *)malloc(screenLength);
     // if (screenDataOld == NULL)
     // {
@@ -547,6 +547,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
     if (i == 0)
     {
         MY_DEBUG(TAG, "No ROM found");
+        if(currentGame == GAME_NUMBER_IS_MENU) return true;
         return false;
     }
     // if we need to decode encrypt rom

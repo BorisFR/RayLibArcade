@@ -11,8 +11,9 @@
 
 #include <stdint.h>
 
-#define MACHINE_8080BW 1
-#define MACHINE_Z80 2
+#define MACHINE_THEMENU 1
+#define MACHINE_8080BW 2
+#define MACHINE_Z80 3
 // #define MACHINE_xxx 3
 
 enum Buttons

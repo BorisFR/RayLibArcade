@@ -103,8 +103,14 @@ TheSdCard::TheSdCard() { isOk = false; }
 
 TheSdCard::~TheSdCard()
 {
+    MY_DEBUG(TAG, "destroyed")
     if (pngWidth + pngHeight > 0)
+    {
+        pngWidth = 0;
+        pngHeight = 0;
+        pngMemorySize = 0;
         free(pngImage);
+    }
 }
 
 // *******************************************************************
@@ -370,9 +376,9 @@ bool TheSdCard::LoadJpgFile(const char *filename)
     const char *fname;
 #ifdef ESP32P4
     std::string fullPath = std::string(MOUNT_POINT) + std::string("/") + filename;
-#else        
+#else
     std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
-#endif    
+#endif
     fname = fullPath.c_str();
     MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
     int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDraw);

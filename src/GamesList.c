@@ -2,6 +2,7 @@
 
 
     const struct OneGame allGames[] = {
+        THE_MENU,
 #ifdef MACHINE_8080BW
         INVADERS,
         INVADPT2,

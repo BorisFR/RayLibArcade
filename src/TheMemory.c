@@ -34,17 +34,17 @@ void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height)
                 THE_COLOR c = screenBitmap[x + currentLine];
                 if (c == TRANSPARENCY_BLACK_COLOR)
                 {
-                    dirtybuffer[shiftX + currentLine] = 2;
+                    dirtybuffer[shiftX + currentLine] = DIRTY_TRANSPARENT;
                 }
                 else
                 {
                     screenData[shiftX + currentLine] = c;
-                    dirtybuffer[shiftX + currentLine] = 1;
+                    dirtybuffer[shiftX + currentLine] = DIRTY_YES;
                 }
             }
             else
             {
-                dirtybuffer[shiftX + currentLine] = 2;
+                dirtybuffer[shiftX + currentLine] = DIRTY_TRANSPARENT;
             }
         }
     }
@@ -54,7 +54,7 @@ void GamePlotPixel(uint32_t x, uint32_t y, THE_COLOR color)
 {
     uint32_t index = x + y * screenWidth;
     screenData[index] = color;
-    dirtybuffer[index] = 1;
+    dirtybuffer[index] = DIRTY_YES;
 }
 
 void GameClearPixel(uint32_t x, uint32_t y)
@@ -63,7 +63,7 @@ void GameClearPixel(uint32_t x, uint32_t y)
     // uint32_t p = x + screenPosX + (y + screenPosY) * pngWidth;
     //  screenData[index] = myBlack;
     // screenData[index] = pngImage[p];
-    dirtybuffer[index] = 2;
+    dirtybuffer[index] = DIRTY_TRANSPARENT;
 }
 
 void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
@@ -88,13 +88,13 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
-                            dirtybuffer[index] = 2;
+                            dirtybuffer[index] = DIRTY_TRANSPARENT;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
-                            dirtybuffer[index] = 1;
+                            dirtybuffer[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -124,13 +124,13 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
-                            dirtybuffer[index] = 2;
+                            dirtybuffer[index] = DIRTY_TRANSPARENT;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
-                            dirtybuffer[index] = 1;
+                            dirtybuffer[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -160,13 +160,13 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = replacedColor;
-                            dirtybuffer[index] = 2;
+                            dirtybuffer[index] = DIRTY_TRANSPARENT;
                         }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             uint32_t index = tempX + tempY * screenWidth;
                             theScreen[index] = color;
-                            dirtybuffer[index] = 1;
+                            dirtybuffer[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -198,7 +198,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = replacedColor;
-                        dirtybuffer[index] = 2;
+                        dirtybuffer[index] = DIRTY_TRANSPARENT;
                         // uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
                         // theScreen[index] = pngImage[bg];
                     }
@@ -206,7 +206,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flip
                     {
                         uint32_t index = tempX + tempY * screenWidth;
                         theScreen[index] = color;
-                        dirtybuffer[index] = 1;
+                        dirtybuffer[index] = DIRTY_YES;
                     }
                 }
             }

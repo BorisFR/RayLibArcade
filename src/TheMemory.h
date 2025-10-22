@@ -249,6 +249,9 @@ extern "C"
 	extern struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 	extern THE_COLOR *screenData;
+	#define DIRTY_NOT 0
+	#define DIRTY_YES 1
+	#define DIRTY_TRANSPARENT 2
 	extern uint8_t *dirtybuffer;
 	// extern THE_COLOR *screenDataOld;
 	extern THE_COLOR *screenBitmap;

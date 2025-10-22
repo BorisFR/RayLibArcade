@@ -122,8 +122,8 @@
 // #define NO_FPS_ON_CONSOLE
 #else
 #define FPS_LIMIT 60
-#define LIMIT_FPS
- #define NO_FPS
+//#define LIMIT_FPS
+ //#define NO_FPS
 #define NO_FPS_ON_CONSOLE
 #endif
 
@@ -142,6 +142,9 @@ public:
     uint32_t GetPaddingTopForZoom(uint32_t zoomY);
     void DisplayPng(uint32_t atX, uint32_t atY);
     void FillScreen(THE_COLOR color);
+
+    bool CreateBackground();
+    uint32_t CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint32_t height);
 
 #ifdef ESP32P4
     THE_COLOR ConvertRGB565ToRGB888(uint16_t color565);

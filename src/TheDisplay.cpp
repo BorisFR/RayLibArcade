@@ -286,6 +286,39 @@ void TheDisplay::FillScreen(THE_COLOR color)
     // memset(screenData, color, screenLength);
 }
 
+bool TheDisplay::CreateBackground()
+{
+    if(pngMemorySize>0) {
+        MY_DEBUG(TAG, "Background already create")
+        return false;
+    }
+    pngMemorySize = SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(PNG_PTR_TYPE);
+    pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
+    if (pngImage == NULL)
+    {
+        pngMemorySize = 0;
+        MY_DEBUG(TAG, "Not enought memory to create background")
+        return false;
+    }
+    memset(pngImage, 0x0, pngMemorySize);
+    pngWidth = SCREEN_WIDTH;
+    pngHeight = SCREEN_HEIGHT;
+    return true;
+}
+
+uint32_t TheDisplay::CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint32_t height)
+{
+    uint32_t length = width * height * sizeof(PNG_PTR_TYPE);
+    image = (PNG_PTR_TYPE *)malloc(length);
+    if (image == NULL)
+    {
+        MY_DEBUG2(TAG, "Not enought memory for image:", length)
+        return 0;
+    }
+    memset(image, 0, length);
+    return length;
+}
+
 // *******************************************************************
 
 THE_COLOR TheDisplay::GetColorFromPalette(uint8_t colorIndex, uint8_t paletteIndex)
@@ -422,16 +455,20 @@ void TheDisplay::Loop()
     {
         gfxDebug = !gfxDebug;
     }
-    if (IsKeyPressed(KEY_S)) {
-            std::string temp = std::string(PC_PATH) + "sdcard/ss/" + std::string(allGames[currentGame].folder) + ".png";
-            Image screenshot = LoadImageFromScreen(); // Capture current framebuffer
-            if (ExportImage(screenshot, temp.c_str())) {
-                printf("Screenshot saved as %s\n", temp.c_str());
-            } else {
-                printf("Failed to save screenshot.\n");
-            }
-            UnloadImage(screenshot); // Free image memory
-            //TakeScreenshot(temp.c_str());
+    if (IsKeyPressed(KEY_S))
+    {
+        std::string temp = std::string(PC_PATH) + "sdcard/ss/" + std::string(allGames[currentGame].folder) + ".png";
+        Image screenshot = LoadImageFromScreen(); // Capture current framebuffer
+        if (ExportImage(screenshot, temp.c_str()))
+        {
+            printf("Screenshot saved as %s\n", temp.c_str());
+        }
+        else
+        {
+            printf("Failed to save screenshot.\n");
+        }
+        UnloadImage(screenshot); // Free image memory
+                                 // TakeScreenshot(temp.c_str());
     }
     IS_KEY_PRESSED(KEY_FIVE, BUTTON_CREDIT)
     IS_KEY_PRESSED(KEY_ONE, BUTTON_START)
@@ -493,7 +530,7 @@ void TheDisplay::Loop()
 #ifdef ESP32P4
                         fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
 #else
-                        if (dirtybuffer[index] == 2)
+                        if (dirtybuffer[index] == DIRTY_TRANSPARENT)
                         {
                             uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
                             pixels[posX + zx + (posY + zy) * SCREEN_WIDTH] = ConvertRGB565ToRGB888(pngImage[p]);
@@ -506,7 +543,7 @@ void TheDisplay::Loop()
                     }
                 }
                 // #ifdef ESP32P4
-                dirtybuffer[index] = 0;
+                dirtybuffer[index] = DIRTY_NOT;
             }
             // #endif
             index++;

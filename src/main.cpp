@@ -9,6 +9,7 @@ TheSdCard sdCard = TheSdCard();
 #include "TheDisplay.hpp"
 TheDisplay display = TheDisplay();
 
+#include "TheMenu.hpp"
 #ifdef MACHINE_8080BW
 #include "machines/MachineDriver8080bw.hpp"
 #endif
@@ -47,13 +48,16 @@ void setup()
   //
   // Start a game
   //
-  currentGame = 3; // 0 is invaders. See file GamesList.h
+  currentGame = 0;
 #ifdef ESP32P4
 #else
   display.ChangeTitle(GAME_NAME);
 #endif
   switch (GAME_MACHINE)
   {
+  case MACHINE_THEMENU:
+    game = new TheMenu();
+    break;
 #ifdef MACHINE_8080BW
   case MACHINE_8080BW:
     game = new MachineDriver8080bw();
@@ -76,20 +80,22 @@ void setup()
   // zoomFactor=1;
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
 
-  display.FillScreen(display.Rgb888ToRgb565(255,80,0));
+  display.FillScreen(display.Rgb888ToRgb565(255, 80, 0));
   std::string temp = "background/" + std::string(GAME_FOLDER) + ".jpg";
-  //std::string temp = "marquee/" + std::string(GAME_FOLDER) + ".jpg";
+  // std::string temp = "marquee/" + std::string(GAME_FOLDER) + ".jpg";
   bool bgOk = sdCard.LoadJpgFile(temp.c_str());
   if (bgOk)
   {
     display.DisplayPng(0, 0);
-    //display.SetVerticalPositionForGame(pngHeight + 50);
-    //display.SetVerticalPositionForGame(247 + 60);
+    // display.SetVerticalPositionForGame(pngHeight + 50);
+    // display.SetVerticalPositionForGame(247 + 60);
     display.SetVerticalPositionForGame(allGames[currentGame].video.top);
   }
   else
   {
     display.SetVerticalPositionForGame(allGames[currentGame].video.top);
+    display.CreateBackground();
+    //display.FillScreen(myBlack);
   }
 
   // std::string temp = "background/" + std::string(GAME_FOLDER) + ".jpg";
