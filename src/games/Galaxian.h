@@ -34,7 +34,7 @@ extern "C"
 }
 #endif
 
-#define GALAXIAN {"galaxian", "Galaxian", {350, 32 * 8, 32 * 8, {0 * 8, 32 * 8 - 0, 2 * 8, 30 * 8 - 0}, ORIENTATION_ROTATE_90, GalaxianRefreshScreen, galaxianGfxDecodeInfo}, 3072000 / 60, {galaxian_rom, NOTHING, galaxian_readmem, galaxian_writemem, galaxian_input_ports, NOTHING, NOTHING, GalaxianInit}, MACHINE_Z80}
+#define GALAXIAN {"galaxian", "Galaxian", {270, 32 * 8, 32 * 8, {0 * 8, 32 * 8 - 0, 2 * 8, 30 * 8 - 0}, ORIENTATION_ROTATE_90, GalaxianRefreshScreen, galaxianGfxDecodeInfo}, 3072000 / 60, {galaxian_rom, NOTHING, galaxian_readmem, galaxian_writemem, galaxian_input_ports, NOTHING, NOTHING, GalaxianInit}, MACHINE_Z80}
 
 ROM_START(galaxian_rom)
 ROM_REGION(0x10000)

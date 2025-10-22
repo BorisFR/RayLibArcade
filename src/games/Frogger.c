@@ -226,6 +226,7 @@ void FroggerRefreshScreen()
         else
         {
             GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            //GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
             // if (last != col)
             //{
             //     last = col;

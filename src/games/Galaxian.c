@@ -93,7 +93,8 @@ void GalaxianRefreshScreen()
         int x = boardMemory[0x5860 + offs + 1];
         if (galaxianFlipY)
             y = 255 - y;
-        GameDrawElement(screenData, x, y, galaxianFlipX, galaxianFlipY, 0, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+        if (x < screenWidth - 4)
+            GameDrawElement(screenData, x, y, galaxianFlipX, galaxianFlipY, 0, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
     }
     /* Draw the sprites */
     element = allGfx[1];
