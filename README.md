@@ -24,6 +24,8 @@ J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipp
 - Space Invaders / Space Invaders M : invaders.zip  
 - Space Invaders Part II : invadpt2.zip  
 
+![Pengo](sdcard/ss/pengo.png){width=100}  
+
 <img src="sdcard/ss/invaders.png" alt="Space Invaders" width="200" /> <img src="sdcard/ss/invadpt2.png" alt="Space Invaders Part II" width="200" /> <img src="sdcard/ss/pacman.png" alt="Pacman" width="200" /> <img src="sdcard/ss/galaxian.png" alt="Galaxian" width="200" /> <img src="sdcard/ss/frogger.png" alt="Frogger" width="200" /> <img src="sdcard/ss/pengo.png" alt="Pengo" width="200" />  
 
 ## Remerciements
