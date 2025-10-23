@@ -9,7 +9,7 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#define THE_MENU {"themenu", "Menu", {0, 800, 1280, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING}, NOTHING, {themenu_rom, NOTHING, themenu_readmem, themenu_writemem, themenu_input_ports, NOTHING, NOTHING}, MACHINE_THEMENU}
+#define THE_MENU {"themenu", "Menu", {200, 500, 7 * 140, {0,0,500,7*140}, ORIENTATION_DEFAULT, NOTHING, NOTHING}, NOTHING, {themenu_rom, NOTHING, themenu_readmem, themenu_writemem, themenu_input_ports, NOTHING, NOTHING}, MACHINE_THEMENU}
 
 ROM_START(themenu_rom)
 ROM_END

@@ -15,6 +15,7 @@
 #include <sys/time.h>
 #else
 #define PC_PATH "D:/DEV/RayLibArcade/"
+#define MOUNT_POINT "D:/DEV/RayLibArcade/sdcard/"
 #endif
 #include <stdbool.h>
 #include <stdint.h>

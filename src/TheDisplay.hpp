@@ -78,6 +78,8 @@
 #include "raylib.h"
 #endif
 
+#define MAX_TOUCH_POINTS 10
+
 #define IS_KEY_PRESSED(key, button)     \
     if (IsKeyPressed(key))              \
     {                                   \
@@ -212,6 +214,8 @@ private:
     Vector2 origin;
     uint32_t actualScreenWidth;
     uint32_t actualScreenHeight;
+
+    Vector2 touchPositions[MAX_TOUCH_POINTS] = { 0 };
 #endif
 
 };

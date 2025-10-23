@@ -91,6 +91,25 @@ int JPEGDraw(JPEGDRAW *pDraw)
     }
     return 1;
 }
+
+uint32_t tempWidth = 0;
+
+int JPEGDrawToUser(JPEGDRAW *pDraw)
+{
+    // printf("jpeg draw: x,y=%d / %d, cx,cy = %d / %d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
+    uint32_t index = 0;
+    for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
+    {
+        for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
+        {
+            uint32_t pos = y * tempWidth + x;
+            PNG_PTR_TYPE *p = static_cast<PNG_PTR_TYPE *>(pDraw->pUser);
+            p[pos] = pDraw->pPixels[index++];
+            //tempImage[pos] = pDraw->pPixels[index++];
+        }
+    }
+    return 1;
+}
 #endif
 
 // *******************************************************************
@@ -412,4 +431,38 @@ bool TheSdCard::LoadJpgFile(const char *filename)
 
     return true;
 }
+
+bool TheSdCard::LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_t lineWidth)
+{
+    const char *fname;
+    std::string fullPath = std::string(MOUNT_POINT) + filename;
+    fname = fullPath.c_str();
+    MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
+    int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDrawToUser);
+    //int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, NULL);
+    if (rc == JPEG_SUCCESS)
+    {
+        printf("Error opening JPEG\n");
+        return false;
+    }
+    tempWidth = lineWidth; //myJpeg.getWidth();
+    uint32_t size = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
+    printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), size);
+    //image = (PNG_PTR_TYPE *)malloc(size);
+    //if (image == NULL)
+    //{
+    //    myJpeg.close();
+    //    return false;
+    //}
+    memset(image, 0xFFFF, size);
+    myJpeg.setUserPointer(image);
+    rc = myJpeg.decode(0, 0, 0);
+    if (rc == 0)
+    {
+        MY_DEBUG2(TAG, "JPEG decode failed with error code:", rc);
+        myJpeg.close();
+        return false;
+    }
+    myJpeg.close();
+    return true;}
 #endif

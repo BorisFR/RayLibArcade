@@ -288,7 +288,8 @@ void TheDisplay::FillScreen(THE_COLOR color)
 
 bool TheDisplay::CreateBackground()
 {
-    if(pngMemorySize>0) {
+    if (pngMemorySize > 0)
+    {
         MY_DEBUG(TAG, "Background already create")
         return false;
     }
@@ -303,6 +304,7 @@ bool TheDisplay::CreateBackground()
     memset(pngImage, 0x0, pngMemorySize);
     pngWidth = SCREEN_WIDTH;
     pngHeight = SCREEN_HEIGHT;
+    MY_DEBUG(TAG, "Background ready")
     return true;
 }
 

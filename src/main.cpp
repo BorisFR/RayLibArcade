@@ -81,22 +81,18 @@ void setup()
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
 
   display.FillScreen(display.Rgb888ToRgb565(255, 80, 0));
-  std::string temp = "background/" + std::string(GAME_FOLDER) + ".jpg";
-  // std::string temp = "marquee/" + std::string(GAME_FOLDER) + ".jpg";
+  std::string temp = "_background/" + std::string(GAME_FOLDER) + ".jpg";
   bool bgOk = sdCard.LoadJpgFile(temp.c_str());
   if (bgOk)
   {
     display.DisplayPng(0, 0);
-    // display.SetVerticalPositionForGame(pngHeight + 50);
-    // display.SetVerticalPositionForGame(247 + 60);
-    display.SetVerticalPositionForGame(allGames[currentGame].video.top);
   }
   else
   {
-    display.SetVerticalPositionForGame(allGames[currentGame].video.top);
     display.CreateBackground();
-    //display.FillScreen(myBlack);
+    // display.FillScreen(myBlack);
   }
+  display.SetVerticalPositionForGame(allGames[currentGame].video.top);
 
   // std::string temp = "background/" + std::string(GAME_FOLDER) + ".jpg";
   // bool bgOk = sdCard.LoadJpgFile(temp.c_str());
