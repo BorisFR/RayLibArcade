@@ -28,6 +28,7 @@ public:
     bool IsReady();
 
     virtual void KeyChange(uint8_t button);
+    void Exit(uint8_t next);
 
     MachineInputPort machineInputPort;
 

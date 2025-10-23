@@ -1,18 +1,17 @@
 #include "TheDisplay.hpp"
 
-#ifdef ESP32P4
-bool touched;
-unsigned long lastTouch = 0;
-#define TOUCH_DELAY_RELEASED 100
+bool justTouch;
 bool touchedInProgress = false;
+
+#ifdef ESP32P4
+unsigned long lastTouch = 0;
 
 void touchCallBack(esp_lcd_touch_handle_t tp)
 {
-    lastTouch = millis();
     if (touchedInProgress)
         return;
     // esp_rom_printf("Touch interrupt callback\n");
-    touched = true;
+    justTouch = true;
     touchedInProgress = true;
 }
 #endif
@@ -148,8 +147,7 @@ void TheDisplay::Setup()
     touch = gsl3680_touch();
     touch.begin(I2C_SDA_PIN, I2C_SCL_PIN, TOUCH_RST, TOUCH_INT, touchCallBack);
     touch.set_rotation(TOUCH_ROTATION);
-    touched = false;
-    touchedInProgress = false;
+    justTouch = false;
 #else
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Arcade");
@@ -170,6 +168,12 @@ void TheDisplay::Setup()
     SetTargetFPS(FPS_LIMIT);
 #endif
 #endif
+    touchedInProgress = false;
+    scrollUp = false;
+    scrollDown = false;
+    scrollDistance = 0;
+    oneClick = false;
+
     myWhite = Rgb888ToRgb565(255, 255, 255);
     myBlack = Rgb888ToRgb565(0, 0, 0);
     myGreen = Rgb888ToRgb565(0x20, 0xff, 0x20);
@@ -321,6 +325,38 @@ uint32_t TheDisplay::CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint3
     return length;
 }
 
+bool TheDisplay::Clicked()
+{
+    bool temp = oneClick;
+    oneClick = false;
+    return temp;
+}
+
+uint16_t TheDisplay::ClickPositionX()
+{
+    return touchEndX;
+}
+
+uint16_t TheDisplay::ClickPositionY()
+{
+    return touchEndY;
+}
+
+bool TheDisplay::ScrollUp()
+{
+    return scrollUp;
+}
+
+bool TheDisplay::ScrollDown()
+{
+    return scrollDown;
+}
+
+uint16_t TheDisplay::ScrollDistance()
+{
+    return 0;
+}
+
 // *******************************************************************
 
 THE_COLOR TheDisplay::GetColorFromPalette(uint8_t colorIndex, uint8_t paletteIndex)
@@ -340,18 +376,58 @@ THE_COLOR TheDisplay::GetColorFromPalette(uint8_t colorIndex, uint8_t paletteInd
     // return paletteColor2[paletteIndex];
 }
 
+void TheDisplay::TouchMove(uint16_t x, uint16_t y)
+{
+    if (!touchedInProgress)
+    {
+        touchedInProgress = true;
+        touchStart = millis();
+        touchStartX = x;
+        touchStartY = y;
+        scrollUp = false;
+        scrollDown = false;
+        MY_DEBUG(TAG, "Touch START")
+    }
+    touchEndX = x;
+    touchEndY = y;
+}
+
+void TheDisplay::TouchEnd()
+{
+    MY_DEBUG(TAG, "Touch END")
+    touchedInProgress = false;
+    touchEnd = millis();
+    unsigned long elaps = touchEnd - touchStart;
+    if (elaps < TOUCH_DELAY_CLICK)
+    {
+        oneClick = true;
+        return;
+    }
+    if (elaps > TOUCH_DELAY_SCROLL)
+    {
+        if (touchStartX > touchEndX)
+        {
+            scrollDistance = touchStartX - touchEndX;
+        }
+        else
+        {
+            scrollDistance = touchEndX - touchStartX;
+        }
+    }
+}
+
 // *******************************************************************
 
 void TheDisplay::Loop()
 {
 #ifdef ESP32P4
-    if (!touched && touchedInProgress)
+    if (!justTouch && touchedInProgress)
     {
-        if (millis() - lastTouch > TOUCH_DELAY_RELEASED)
+        if (millis() - touchStart > TOUCH_DELAY_RELEASED)
         {
             touchedInProgress = false;
             // esp_rom_printf("Touch release\n");
-            if (touchX < SCREEN_WIDTH / 2)
+            if (touchStartX < SCREEN_WIDTH / 2)
             {
                 KEY_RELEASED(BUTTON_CREDIT)
             }
@@ -362,21 +438,27 @@ void TheDisplay::Loop()
         }
         else
         {
-            if (touch.getTouch(&touchX, &touchY))
+            uint16_t tx;
+            uint16_t ty;
+            if (touch.getTouch(&tx, &ty))
             {
-                // std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
+                // std::string temp = std::to_string(touchStartX) + " / " + std::to_string(touchStartY);
                 // MY_DEBUG2TEXT(TAG, "Moving X:", temp.c_str())
+                TouchMove(tx, ty);
             }
         }
     }
-    if (touched)
+    if (justTouch)
     {
-        touched = false;
-        if (touch.getTouch(&touchX, &touchY))
+        justTouch = false;
+        uint16_t tx;
+        uint16_t ty;
+        if (touch.getTouch(&tx, &ty))
         {
-            // std::string temp = std::to_string(touchX) + " / " + std::to_string(touchY);
+            TouchMove(tx, ty);
+            // std::string temp = std::to_string(touchStartX) + " / " + std::to_string(touchStartY);
             // MY_DEBUG2TEXT(TAG, "Touch X:", temp.c_str())
-            if (touchX < SCREEN_WIDTH / 2)
+            if (touchStartX < SCREEN_WIDTH / 2)
             {
                 KEY_PRESSED(BUTTON_CREDIT)
             }
@@ -387,10 +469,10 @@ void TheDisplay::Loop()
         }
     }
 
-    // if (touchInProgress && !touched)
+    // if (touchInProgress && !justTouch)
     // {
     //     touchInProgress = false;
-    //     if (touchX < SCREEN_WIDTH / 2)
+    //     if (touchStartX < SCREEN_WIDTH / 2)
     //     {
     //         KEY_RELEASED(BUTTON_CREDIT)
     //     }
@@ -401,16 +483,16 @@ void TheDisplay::Loop()
     // }
     // else
     // {
-    //     if (touched)
+    //     if (justTouch)
     //     {
-    //         touched = false;
+    //         justTouch = false;
     //         // esp_lcd_touch_read_data(tp);
-    //         if (touch.getTouch(&touchX, &touchY))
+    //         if (touch.getTouch(&touchStartX, &touchStartY))
     //         {
     //             if (!touchInProgress)
     //             {
     //                 touchInProgress = true;
-    //                 if (touchX < SCREEN_WIDTH / 2)
+    //                 if (touchStartX < SCREEN_WIDTH / 2)
     //                 {
     //                     KEY_PRESSED(BUTTON_CREDIT)
     //                 }
@@ -452,6 +534,39 @@ void TheDisplay::Loop()
         mustExit = true;
         CloseWindow();
         return;
+    }
+    // TOUCH
+    int tCount = GetTouchPointCount();
+    if (tCount > MAX_TOUCH_POINTS)
+        tCount = MAX_TOUCH_POINTS;
+    for (int i = 0; i < tCount; ++i)
+        touchPositions[i] = GetTouchPosition(i);
+    if (tCount > 0)
+    {
+        // touchPositions[0] = GetTouchPosition(0);
+        TouchMove(touchPositions[0].x, touchPositions[0].y);
+    }
+    else
+    {
+        if (touchedInProgress)
+            TouchEnd();
+    }
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        Vector2 pos = GetMousePosition();
+        TouchMove(pos.x, pos.y);
+    }
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
+    {
+        if (touchedInProgress)
+            TouchEnd();
+    }
+
+    if (IsKeyPressed(KEY_Q))
+    {
+        nextGame = 0;
+        exitGame = true;
     }
     if (IsKeyPressed(KEY_G))
     {

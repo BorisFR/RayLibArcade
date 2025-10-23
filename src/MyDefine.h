@@ -40,6 +40,8 @@ enum Buttons
 #define SIZEOF(arr) sizeof(arr) / sizeof(*arr)
 
 extern uint8_t currentGame;
+extern bool exitGame;
+extern uint8_t nextGame;
 
 #define MAX_Z80_CPU 3
 

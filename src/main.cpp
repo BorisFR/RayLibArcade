@@ -20,35 +20,12 @@ TheDisplay display = TheDisplay();
 #include "machines/MachineDriverxxx.hpp"
 #endif
 TheGame *game;
-uint8_t countGames = 0;
 
-void setup()
+//
+// Start a game
+//
+void StartGame()
 {
-  MY_DEBUG(TAG, "*** ESP Arcade");
-  display.Setup();
-  sdCard.Setup();
-
-  uint8_t countGames = 0;
-  bool finish = false;
-  while (!finish)
-  {
-    if (allGames[countGames].machineType == -1)
-    {
-      finish = true;
-      continue;
-    }
-    MY_DEBUG2TEXT(TAG, "Available:", allGames[countGames].name);
-    countGames++;
-  }
-  if (countGames == 0)
-  {
-    MY_DEBUG(TAG, "There is no game!")
-    return;
-  }
-  //
-  // Start a game
-  //
-  currentGame = 0;
 #ifdef ESP32P4
 #else
   display.ChangeTitle(GAME_NAME);
@@ -100,6 +77,31 @@ void setup()
   //   display.DisplayPng(0, 0);
 }
 
+void setup()
+{
+  MY_DEBUG(TAG, "*** ESP Arcade");
+  display.Setup();
+  sdCard.Setup();
+  bool finish = false;
+  while (!finish)
+  {
+    if (allGames[countGames].machineType == -1)
+    {
+      finish = true;
+      continue;
+    }
+    MY_DEBUG2TEXT(TAG, "Available:", allGames[countGames].name);
+    countGames++;
+  }
+  if (countGames == 0)
+  {
+    MY_DEBUG(TAG, "There is no game!")
+    return;
+  }
+  currentGame = 0;
+  StartGame();
+}
+
 void loop()
 {
   if (game->IsReady())
@@ -107,10 +109,22 @@ void loop()
     game->Loop(display);
   }
   display.Loop();
+  if (display.Clicked())
+  {
+    keyPressed[BUTTON_START] = true;
+    game->KeyChange(BUTTON_START);
+  }
   for (uint8_t k = 0; k < BUTTON_END; k++)
   {
     if (IsKeyChanged(k))
       game->KeyChange(k);
+  }
+  if (exitGame)
+  {
+    MY_DEBUG2(TAG, "Change game to", nextGame)
+    delete game;
+    currentGame = nextGame;
+    StartGame();
   }
 }
 

@@ -128,7 +128,7 @@ TheSdCard::~TheSdCard()
         pngWidth = 0;
         pngHeight = 0;
         pngMemorySize = 0;
-        free(pngImage);
+        FREE(pngImage);
     }
 }
 
@@ -294,7 +294,7 @@ bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t
     if (result != lSize)
     {
         MY_DEBUG(TAG, "File reading error");
-        free(buffer);
+        FREE(buffer);
         return false;
     }
     MY_DEBUG2(TAG, "Transfert to:", offset);
@@ -302,7 +302,7 @@ bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t
     {
         toMemory[i + offset] = buffer[i];
     }
-    free(buffer);
+    FREE(buffer);
 #endif
     return true;
 }
@@ -341,8 +341,9 @@ bool TheSdCard::LoadPngFile(const char *filename)
 // }
 // png.close();
 #else
-    if (pngWidth + pngHeight > 0)
-        free(pngImage);
+    if (pngWidth + pngHeight > 0) {
+        FREE(pngImage);
+    }
     std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
     const char *fname = fullPath.c_str();
     MY_DEBUG2TEXT(TAG, "Loading PNG file:", fname);
@@ -389,8 +390,9 @@ bool TheSdCard::LoadPngFile(const char *filename)
 #ifdef USE_LIB_JPG
 bool TheSdCard::LoadJpgFile(const char *filename)
 {
-    if (pngWidth + pngHeight > 0)
-        free(pngImage);
+    if (pngWidth + pngHeight > 0){
+        FREE(pngImage);
+    }
 
     const char *fname;
 #ifdef ESP32P4

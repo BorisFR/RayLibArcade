@@ -1,5 +1,7 @@
 #include "TheMemory.h"
 
+uint8_t countGames = 0;
+
 uint8_t *videoram;
 int videoram_size;
 uint8_t *colorram;

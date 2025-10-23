@@ -112,9 +112,9 @@
         keyChanged[button] = true;  \
     }
 
- #define DEBUG_DISPLAY_COLOR
- #define DEBUG_DISPLAY_PALETTE
- #define DEBUG_DISPLAY_GFX
+#define DEBUG_DISPLAY_COLOR
+#define DEBUG_DISPLAY_PALETTE
+#define DEBUG_DISPLAY_GFX
 // #define DEBUG_DISPLAY_TILES
 // #define DEBUG_DISPLAY_SPRITES
 
@@ -124,10 +124,15 @@
 // #define NO_FPS_ON_CONSOLE
 #else
 #define FPS_LIMIT 60
-//#define LIMIT_FPS
- //#define NO_FPS
+// #define LIMIT_FPS
+// #define NO_FPS
 #define NO_FPS_ON_CONSOLE
 #endif
+
+#define TOUCH_DELAY_RELEASED 100
+
+#define TOUCH_DELAY_CLICK 50
+#define TOUCH_DELAY_SCROLL 150
 
 class TheDisplay
 {
@@ -148,6 +153,13 @@ public:
     bool CreateBackground();
     uint32_t CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint32_t height);
 
+    bool Clicked();
+    uint16_t ClickPositionX();
+    uint16_t ClickPositionY();
+    bool ScrollUp();
+    bool ScrollDown();
+    uint16_t ScrollDistance();
+
 #ifdef ESP32P4
     THE_COLOR ConvertRGB565ToRGB888(uint16_t color565);
 #else
@@ -158,8 +170,8 @@ public:
     void Clear();
     void BeginWrite();
     void EndWrite();
-    //void DrawPng(uint8_t *pngImage, int16_t width, int16_t height);
-    //void Pixel(uint16_t x, uint16_t y, uint16_t color);
+    // void DrawPng(uint8_t *pngImage, int16_t width, int16_t height);
+    // void Pixel(uint16_t x, uint16_t y, uint16_t color);
 
     void Print(std::string text, uint32_t x, uint32_t y);
     Color ConvertRGB565ToRGB888(uint16_t color565);
@@ -203,8 +215,8 @@ private:
     // esp_lcd_panel_io_handle_t tp_io_handle = NULL;
     // esp_lcd_touch_handle_t touch_handle;
     gsl3680_touch touch;
-    uint16_t touchX;
-    uint16_t touchY;
+    // uint16_t touchX;
+    // uint16_t touchY;
 #else
     Image fb_image;
     Color *pixels;
@@ -215,9 +227,22 @@ private:
     uint32_t actualScreenWidth;
     uint32_t actualScreenHeight;
 
-    Vector2 touchPositions[MAX_TOUCH_POINTS] = { 0 };
+    Vector2 touchPositions[MAX_TOUCH_POINTS] = {0};
 #endif
 
+    void TouchMove(uint16_t x, uint16_t y);
+    void TouchEnd();
+
+    unsigned long touchStart;
+    unsigned long touchEnd;
+    uint16_t touchStartX;
+    uint16_t touchStartY;
+    uint16_t touchEndX;
+    uint16_t touchEndY;
+    bool scrollUp;
+    bool scrollDown;
+    uint16_t scrollDistance;
+    bool oneClick;
 };
 
 #endif // THE_DISPLAY_HPP

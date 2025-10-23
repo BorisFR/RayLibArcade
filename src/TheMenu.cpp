@@ -43,6 +43,7 @@ void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
     CHECK_IF_DIRTY_XY(SCREEN_WIDTH, SCREEN_HEIGHT)
 }
 
+uint8_t gameX = 1;
 void TheMenu::Loop(TheDisplay &display)
 {
     y += 3;
@@ -55,4 +56,11 @@ void TheMenu::Loop(TheDisplay &display)
         x -= MENU_WIDTH;
     GamePlotPixel(x, y, myRed);
     CHECK_IF_DIRTY_XY(x, y)
+    // if ((InputPorts[0] & (1 << 0x10)) != 0)
+    if (InputPorts[0] > 0)
+    {
+        TheGame::Exit(gameX++);
+        if (gameX >= countGames)
+            gameX = 1;
+    }
 }

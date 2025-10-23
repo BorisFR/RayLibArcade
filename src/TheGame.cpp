@@ -53,25 +53,24 @@ TheGame::~TheGame()
     spritesCount = 0;
     screenWidth = 0;
     screenHeight = 0;
-    free(screenData);
-    free(dirtybuffer);
-    //free(screenDataOld);
-    free(boardMemory);
-    free(gfxMemory);
-    free(colorMemory);
-    free(paletteMemory);
-    // free(tileMemory);
-    // free(spriteMemory);
-    free(soundMemory);
-    free(colorRGB);
-    if (paletteColor != NULL)
-        free(paletteColor);
+    FREE(screenData);
+    FREE(dirtybuffer);
+    // FREE(screenDataOld);
+    FREE(boardMemory);
+    FREE(gfxMemory);
+    FREE(colorMemory);
+    FREE(paletteMemory);
+    // FREE(tileMemory);
+    // FREE(spriteMemory);
+    FREE(soundMemory);
+    FREE(colorRGB);
+    FREE(paletteColor);
     // if (tileGfx != NULL)
-    //     free(tileGfx);
+    //     FREE(tileGfx);
     // if (spriteGfx != NULL)
-    //     free(spriteGfx);
-    free(memoryReadHandler);
-    free(memoryWriteHandler);
+    //     FREE(spriteGfx);
+    FREE(memoryReadHandler);
+    FREE(memoryWriteHandler);
     for (int16_t i = 0; i < countInportPortReadFunction; i++)
         delete InputPortRead[i];
     for (int16_t i = 0; i < countInportPortWriteFunction; i++)
@@ -85,7 +84,8 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
 {
     this->display = &display;
     MY_DEBUG2TEXT(TAG, GAME_NAME, "setup");
-    //froggerWater = display.Rgb888ToRgb565(0x00, 0x00, 0x47);
+    exitGame = false;
+    // froggerWater = display.Rgb888ToRgb565(0x00, 0x00, 0x47);
     if (!Initialize(display, sdCard))
     {
         MY_DEBUG2TEXT(TAG, GAME_NAME, "could not be setup");
@@ -447,7 +447,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
                     return false;
                 }
                 memset(boardMemory, 0, boardMemorySize);
-                //romptr[0] = boardMemory;
+                // romptr[0] = boardMemory;
                 toMemory = boardMemory;
                 break;
             case ROM_GFX:
@@ -547,7 +547,8 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
     if (i == 0)
     {
         MY_DEBUG(TAG, "No ROM found");
-        if(currentGame == GAME_NUMBER_IS_MENU) return true;
+        if (currentGame == GAME_NUMBER_IS_MENU)
+            return true;
         return false;
     }
     // if we need to decode encrypt rom
@@ -831,7 +832,7 @@ GfxElement *TheGame::DecodeGfxElement(const uint8_t *fromMemory, uint32_t offset
         bitmap = osd_new_bitmap(element->width, gfxLayout->total * element->height, 8);
         if (bitmap == 0)
         {
-            free(element);
+            FREE(element);
             return 0;
         }
     }
@@ -888,14 +889,14 @@ osd_bitmap *TheGame::osd_new_bitmap(int width, int height, int depth) // ASG 980
         uint8_t *bitmapLines = (uint8_t *)malloc((height + 2 * safety) * rowlen);
         if (bitmapLines == 0)
         {
-            free(bitmap);
+            FREE(bitmap);
             return 0;
         }
         bitmap->line = (uint8_t **)malloc(height * sizeof(uint8_t *));
         if (bitmap->line == 0)
         {
-            free(bitmapLines);
-            free(bitmap);
+            FREE(bitmapLines);
+            FREE(bitmap);
             return 0;
         }
         for (i = 0; i < height; i++)
@@ -963,4 +964,10 @@ void TheGame::KeyChange(uint8_t button)
         machineInputPort.InputPortUpdate(keyPort[button], keyBit[button], keyValuePressed[button]);
     }
     // MY_DEBUG2(TAG, "KEY after", InputPorts[keyPort[button]])
+}
+
+void TheGame::Exit(uint8_t next)
+{
+    exitGame = true;
+    nextGame = next;
 }

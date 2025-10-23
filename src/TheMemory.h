@@ -5,6 +5,8 @@
 
 #include "MyDefine.h"
 
+extern uint8_t countGames;
+
 #define LOW 0
 #define HIGH 1
 
@@ -263,6 +265,9 @@ extern "C"
 	extern uint32_t screenDirtyMinY;
 	extern uint32_t screenDirtyMaxX;
 	extern uint32_t screenDirtyMaxY;
+
+
+	#define FREE(x) {if(x != nullptr) { free(x); } x = nullptr;}
 
 	// extern int readbit(const uint8_t *src,int bitnum);
 	// static int readbit(const uint8_t *src, int bitnum)
