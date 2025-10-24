@@ -8,6 +8,7 @@
 #include <sys/time.h>
 #ifdef ESP32P4
 #include "esp_log.h"
+#include <esp_timer.h>
 #else
 #include <stdio.h>
 #endif

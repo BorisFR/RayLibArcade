@@ -1,18 +1,16 @@
 #include "TheDisplay.hpp"
 
 bool justTouch;
-bool touchedInProgress = false;
 
 #ifdef ESP32P4
-unsigned long lastTouch = 0;
 
 void touchCallBack(esp_lcd_touch_handle_t tp)
 {
-    if (touchedInProgress)
-        return;
+    // if (touchedInProgress)
+    //     return;
     // esp_rom_printf("Touch interrupt callback\n");
     justTouch = true;
-    touchedInProgress = true;
+    // touchedInProgress = true;
 }
 #endif
 
@@ -66,8 +64,9 @@ void TheDisplay::Setup()
     .bus_id = 0,                                 \
     .num_data_lanes = 2,                         \
     .phy_clk_src = MIPI_DSI_PHY_CLK_SRC_DEFAULT, \
-    .lane_bit_rate_mbps = 1000,                  \
-}
+    .lane_bit_rate_mbps = 1400,                  \
+} // before: lane_bit_rate_mbps=1000
+    // formula: https://docs.espressif.com/projects/esp-iot-solution/en/latest/display/lcd/mipi_dsi_lcd.html
     esp_lcd_dsi_bus_config_t bus_config = ILI9881C_PANEL_BUS_DSI_2CH_CONFIG();
     esp_lcd_new_dsi_bus(&bus_config, &mipi_dsi_bus);
     ESP_LOGI(TAG, "Install panel IO");
@@ -147,7 +146,7 @@ void TheDisplay::Setup()
     touch = gsl3680_touch();
     touch.begin(I2C_SDA_PIN, I2C_SCL_PIN, TOUCH_RST, TOUCH_INT, touchCallBack);
     touch.set_rotation(TOUCH_ROTATION);
-    justTouch = false;
+    // justTouch = false;
 #else
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Raylib Arcade");
@@ -283,13 +282,21 @@ void TheDisplay::DisplayPng(uint32_t atX, uint32_t atY)
 
 void TheDisplay::FillScreen(THE_COLOR color)
 {
+#ifdef ESP32P4
+    THE_COLOR c = Rgb888ToRgb565(0, 100, 0); // color;
+#else
     Color c = Color{0, 100, 0, 255}; // ConvertRGB565ToRGB888(color);
+#endif
     for (uint32_t x = 0; x < SCREEN_WIDTH; x++)
     {
         for (uint32_t y = 0; y < SCREEN_HEIGHT; y++)
         {
             uint32_t pos = x + y * SCREEN_WIDTH;
+#ifdef ESP32P4
+            fbs[currentFrameBuffer][pos] = c;
+#else
             pixels[pos] = c;
+#endif
         }
     }
     // memset(screenData, color, screenLength);
@@ -313,7 +320,7 @@ bool TheDisplay::CreateBackground()
     memset(pngImage, 0x0, pngMemorySize);
     pngWidth = SCREEN_WIDTH;
     pngHeight = SCREEN_HEIGHT;
-    //MY_DEBUG(TAG, "Background ready")
+    // MY_DEBUG(TAG, "Background ready")
     return true;
 }
 
@@ -431,9 +438,9 @@ void TheDisplay::TouchMove(uint16_t x, uint16_t y)
         scrollSpeedVertical = 0;
         scrollSpeedHorizontal = 0;
         oneClick = false;
-        //MY_DEBUG2(TAG, "Touch START:", touchStart)
-        //MY_DEBUG2(TAG, "Touch START x:", touchStartX)
-        //MY_DEBUG2(TAG, "Touch START y:", touchStartY)
+        MY_DEBUG2(TAG, "Touch START:", touchStart)
+        MY_DEBUG2(TAG, "Touch START x:", touchStartX)
+        MY_DEBUG2(TAG, "Touch START y:", touchStartY)
     }
     if (x < SCREEN_WIDTH)
         touchEndX = x;
@@ -445,13 +452,14 @@ void TheDisplay::TouchEnd()
 {
     touchedInProgress = false;
     touchEnd = millis();
-    //MY_DEBUG2(TAG, "Touch END:", touchEnd)
-    //MY_DEBUG2(TAG, "Touch END x:", touchEndX)
-    //MY_DEBUG2(TAG, "Touch END y:", touchEndY)
-    unsigned long elaps = touchEnd - touchStart;
+    MY_DEBUG2(TAG, "Touch END:", touchEnd)
+    MY_DEBUG2(TAG, "Touch END x:", touchEndX)
+    MY_DEBUG2(TAG, "Touch END y:", touchEndY)
+    int elaps = (int)(touchEnd - touchStart);
+    MY_DEBUG2(TAG, "Touch END duration:", elaps)
     if (elaps < TOUCH_DELAY_CLICK)
     {
-        //MY_DEBUG(TAG, "Touch CLICK")
+        MY_DEBUG(TAG, "Touch CLICK")
         oneClick = true;
         return;
     }
@@ -463,8 +471,8 @@ void TheDisplay::TouchEnd()
             scrollDistanceVertical = touchStartY - touchEndY;
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
-                scrollSpeedVertical = scrollDistanceVertical / elaps;
-                //MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollSpeedVertical)
+                scrollSpeedVertical = (uint8_t)((1.0f * scrollDistanceVertical) / (1.0f * elaps));
+                MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollSpeedVertical)
                 scrollUp = true;
             }
         }
@@ -474,7 +482,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedVertical = scrollDistanceVertical / elaps;
-                //MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollSpeedVertical)
+                MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollSpeedVertical)
                 scrollDown = true;
             }
         }
@@ -484,7 +492,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedHorizontal = scrollDistanceVertical / elaps;
-                //MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollSpeedHorizontal)
+                MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollSpeedHorizontal)
                 scrollLeft = true;
             }
         }
@@ -494,7 +502,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedHorizontal = scrollDistanceVertical / elaps;
-                //MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollSpeedHorizontal)
+                MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollSpeedHorizontal)
                 scrollRight = true;
             }
         }
@@ -506,7 +514,33 @@ void TheDisplay::TouchEnd()
 void TheDisplay::Loop()
 {
 #ifdef ESP32P4
-    if (!justTouch && touchedInProgress)
+    if (justTouch)
+    {
+        justTouch = false;
+        uint16_t tx;
+        uint16_t ty;
+        if (touch.getTouch(&tx, &ty))
+        {
+            lastTouch = millis();
+            // std::string temp = std::to_string(tx) + " / " + std::to_string(ty);
+            // MY_DEBUG2TEXT(TAG, "Moving X:", temp.c_str())
+            TouchMove(tx, ty);
+        }
+        else
+        {
+            if (millis() - lastTouch > TOUCH_DELAY_RELEASED)
+                TouchEnd();
+        }
+    }
+    else
+    {
+        if (touchedInProgress)
+        {
+            if (millis() - lastTouch > TOUCH_DELAY_RELEASED)
+                TouchEnd();
+        }
+    }
+    /*if (!justTouch && touchedInProgress)
     {
         if (millis() - touchStart > TOUCH_DELAY_RELEASED)
         {
@@ -553,7 +587,7 @@ void TheDisplay::Loop()
             }
         }
     }
-
+*/
     // if (touchInProgress && !justTouch)
     // {
     //     touchInProgress = false;
@@ -744,7 +778,15 @@ void TheDisplay::Loop()
                     for (uint16_t zy = 0; zy < screenZoomY; zy++)
                     {
 #ifdef ESP32P4
-                        fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
+                        if (dirtybuffer[index] == DIRTY_TRANSPARENT)
+                        {
+                            uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
+                            fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = pngImage[p];
+                        }
+                        else
+                        {
+                            fbs[currentFrameBuffer][posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
+                        }
 #else
                         if (dirtybuffer[index] == DIRTY_TRANSPARENT)
                         {
@@ -923,7 +965,11 @@ void TheDisplay::Loop()
                             {
                                 for (uint16_t zy = 0; zy < screenZoomY; zy++)
                                 {
+#ifdef ESP32P4
+                                    fbs[currentFrameBuffer][posX + x * screenZoomX + zx + (posY + zy) * SCREEN_WIDTH] = color;
+#else
                                     pixels[posX + x * screenZoomX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
+#endif
                                 }
                             }
                         }

@@ -29,7 +29,7 @@ void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
     for (uint8_t i = 0; i < (MENU_MAX + 1); i++)
     {
         PNG_PTR_TYPE *pointer = &allEntry[index];
-        bool r = sdCard.LoadJpgFileTo(pointer, "_menu/frogger.jpg", MENU_WIDTH);
+        bool r = sdCard.LoadJpgFileTo(pointer, "/_menu/frogger.jpg", MENU_WIDTH);
         if (r == false)
         {
             return;

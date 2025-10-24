@@ -129,8 +129,10 @@
 #define NO_FPS_ON_CONSOLE
 #endif
 
-//#define TOUCH_DELAY_RELEASED 100
-
+#ifdef ESP32P4
+#define TOUCH_DELAY_RELEASED 20
+#else
+#endif
 #define TOUCH_DELAY_CLICK 80
 //#define TOUCH_DELAY_SCROLL 150
 #define TOUCH_MOVE_DISTANCE 150
@@ -239,6 +241,8 @@ private:
     void TouchMove(uint16_t x, uint16_t y);
     void TouchEnd();
 
+    bool touchedInProgress;
+    unsigned long lastTouch;
     unsigned long touchStart;
     unsigned long touchEnd;
     uint16_t touchStartX;

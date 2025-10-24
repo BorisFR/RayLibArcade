@@ -50,6 +50,7 @@ void StartGame()
     MY_DEBUG(TAG, "Error preparing game")
   }
   uint32_t zoomFactor = MIN(display.GetMaxZoomX(), display.GetMaxZoomY());
+  //zoomFactor = 1;
   if (zoomFactor == 0)
     MY_DEBUG2TEXT(TAG, "*** ERROR ***", "Zoom is 0")
   // zoomFactor=1;
