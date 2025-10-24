@@ -175,8 +175,8 @@ void TheDisplay::Setup()
     scrollRight = false;
     scrollDistanceVertical = 0;
     scrollDistanceHorizontal = 0;
-        scrollSpeedVertical=0;
-        scrollSpeedHorizontal=0;
+    scrollSpeedVertical = 0;
+    scrollSpeedHorizontal = 0;
     oneClick = false;
 
     myWhite = Rgb888ToRgb565(255, 255, 255);
@@ -349,12 +349,30 @@ uint16_t TheDisplay::ClickPositionY()
 
 bool TheDisplay::ScrollUp()
 {
-    return scrollUp;
+    bool temp = scrollUp;
+    scrollUp = false;
+    return temp;
 }
 
 bool TheDisplay::ScrollDown()
 {
-    return scrollDown;
+    bool temp = scrollDown;
+    scrollDown = false;
+    return temp;
+}
+
+bool TheDisplay::ScrollLeft()
+{
+    bool temp = scrollLeft;
+    scrollLeft = false;
+    return temp;
+}
+
+bool TheDisplay::ScrollRight()
+{
+    bool temp = scrollRight;
+    scrollRight = false;
+    return temp;
 }
 
 uint16_t TheDisplay::ScrollDistance()
@@ -405,12 +423,12 @@ void TheDisplay::TouchMove(uint16_t x, uint16_t y)
         scrollRight = false;
         scrollDistanceVertical = 0;
         scrollDistanceHorizontal = 0;
-        scrollSpeedVertical=0;
-        scrollSpeedHorizontal=0;
+        scrollSpeedVertical = 0;
+        scrollSpeedHorizontal = 0;
         oneClick = false;
-        MY_DEBUG2(TAG, "Touch START:", touchStart)
-        MY_DEBUG2(TAG, "Touch START x:", touchStartX)
-        MY_DEBUG2(TAG, "Touch START y:", touchStartY)
+        //MY_DEBUG2(TAG, "Touch START:", touchStart)
+        //MY_DEBUG2(TAG, "Touch START x:", touchStartX)
+        //MY_DEBUG2(TAG, "Touch START y:", touchStartY)
     }
     if (x < SCREEN_WIDTH)
         touchEndX = x;
@@ -422,9 +440,9 @@ void TheDisplay::TouchEnd()
 {
     touchedInProgress = false;
     touchEnd = millis();
-    MY_DEBUG2(TAG, "Touch END:", touchEnd)
-    MY_DEBUG2(TAG, "Touch END x:", touchEndX)
-    MY_DEBUG2(TAG, "Touch END y:", touchEndY)
+    //MY_DEBUG2(TAG, "Touch END:", touchEnd)
+    //MY_DEBUG2(TAG, "Touch END x:", touchEndX)
+    //MY_DEBUG2(TAG, "Touch END y:", touchEndY)
     unsigned long elaps = touchEnd - touchStart;
     if (elaps < TOUCH_DELAY_CLICK)
     {
@@ -441,7 +459,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedVertical = scrollDistanceVertical / elaps;
-                MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollSpeedVertical)
+                //MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollSpeedVertical)
                 scrollUp = true;
             }
         }
@@ -451,7 +469,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedVertical = scrollDistanceVertical / elaps;
-                MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollSpeedVertical)
+                //MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollSpeedVertical)
                 scrollDown = true;
             }
         }
@@ -461,7 +479,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedHorizontal = scrollDistanceVertical / elaps;
-                MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollSpeedHorizontal)
+                //MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollSpeedHorizontal)
                 scrollLeft = true;
             }
         }
@@ -471,7 +489,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
                 scrollSpeedHorizontal = scrollDistanceVertical / elaps;
-                MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollSpeedHorizontal)
+                //MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollSpeedHorizontal)
                 scrollRight = true;
             }
         }
@@ -679,6 +697,15 @@ void TheDisplay::Loop()
         // ClearBackground(GREEN);
     }
 #endif
+    if (ScrollLeft())
+    {
+        if (currentGame != 0)
+        {
+            nextGame = 0;
+            exitGame = true;
+        }
+    }
+
     // if(screenDirtyMinX > 0) screenDirtyMinX--;
     // if(screenDirtyMinY > 0) screenDirtyMinY--;
     // screenDirtyMaxX++;

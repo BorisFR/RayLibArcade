@@ -159,6 +159,8 @@ public:
     uint16_t ClickPositionY();
     bool ScrollUp();
     bool ScrollDown();
+    bool ScrollLeft();
+    bool ScrollRight();
     uint16_t ScrollDistance();
     uint8_t ScrollSpeedHorizontal();
     uint8_t ScrollSpeedVertical();
