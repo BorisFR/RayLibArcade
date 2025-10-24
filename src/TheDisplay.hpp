@@ -154,6 +154,7 @@ public:
     bool CreateBackground();
     uint32_t CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint32_t height);
 
+    bool TouchMoving();
     bool Clicked();
     uint16_t ClickPositionX();
     uint16_t ClickPositionY();

@@ -14,19 +14,19 @@ JPEGDEC myJpeg;
 
 static void *myOpen(const char *filename, int32_t *size)
 {
-    printf("file open: %s, ", filename);
+    //printf("file open: %s, ", filename);
     myfile = (FILE *)fopen(filename, "rb");
     fseek(myfile, 0, SEEK_END);
     *size = ftell(myfile);
     rewind(myfile);
     // fseek(myfile, 0, 0);
-    printf("size: %lu\n", *size);
+    //printf("size: %lu\n", *size);
     return &myfile;
 }
 
 static void myClose(void *handle)
 {
-    printf("file: close\n");
+    //printf("file: close\n");
     fclose(myfile);
 }
 
@@ -401,7 +401,7 @@ bool TheSdCard::LoadJpgFile(const char *filename)
     std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
 #endif
     fname = fullPath.c_str();
-    MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
+    //MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
     int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDraw);
     if (rc == JPEG_SUCCESS)
     {
@@ -410,7 +410,7 @@ bool TheSdCard::LoadJpgFile(const char *filename)
     }
     // myJpeg.setPixelType(RGB565_BIG_ENDIAN);
     pngMemorySize = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
-    printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), pngMemorySize);
+    //printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), pngMemorySize);
     pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
     if (pngImage == NULL)
     {
@@ -439,7 +439,7 @@ bool TheSdCard::LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_
     const char *fname;
     std::string fullPath = std::string(MOUNT_POINT) + filename;
     fname = fullPath.c_str();
-    MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
+    //MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
     int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDrawToUser);
     //int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, NULL);
     if (rc == JPEG_SUCCESS)
@@ -449,13 +449,7 @@ bool TheSdCard::LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_
     }
     tempWidth = lineWidth; //myJpeg.getWidth();
     uint32_t size = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
-    printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), size);
-    //image = (PNG_PTR_TYPE *)malloc(size);
-    //if (image == NULL)
-    //{
-    //    myJpeg.close();
-    //    return false;
-    //}
+    //printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), size);
     memset(image, 0xFFFF, size);
     myJpeg.setUserPointer(image);
     rc = myJpeg.decode(0, 0, 0);

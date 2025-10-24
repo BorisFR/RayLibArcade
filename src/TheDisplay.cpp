@@ -32,7 +32,7 @@ IRAM_ATTR static bool test_notify_refresh_ready(esp_lcd_panel_handle_t panel, es
 
 TheDisplay::TheDisplay()
 {
-    MY_DEBUG(TAG, "created");
+    MY_DEBUG(TAG, "created")
     mustExit = false;
 }
 
@@ -313,7 +313,7 @@ bool TheDisplay::CreateBackground()
     memset(pngImage, 0x0, pngMemorySize);
     pngWidth = SCREEN_WIDTH;
     pngHeight = SCREEN_HEIGHT;
-    MY_DEBUG(TAG, "Background ready")
+    //MY_DEBUG(TAG, "Background ready")
     return true;
 }
 
@@ -328,6 +328,11 @@ uint32_t TheDisplay::CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint3
     }
     memset(image, 0, length);
     return length;
+}
+
+bool TheDisplay::TouchMoving()
+{
+    return touchedInProgress;
 }
 
 bool TheDisplay::Clicked()
@@ -446,7 +451,7 @@ void TheDisplay::TouchEnd()
     unsigned long elaps = touchEnd - touchStart;
     if (elaps < TOUCH_DELAY_CLICK)
     {
-        MY_DEBUG(TAG, "Touch CLICK")
+        //MY_DEBUG(TAG, "Touch CLICK")
         oneClick = true;
         return;
     }

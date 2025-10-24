@@ -17,14 +17,16 @@ class TheMenu : public TheGame
 {
 
 public:
+    TheMenu();
+    ~TheMenu();
     void Setup(TheDisplay &display, TheSdCard &sdCard);
     void Loop(TheDisplay &display);
 
 protected:
 private:
     const char *TAG = "TheMenu";
-    uint32_t y;
-    uint32_t x;
+    uint16_t y;
+    uint16_t x;
     PNG_PTR_TYPE fullScreen;
     PNG_PTR_TYPE *allEntry;
 };

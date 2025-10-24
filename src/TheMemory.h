@@ -97,8 +97,8 @@ extern WriteHandler *memoryWriteHandler;
 #define PNG_PTR_TYPE uint16_t
 extern PNG_PTR_TYPE *pngImage;
 extern uint32_t pngMemorySize;
-extern uint32_t pngWidth;
-extern uint32_t pngHeight;
+extern uint16_t pngWidth;
+extern uint16_t pngHeight;
 
 #ifdef __cplusplus
 extern "C"
@@ -111,10 +111,10 @@ extern "C"
 
 	struct VisibleArea
 	{
-		uint32_t minX;
-		uint32_t maxX;
-		uint32_t minY;
-		uint32_t maxY;
+		uint16_t minX;
+		uint16_t maxX;
+		uint16_t minY;
+		uint16_t maxY;
 	};
 
 #define TRANSPARENCY_NONE 0
@@ -136,10 +136,10 @@ extern "C"
 	extern uint16_t screenPosX;
 	extern uint16_t screenPosY;
 
-	extern void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height);
-	extern void GamePlotPixel(uint32_t x, uint32_t y, THE_COLOR color);
-	extern void GameClearPixel(uint32_t x, uint32_t y);
-	extern void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
+	extern void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height);
+	extern void GamePlotPixel(uint16_t x, uint16_t y, THE_COLOR color);
+	extern void GameClearPixel(uint16_t x, uint16_t y);
+	extern void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
 
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];
@@ -196,8 +196,6 @@ extern "C"
 	// main CPU memory
 	extern uint8_t *boardMemory;
 	extern uint32_t boardMemorySize;
-	// extern uint32_t boardMemoryWriteMin;
-	// extern uint32_t boardMemoryWriteMax;
 	extern int boardMemoryRead0(int address);
 	extern int boardMemoryRead(int address);
 	extern int boardMemoryReadDecode(int address);
@@ -256,15 +254,14 @@ extern "C"
 	#define DIRTY_YES 1
 	#define DIRTY_TRANSPARENT 2
 	extern uint8_t *dirtybuffer;
-	// extern THE_COLOR *screenDataOld;
 	extern THE_COLOR *screenBitmap;
-	extern uint32_t screenWidth;
-	extern uint32_t screenHeight;
+	extern uint16_t screenWidth;
+	extern uint16_t screenHeight;
 	extern uint32_t screenLength;
-	extern uint32_t screenDirtyMinX;
-	extern uint32_t screenDirtyMinY;
-	extern uint32_t screenDirtyMaxX;
-	extern uint32_t screenDirtyMaxY;
+	extern uint16_t screenDirtyMinX;
+	extern uint16_t screenDirtyMinY;
+	extern uint16_t screenDirtyMaxX;
+	extern uint16_t screenDirtyMaxY;
 
 
 	#define FREE(x) {if(x != nullptr) { free(x); } x = nullptr;}

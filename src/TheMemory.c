@@ -12,8 +12,8 @@ int spriteram_size_2;
 
 PNG_PTR_TYPE *pngImage = NULL;
 uint32_t pngMemorySize;
-uint32_t pngWidth;
-uint32_t pngHeight;
+uint16_t pngWidth;
+uint16_t pngHeight;
 
 // *******************************************************************
 
@@ -23,7 +23,7 @@ uint16_t screenPosY = 0;
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;
 
-void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height)
+void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height)
 {
     for (uint8_t y = 0; y < height; y++)
     {
@@ -52,14 +52,14 @@ void GameScrollLine(uint32_t line, uint32_t scroll, uint16_t height)
     }
 }
 
-void GamePlotPixel(uint32_t x, uint32_t y, THE_COLOR color)
+void GamePlotPixel(uint16_t x, uint16_t y, THE_COLOR color)
 {
     uint32_t index = x + y * screenWidth;
     screenData[index] = color;
     dirtybuffer[index] = DIRTY_YES;
 }
 
-void GameClearPixel(uint32_t x, uint32_t y)
+void GameClearPixel(uint16_t x, uint16_t y)
 {
     uint32_t index = x + y * screenWidth;
     // uint32_t p = x + screenPosX + (y + screenPosY) * pngWidth;
@@ -68,7 +68,7 @@ void GameClearPixel(uint32_t x, uint32_t y)
     dirtybuffer[index] = DIRTY_TRANSPARENT;
 }
 
-void GameDrawElement(THE_COLOR *theScreen, uint32_t atX, uint32_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
+void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
 {
     if (flipX && flipY)
     { // FLIP X & FLIP Y
@@ -448,10 +448,10 @@ THE_COLOR *screenData = NULL;
 uint8_t *dirtybuffer = NULL;
 // THE_COLOR *screenDataOld = NULL;
 THE_COLOR *screenBitmap = NULL;
-uint32_t screenWidth;
-uint32_t screenHeight;
+uint16_t screenWidth;
+uint16_t screenHeight;
 uint32_t screenLength;
-uint32_t screenDirtyMinX;
-uint32_t screenDirtyMinY;
-uint32_t screenDirtyMaxX;
-uint32_t screenDirtyMaxY;
+uint16_t screenDirtyMinX;
+uint16_t screenDirtyMinY;
+uint16_t screenDirtyMaxX;
+uint16_t screenDirtyMaxY;
