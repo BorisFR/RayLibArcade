@@ -160,6 +160,8 @@ public:
     bool ScrollUp();
     bool ScrollDown();
     uint16_t ScrollDistance();
+    uint8_t ScrollSpeedHorizontal();
+    uint8_t ScrollSpeedVertical();
 
 #ifdef ESP32P4
     THE_COLOR ConvertRGB565ToRGB888(uint16_t color565);
@@ -246,6 +248,8 @@ private:
     bool scrollRight;
     uint16_t scrollDistanceVertical;
     uint16_t scrollDistanceHorizontal;
+    uint8_t scrollSpeedVertical;
+    uint8_t scrollSpeedHorizontal;
     bool oneClick;
 };
 

@@ -175,6 +175,8 @@ void TheDisplay::Setup()
     scrollRight = false;
     scrollDistanceVertical = 0;
     scrollDistanceHorizontal = 0;
+        scrollSpeedVertical=0;
+        scrollSpeedHorizontal=0;
     oneClick = false;
 
     myWhite = Rgb888ToRgb565(255, 255, 255);
@@ -360,6 +362,16 @@ uint16_t TheDisplay::ScrollDistance()
     return 0;
 }
 
+uint8_t TheDisplay::ScrollSpeedHorizontal()
+{
+    return scrollSpeedHorizontal;
+}
+
+uint8_t TheDisplay::ScrollSpeedVertical()
+{
+    return scrollSpeedVertical;
+}
+
 // *******************************************************************
 
 THE_COLOR TheDisplay::GetColorFromPalette(uint8_t colorIndex, uint8_t paletteIndex)
@@ -393,6 +405,8 @@ void TheDisplay::TouchMove(uint16_t x, uint16_t y)
         scrollRight = false;
         scrollDistanceVertical = 0;
         scrollDistanceHorizontal = 0;
+        scrollSpeedVertical=0;
+        scrollSpeedHorizontal=0;
         oneClick = false;
         MY_DEBUG2(TAG, "Touch START:", touchStart)
         MY_DEBUG2(TAG, "Touch START x:", touchStartX)
@@ -426,8 +440,8 @@ void TheDisplay::TouchEnd()
             scrollDistanceVertical = touchStartY - touchEndY;
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
-                MY_DEBUG(TAG, "Touch SCROLL UP")
-                MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollDistanceVertical / elaps)
+                scrollSpeedVertical = scrollDistanceVertical / elaps;
+                MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollSpeedVertical)
                 scrollUp = true;
             }
         }
@@ -436,8 +450,8 @@ void TheDisplay::TouchEnd()
             scrollDistanceVertical = touchEndY - touchStartY;
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
-                MY_DEBUG(TAG, "Touch SCROLL DOWN")
-                MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollDistanceVertical / elaps)
+                scrollSpeedVertical = scrollDistanceVertical / elaps;
+                MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollSpeedVertical)
                 scrollDown = true;
             }
         }
@@ -446,8 +460,8 @@ void TheDisplay::TouchEnd()
             scrollDistanceHorizontal = touchStartX - touchEndX;
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
-                MY_DEBUG(TAG, "Touch SCROLL LEFT")
-                MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollDistanceHorizontal / elaps)
+                scrollSpeedHorizontal = scrollDistanceVertical / elaps;
+                MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollSpeedHorizontal)
                 scrollLeft = true;
             }
         }
@@ -456,8 +470,8 @@ void TheDisplay::TouchEnd()
             scrollDistanceHorizontal = touchEndX - touchStartX;
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
-                MY_DEBUG(TAG, "Touch SCROLL RIGHT")
-                MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollDistanceHorizontal / elaps)
+                scrollSpeedHorizontal = scrollDistanceVertical / elaps;
+                MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollSpeedHorizontal)
                 scrollRight = true;
             }
         }
