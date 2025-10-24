@@ -10,7 +10,7 @@ TheMenu::TheMenu()
 TheMenu::~TheMenu()
 {
     MY_DEBUG(TAG, "destroyed")
-    //FREE(allEntry)
+    FREE(allEntry)
 }
 void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
 {
@@ -19,14 +19,14 @@ void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
     display.CreateBackground();
     uint32_t deltaY = MENU_LEFT + MENU_TOP * SCREEN_WIDTH;
     uint32_t size = MENU_WIDTH * MENU_HEIGHT * sizeof(PNG_PTR_TYPE);
-    allEntry = (PNG_PTR_TYPE *)malloc((MENU_MAX + 0) * size);
+    allEntry = (PNG_PTR_TYPE *)malloc((MENU_MAX + 1) * size);
     if (allEntry == NULL)
     {
         MY_DEBUG(TAG, "Error allocating allEntry memory");
         return;
     }
     uint32_t index = 0;
-    for (uint8_t i = 0; i < (MENU_MAX + 0); i++)
+    for (uint8_t i = 0; i < (MENU_MAX + 1); i++)
     {
         PNG_PTR_TYPE *pointer = &allEntry[index];
         bool r = sdCard.LoadJpgFileTo(pointer, "_menu/frogger.jpg", MENU_WIDTH);
