@@ -5,11 +5,9 @@ const char *TAG = "Main";
 
 #include "TheSdCard.hpp"
 TheSdCard sdCard = TheSdCard();
-
 #include "TheDisplay.hpp"
 TheDisplay display = TheDisplay();
-
-#include "TheMenu.hpp"
+#include "TheMenu.hpp" // TheMenu is working as a game
 #ifdef MACHINE_8080BW
 #include "machines/MachineDriver8080bw.hpp"
 #endif

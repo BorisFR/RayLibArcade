@@ -655,7 +655,7 @@ void TheDisplay::Loop()
 
     if (IsKeyPressed(KEY_Q))
     {
-        nextGame = 0;
+        nextGame = GAME_NUMBER_IS_MENU;
         exitGame = true;
     }
     if (IsKeyPressed(KEY_G))

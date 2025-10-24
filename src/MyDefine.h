@@ -11,6 +11,8 @@
 
 #include <stdint.h>
 
+#define GAME_NUMBER_IS_MENU 0
+
 #define MACHINE_THEMENU 1
 #define MACHINE_8080BW 2
 #define MACHINE_Z80 3

@@ -13,7 +13,6 @@ extern "C"
 #endif
 
 #include "TheMenu.h"
-#define GAME_NUMBER_IS_MENU 0
 
     // *******************************************************************
     // 8080w
