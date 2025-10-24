@@ -129,10 +129,11 @@
 #define NO_FPS_ON_CONSOLE
 #endif
 
-#define TOUCH_DELAY_RELEASED 100
+//#define TOUCH_DELAY_RELEASED 100
 
 #define TOUCH_DELAY_CLICK 80
 //#define TOUCH_DELAY_SCROLL 150
+#define TOUCH_MOVE_DISTANCE 100
 
 class TheDisplay
 {
@@ -241,7 +242,10 @@ private:
     uint16_t touchEndY;
     bool scrollUp;
     bool scrollDown;
-    uint16_t scrollDistance;
+    bool scrollLeft;
+    bool scrollRight;
+    uint16_t scrollDistanceVertical;
+    uint16_t scrollDistanceHorizontal;
     bool oneClick;
 };
 
