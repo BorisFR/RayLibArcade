@@ -133,7 +133,7 @@
 
 #define TOUCH_DELAY_CLICK 80
 //#define TOUCH_DELAY_SCROLL 150
-#define TOUCH_MOVE_DISTANCE 100
+#define TOUCH_MOVE_DISTANCE 150
 
 class TheDisplay
 {

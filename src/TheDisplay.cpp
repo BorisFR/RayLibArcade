@@ -398,8 +398,10 @@ void TheDisplay::TouchMove(uint16_t x, uint16_t y)
         MY_DEBUG2(TAG, "Touch START x:", touchStartX)
         MY_DEBUG2(TAG, "Touch START y:", touchStartY)
     }
-    touchEndX = x;
-    touchEndY = y;
+    if (x < SCREEN_WIDTH)
+        touchEndX = x;
+    if (y < SCREEN_HEIGHT)
+        touchEndY = y;
 }
 
 void TheDisplay::TouchEnd()
@@ -425,6 +427,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
                 MY_DEBUG(TAG, "Touch SCROLL UP")
+                MY_DEBUG2(TAG, "Touch SCROLL UP:", scrollDistanceVertical / elaps)
                 scrollUp = true;
             }
         }
@@ -434,6 +437,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceVertical > TOUCH_MOVE_DISTANCE)
             {
                 MY_DEBUG(TAG, "Touch SCROLL DOWN")
+                MY_DEBUG2(TAG, "Touch SCROLL DOWN:", scrollDistanceVertical / elaps)
                 scrollDown = true;
             }
         }
@@ -443,6 +447,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
                 MY_DEBUG(TAG, "Touch SCROLL LEFT")
+                MY_DEBUG2(TAG, "Touch SCROLL LEFT:", scrollDistanceHorizontal / elaps)
                 scrollLeft = true;
             }
         }
@@ -452,6 +457,7 @@ void TheDisplay::TouchEnd()
             if (scrollDistanceHorizontal > TOUCH_MOVE_DISTANCE)
             {
                 MY_DEBUG(TAG, "Touch SCROLL RIGHT")
+                MY_DEBUG2(TAG, "Touch SCROLL RIGHT:", scrollDistanceHorizontal / elaps)
                 scrollRight = true;
             }
         }
