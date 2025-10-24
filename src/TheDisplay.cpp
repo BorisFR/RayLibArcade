@@ -386,7 +386,7 @@ void TheDisplay::TouchMove(uint16_t x, uint16_t y)
         touchStartY = y;
         scrollUp = false;
         scrollDown = false;
-        MY_DEBUG(TAG, "Touch START")
+        MY_DEBUG2(TAG, "Touch START:", touchStart)
     }
     touchEndX = x;
     touchEndY = y;
@@ -394,24 +394,30 @@ void TheDisplay::TouchMove(uint16_t x, uint16_t y)
 
 void TheDisplay::TouchEnd()
 {
-    MY_DEBUG(TAG, "Touch END")
     touchedInProgress = false;
     touchEnd = millis();
+    MY_DEBUG2(TAG, "Touch END", touchEnd)
     unsigned long elaps = touchEnd - touchStart;
     if (elaps < TOUCH_DELAY_CLICK)
     {
+        MY_DEBUG(TAG, "Touch CLICK")
         oneClick = true;
         return;
     }
-    if (elaps > TOUCH_DELAY_SCROLL)
+    else
+    // if (elaps > TOUCH_DELAY_SCROLL)
     {
         if (touchStartX > touchEndX)
         {
+            MY_DEBUG(TAG, "Touch SCROLL DOWN")
             scrollDistance = touchStartX - touchEndX;
+            scrollDown = true;
         }
         else
         {
+            MY_DEBUG(TAG, "Touch SCROLL UP")
             scrollDistance = touchEndX - touchStartX;
+            scrollUp = true;
         }
     }
 }
@@ -548,10 +554,15 @@ void TheDisplay::Loop()
     }
     else
     {
-        if (touchedInProgress)
-            TouchEnd();
+        // if (touchedInProgress)
+        //     TouchEnd();
     }
 
+    if (touchedInProgress)
+    {
+        Vector2 pos = GetMousePosition();
+        TouchMove(pos.x, pos.y);
+    }
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
         Vector2 pos = GetMousePosition();
