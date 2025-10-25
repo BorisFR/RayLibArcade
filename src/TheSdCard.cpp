@@ -4,13 +4,11 @@
 #include <string>
 #endif
 
+// *******************************************************************
+// pure "C" code to load JPEG file
+
 static FILE *myfile;
-#ifdef USE_LIB_PNG
-PNG myPng;
-#endif
-#ifdef USE_LIB_JPG
 JPEGDEC myJpeg;
-#endif
 
 static void *myOpen(const char *filename, int32_t *size)
 {
@@ -19,7 +17,6 @@ static void *myOpen(const char *filename, int32_t *size)
     fseek(myfile, 0, SEEK_END);
     *size = ftell(myfile);
     rewind(myfile);
-    // fseek(myfile, 0, 0);
     printf("size: %lu\n", *size);
     return &myfile;
 }
@@ -30,39 +27,6 @@ static void myClose(void *handle)
     fclose(myfile);
 }
 
-#ifdef USE_LIB_PNG
-static int64_t myReadPNG(PNGFILE *handle, uint8_t *buffer, int64_t length)
-{
-    printf("file must read: %d", length);
-    size_t x = fread(buffer, 1, length, myfile);
-    printf(" and read: %d\n", x);
-    return x;
-}
-
-static int64_t mySeekPNG(PNGFILE *handle, int64_t position)
-{
-    printf("file seek: %d\n", position);
-    // return fseek(myfile, 0, position);
-    fseek(myfile, 0, position);
-    return 1;
-}
-
-// Function to draw pixels to the display
-static int PNGDraw(PNGDRAW *pDraw)
-{
-    // printf("Width: %d, y=%d ", pDraw->iWidth, pDraw->y);
-    uint16_t lineBuffer[pDraw->iWidth];
-    myPng.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_LITTLE_ENDIAN, 0xffffffff); // PNG_RGB565_BIG_ENDIAN // PNG_RGB565_LITTLE_ENDIAN
-    uint32_t pos = pDraw->y * pDraw->iWidth;
-    pngHeight = pDraw->y;
-    pngWidth = pDraw->iWidth;
-    for (uint32_t x = 0; x < pDraw->iWidth; x++)
-        pngImage[pos++] = lineBuffer[x];
-    return 1;
-}
-#endif
-
-#ifdef USE_LIB_JPG
 static int32_t myReadJPEG(JPEGFILE *handle, uint8_t *buffer, int32_t length)
 {
     // printf("file must read: %d", length);
@@ -77,21 +41,6 @@ static int32_t mySeekJPEG(JPEGFILE *handle, int32_t position)
     return fseek(myfile, 0, position);
 }
 
-int JPEGDraw(JPEGDRAW *pDraw)
-{
-    // printf("jpeg draw: x,y=%d / %d, cx,cy = %d / %d\n", pDraw->x, pDraw->y, pDraw->iWidth, pDraw->iHeight);
-    uint32_t index = 0;
-    for (uint16_t y = pDraw->y; y < pDraw->y + pDraw->iHeight; y++)
-    {
-        for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
-        {
-            uint32_t pos = y * pngWidth + x;
-            pngImage[pos] = pDraw->pPixels[index++];
-        }
-    }
-    return 1;
-}
-
 uint32_t tempWidth = 0;
 
 int JPEGDrawToUser(JPEGDRAW *pDraw)
@@ -103,14 +52,12 @@ int JPEGDrawToUser(JPEGDRAW *pDraw)
         for (uint16_t x = pDraw->x; x < pDraw->x + pDraw->iWidth; x++)
         {
             uint32_t pos = y * tempWidth + x;
-            PNG_PTR_TYPE *p = static_cast<PNG_PTR_TYPE *>(pDraw->pUser);
+            THE_BACKGROUND_COLOR *p = static_cast<THE_BACKGROUND_COLOR *>(pDraw->pUser);
             p[pos] = pDraw->pPixels[index++];
-            //tempImage[pos] = pDraw->pPixels[index++];
         }
     }
     return 1;
 }
-#endif
 
 // *******************************************************************
 // *******************************************************************
@@ -123,13 +70,7 @@ TheSdCard::TheSdCard() { isOk = false; }
 TheSdCard::~TheSdCard()
 {
     MY_DEBUG(TAG, "destroyed")
-    if (pngWidth + pngHeight > 0)
-    {
-        pngWidth = 0;
-        pngHeight = 0;
-        pngMemorySize = 0;
-        FREE(pngImage);
-    }
+    ClearBackground();
 }
 
 // *******************************************************************
@@ -191,6 +132,19 @@ void TheSdCard::Setup()
 #endif
 #endif
     isOk = true;
+}
+
+// *******************************************************************
+
+void TheSdCard::ClearBackground()
+{
+    if (screenBackgroundWidth + screenBackgroundHeight > 0)
+    {
+        screenBackgroundWidth = 0;
+        screenBackgroundHeight = 0;
+        screenBackgroundMemorySize = 0;
+        FREE(screenBackground);
+    }
 }
 
 // *******************************************************************
@@ -309,132 +263,26 @@ bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t
 
 // *******************************************************************
 
-#ifdef USE_LIB_PNG
-bool TheSdCard::LoadPngFile(const char *filename)
+bool TheSdCard::LoadJpgFileToBackground(const char *filename)
 {
-#ifdef ESP32P4
-// png.setBuffer(NULL);
-// int rc = png.open(filename, cbPngOpen, cbPngClose, cbPngRead, cbPngSeek, cbPngData);
-// if (rc != PNG_SUCCESS)
-//{
-//     ESP_LOGI(TAG, "Failed to open PNG file: %s", filename);
-//     png.close();
-//     return false;
-// }
-// pngMemorySize = png.getWidth() * png.getHeight(); // * sizeof(PNG_PTR_TYPE);
-// ESP_LOGI(TAG, "image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d", png.getWidth(), png.getHeight(), png.getBpp(), png.getPixelType(), pngMemorySize);
-// pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
-// if (pngImage == NULL)
-//{
-//     ESP_LOGI(TAG, "Not enough memory for loading png");
-//     png.close();
-//     return false;
-// }
-//// ESP_LOGI(TAG, "Malloc ok for loading png");
-//// rc = png.decode(NULL, 0);
-// rc = png.decode(pngImage, 0);
-// if (rc != 0)
-//{
-//     Serial.printf("PNG decode failed with error code: %d\n", rc);
-//     png.close();
-//     return false;
-// }
-// png.close();
-#else
-    if (pngWidth + pngHeight > 0) {
-        FREE(pngImage);
-    }
-    std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
-    const char *fname = fullPath.c_str();
-    MY_DEBUG2TEXT(TAG, "Loading PNG file:", fname);
-    int rc = myPng.open(fname, myOpen, myClose, myReadPNG, mySeekPNG, PNGDraw);
-    // int rc = myPng.open(fname, myOpen, myClose, myRead, mySeek, NULL);
-    // int rc = jpeg.open(fname, myOpen, myClose, myRead, mySeek, JPEGDraw);
-    if (rc == PNG_SUCCESS) // JPEG_SUCCESS) // PNG_SUCCESS)
+    ClearBackground();
+    screenBackgroundMemorySize = SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(THE_BACKGROUND_COLOR);
+    screenBackground = (THE_BACKGROUND_COLOR *)malloc(screenBackgroundMemorySize);
+    if (screenBackground == NULL)
     {
-        // jpg.setPixelType(RGB565_BIG_ENDIAN);
-        // pngMemorySize = myPng.getBufferSize();
-        pngMemorySize = myPng.getWidth() * myPng.getHeight() * sizeof(PNG_PTR_TYPE);
-        printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d\n", myPng.getWidth(), myPng.getHeight(), myPng.getBpp(), myPng.getPixelType(), pngMemorySize);
-        // pngMemorySize = jpeg.getWidth() * jpeg.getHeight() * sizeof(PNG_PTR_TYPE);
-        // printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d\n", jpeg.getWidth(), jpeg.getHeight(), jpeg.getBpp(), jpeg.getPixelType(), pngMemorySize);
-        //  ESP_LOGI(TAG, "image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %d", png.getWidth(), png.getHeight(), png.getBpp(), png.getPixelType(), pngMemorySize);
-        pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
-        if (pngImage == NULL)
-        {
-            //     ESP_LOGI(TAG, "Not enough memory for loading png");
-            myPng.close();
-            return false;
-        }
-        memset(pngImage, 0xFFFF, pngMemorySize);
-        // myPng.setBuffer(pngImage);
-        // myPng.setBuffer(NULL);
-        // rc = myPng.decode(pngImage, 0);
-        rc = myPng.decode(NULL, PNG_FAST_PALETTE);
-        // rc = jpeg.decode(0, 0, 0);
-        if (rc != 0)
-        {
-            MY_DEBUG2(TAG, "PNG decode failed with error code:", rc);
-            myPng.close();
-            return false;
-        }
-        pngWidth = myPng.getWidth();
-        pngHeight = myPng.getHeight();
-        myPng.close();
-    }
-#endif
-    return true;
-}
-#endif
-
-#ifdef USE_LIB_JPG
-bool TheSdCard::LoadJpgFile(const char *filename)
-{
-    if (pngWidth + pngHeight > 0){
-        FREE(pngImage);
-    }
-
-    const char *fname;
-#ifdef ESP32P4
-    std::string fullPath = std::string(MOUNT_POINT) + std::string("/") + filename;
-#else
-    std::string fullPath = std::string(PC_PATH) + "sdcard/" + filename;
-#endif
-    fname = fullPath.c_str();
-    MY_DEBUG2TEXT(TAG, "Loading JPG file:", fname);
-    int rc = myJpeg.open(fname, myOpen, myClose, myReadJPEG, mySeekJPEG, JPEGDraw);
-    if (rc == JPEG_SUCCESS)
-    {
-        printf("Error opening JPEG\n");
+        MY_DEBUG(TAG, "Not enought memory to create background")
+        screenBackgroundMemorySize = 0;
         return false;
     }
-    // myJpeg.setPixelType(RGB565_BIG_ENDIAN);
-    pngMemorySize = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
-    //printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), pngMemorySize);
-    pngImage = (PNG_PTR_TYPE *)malloc(pngMemorySize);
-    if (pngImage == NULL)
-    {
-        //     ESP_LOGI(TAG, "Not enough memory for loading png");
-        myJpeg.close();
-        return false;
-    }
-    memset(pngImage, 0xFFFF, pngMemorySize);
-    pngWidth = myJpeg.getWidth();
-    pngHeight = myJpeg.getHeight();
-    rc = myJpeg.decode(0, 0, 0);
-    if (rc == 0)
-    {
-        MY_DEBUG2(TAG, "JPEG decode failed with error code:", rc);
-        myJpeg.close();
-        return false;
-    }
-    // printf("Dimension: %d/%d\n", pngWidth, pngHeight);
-    myJpeg.close();
-
-    return true;
+    screenBackgroundWidth = SCREEN_WIDTH;
+    screenBackgroundHeight = SCREEN_HEIGHT;
+    memset(screenBackground, 0xFFFF, screenBackgroundMemorySize);
+    return LoadJpgFileTo(screenBackground, filename, SCREEN_WIDTH);
 }
 
-bool TheSdCard::LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_t lineWidth)
+// *******************************************************************
+
+bool TheSdCard::LoadJpgFileTo(THE_BACKGROUND_COLOR *image, const char *filename, uint32_t lineWidth)
 {
     const char *fname;
     std::string fullPath = std::string(MOUNT_POINT) + filename;
@@ -447,8 +295,8 @@ bool TheSdCard::LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_
         return false;
     }
     tempWidth = lineWidth;
-    uint32_t size = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(PNG_PTR_TYPE);
-    //printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), size);
+    uint32_t size = myJpeg.getWidth() * myJpeg.getHeight() * sizeof(THE_BACKGROUND_COLOR);
+    // printf("image specs: (%d x %d), %d bpp, pixel type: %d, memorySize: %lu\n", myJpeg.getWidth(), myJpeg.getHeight(), myJpeg.getBpp(), myJpeg.getPixelType(), size);
     memset(image, 0xFFFF, size);
     myJpeg.setUserPointer(image);
     rc = myJpeg.decode(0, 0, 0);
@@ -459,5 +307,5 @@ bool TheSdCard::LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_
         return false;
     }
     myJpeg.close();
-    return true;}
-#endif
+    return true;
+}

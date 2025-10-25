@@ -49,26 +49,17 @@ TheGame::~TheGame()
     hasSprites = false;
     hasGfx = false;
     paletteColorSize = 0;
-    tilesCount = 0;
-    spritesCount = 0;
-    screenWidth = 0;
-    screenHeight = 0;
-    FREE(screenData);
-    FREE(dirtybuffer);
-    // FREE(screenDataOld);
+    screenGameWidth = 0;
+    screenGameHeight = 0;
+    FREE(screenGame);
+    FREE(screenGameDirty);
     FREE(boardMemory);
     FREE(gfxMemory);
     FREE(colorMemory);
     FREE(paletteMemory);
-    // FREE(tileMemory);
-    // FREE(spriteMemory);
     FREE(soundMemory);
     FREE(colorRGB);
     FREE(paletteColor);
-    // if (tileGfx != NULL)
-    //     FREE(tileGfx);
-    // if (spriteGfx != NULL)
-    //     FREE(spriteGfx);
     FREE(memoryReadHandler);
     FREE(memoryWriteHandler);
     for (int16_t i = 0; i < countInportPortReadFunction; i++)
@@ -85,7 +76,6 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
     this->display = &display;
     MY_DEBUG2TEXT(TAG, GAME_NAME, "setup");
     exitGame = false;
-    // froggerWater = display.Rgb888ToRgb565(0x00, 0x00, 0x47);
     if (!Initialize(display, sdCard))
     {
         MY_DEBUG2TEXT(TAG, GAME_NAME, "could not be setup");
@@ -388,41 +378,41 @@ uint32_t TheGame::GetCrc32(uint16_t offset, uint16_t length, uint8_t *fromMemory
 bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
 {
     MY_DEBUG2TEXT(TAG, "Loading all ROMs from folder:", GAME_FOLDER)
-    screenWidth = GAME_SCREEN_WIDTH;
-    screenHeight = GAME_SCREEN_HEIGHT;
-    screenDirtyMinX = screenWidth;
-    screenDirtyMinY = screenHeight;
+    screenGameWidth = GAME_SCREEN_WIDTH;
+    screenGameHeight = GAME_SCREEN_HEIGHT;
+    screenDirtyMinX = screenGameWidth;
+    screenDirtyMinY = screenGameHeight;
     screenDirtyMaxX = 0;
     screenDirtyMaxY = 0;
-    screenLength = screenWidth * screenHeight * sizeof(THE_COLOR);
-    screenData = (THE_COLOR *)malloc(screenLength);
-    if (screenData == NULL)
+    screenGameLength = screenGameWidth * screenGameHeight * sizeof(THE_COLOR);
+    screenGame = (THE_COLOR *)malloc(screenGameLength);
+    if (screenGame == NULL)
     {
         MY_DEBUG(TAG, "Error allocating screen memory");
         return false;
     }
-    memset(screenData, 0, screenLength);
-    dirtybuffer = (uint8_t *)malloc(screenLength);
-    if (dirtybuffer == NULL)
+    memset(screenGame, 0, screenGameLength);
+    screenGameDirty = (uint8_t *)malloc(screenGameLength);
+    if (screenGameDirty == NULL)
     {
-        MY_DEBUG(TAG, "Error allocating dirtybuffer memory");
+        MY_DEBUG(TAG, "Error allocating screenGameDirty memory");
         return false;
     }
-    memset(dirtybuffer, DIRTY_TRANSPARENT, screenLength);
-    // screenDataOld = (THE_COLOR *)malloc(screenLength);
-    // if (screenDataOld == NULL)
+    memset(screenGameDirty, DIRTY_TRANSPARENT, screenGameLength);
+    // screenGameOld = (THE_COLOR *)malloc(screenGameLength);
+    // if (screenGameOld == NULL)
     // {
     //     MY_DEBUG(TAG, "Error allocating old screen memory");
     //     return false;
     // }
-    // memset(screenDataOld, 0, screenLength);
-    screenBitmap = (THE_COLOR *)malloc(screenLength);
+    // memset(screenGameOld, 0, screenGameLength);
+    screenBitmap = (THE_COLOR *)malloc(screenGameLength);
     if (screenBitmap == NULL)
     {
         MY_DEBUG(TAG, "Error allocating bitmap screen memory");
         return false;
     }
-    memset(screenBitmap, 0, screenLength);
+    memset(screenBitmap, 0, screenGameLength);
     uint8_t *toMemory = NULL;
     uint8_t i = 0;
     bool finish = false;

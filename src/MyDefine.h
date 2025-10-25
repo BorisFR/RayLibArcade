@@ -11,6 +11,9 @@
 
 #include <stdint.h>
 
+#define SCREEN_WIDTH (800)
+#define SCREEN_HEIGHT (1280)
+
 #define GAME_NUMBER_IS_MENU 0
 
 #define MACHINE_THEMENU 1

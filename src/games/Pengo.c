@@ -41,7 +41,7 @@ WRITE_HANDLER(pengo_gfxbank_w)
 	if (pengo_gfx_bank != (data & 1))
 	{
 		pengo_gfx_bank = data & 1;
-		memset(dirtybuffer, 1, videoram_size);
+		memset(screenGameDirty, 1, videoram_size);
 	}
 }
 
@@ -52,7 +52,7 @@ WRITE_HANDLER(pengo_flipscreen_w)
 	if (flipscreen != (data & 1))
 	{
 		flipscreen = data & 1;
-		memset(dirtybuffer, 1, videoram_size);
+		memset(screenGameDirty, 1, videoram_size);
 	}
 }
 
@@ -234,7 +234,7 @@ void PengoRefreshScreen()
 
 		int tileIndex = boardMemory[0x8000 + offs];
 		int paletteIndex = boardMemory[0x8400 + offs] & 0x17;
-		GameDrawElement(screenData, sx * 8, sy * 8, flipscreen, flipscreen, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+		GameDrawElement(screenGame, sx * 8, sy * 8, flipscreen, flipscreen, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
 	}
 	// drawgfx(tmpbitmap,Machine->gfx[gfx_bank*2],
 	//		videoram[offs],
@@ -256,6 +256,6 @@ void PengoRefreshScreen()
 		uint8_t color = boardMemory[0x8ff0 + spriteNumber * 2 + 1] & 0x1f;
 		uint8_t flipx = temp & 1;
 		uint8_t flipy = temp & 2;
-		GameDrawElement(screenData, sx, sy, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+		GameDrawElement(screenGame, sx, sy, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
 	}
 }

@@ -91,7 +91,7 @@ void frogger_interrupt_enable_w(int offset, int data)
 //  if ((offset & 1) && frogger_attributesram[offset] != data)
 //{
 //	for (int i = offset / 2;i < videoram_size;i += 32)
-//		dirtybuffer[i] = 1;
+//		screenGameDirty[i] = 1;
 //  }
 //    // frogger_attributesram[offset] = data;
 //}
@@ -239,7 +239,7 @@ void FroggerRefreshScreen()
     visibleArea = allGames[currentGame].video.visibleArea;
     for (uint8_t l = 0; l < 32; l++)
     {
-        uint8_t scroll = froggerScrollLine[l] % screenWidth;
+        uint8_t scroll = froggerScrollLine[l] % screenGameWidth;
         GameScrollLine(l, scroll, 8);
     }
     /*
@@ -256,35 +256,35 @@ void FroggerRefreshScreen()
 */
     // better to do completly by code!
     // TODO: not good cause visiility area is not active...
-    // memcpy(screenData, screenDataOld, screenLength);
+    // memcpy(screenGame, screenGameOld, screenLength);
     //for (uint32_t i = 0; i < screenLength; i++)
-    //    screenData[i] = screenDataOld[i];
+    //    screenGame[i] = screenGameOld[i];
 
     // for (uint8_t line = 0; line < 32; line++)
     //{
-    //     int scroll = froggerScrollLine[line] % screenWidth;
+    //     int scroll = froggerScrollLine[line] % screenGameWidth;
     //     if (scroll > 0)
     //     {
-    //         // for (int x = screenWidth - scroll; x >= 0; x--)
-    //         for (int x = screenWidth - 1; x >= 0; x--)
+    //         // for (int x = screenGameWidth - scroll; x >= 0; x--)
+    //         for (int x = screenGameWidth - 1; x >= 0; x--)
     //         {
     //             if (x + scroll >= 2 * 8 && x + scroll < 30 * 81)
     //             {
     //                 for (uint8_t y = 0; y < 8; y++)
     //                 {
     //                     CHECK_IF_DIRTY_XY(x + scroll, line * 8 + y)
-    //                     // uint32_t old = screenDataOld[(x + scroll) + (line * 8 + y) * screenWidth];
-    //                     screenData[(x + scroll) + (line * 8 + y) * screenWidth] = screenDataOld[x + (line * 8 + y) * screenWidth];
-    //                     // screenDataOld[x + (line * 8 + y) * screenWidth] = old;
+    //                     // uint32_t old = screenGameOld[(x + scroll) + (line * 8 + y) * screenGameWidth];
+    //                     screenGame[(x + scroll) + (line * 8 + y) * screenGameWidth] = screenGameOld[x + (line * 8 + y) * screenGameWidth];
+    //                     // screenGameOld[x + (line * 8 + y) * screenGameWidth] = old;
     //                 }
     //             }
     //         }
     //     }
     // }
 
-    // memcpy(screenDataOld, screenData, screenLength);
+    // memcpy(screenGameOld, screenGame, screenLength);
 
-    // memcpy(screenData, screenDataOld, screenLength);
+    // memcpy(screenGame, screenGameOld, screenLength);
     //  Draw the sprites. Note that it is important to draw them exactly in this
     //  order, to have the correct priorities.
     element = allGfx[1];
@@ -311,7 +311,7 @@ void FroggerRefreshScreen()
                 //         &Machine->drv->visible_area, TRANSPARENCY_PEN, 0);
                 uint16_t tileAddress = 0xb040 + offset + 1;
                 uint8_t tileIndex = boardMemory[tileAddress] & 0x3f;
-                GameDrawElement(screenData, x, boardMemory[0xb040 + offset + 3], false, false, tileIndex, col, TRANSPARENCY_BLACK);
+                GameDrawElement(screenGame, x, boardMemory[0xb040 + offset + 3], false, false, tileIndex, col, TRANSPARENCY_BLACK);
             }
         }
     */
@@ -331,7 +331,7 @@ void FroggerRefreshScreen()
             uint8_t sx = base[3] + hoffset;
             // sx = 240 - sx;
             sy = 240 - sy;
-            GameDrawElement(screenData, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+            GameDrawElement(screenGame, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
             // if (last != color)
             // {
             //     last = color;

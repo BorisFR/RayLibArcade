@@ -78,7 +78,7 @@ void GalaxianRefreshScreen()
     // scroll
     for (uint8_t l = 0; l < 32; l++)
     {
-        uint8_t scroll = boardMemory[0x5800 + 2 * l] % screenWidth;
+        uint8_t scroll = boardMemory[0x5800 + 2 * l] % screenGameWidth;
         GameScrollLine(l, scroll, 8);
     }
     /* Draw the bullets */
@@ -93,8 +93,8 @@ void GalaxianRefreshScreen()
         int x = boardMemory[0x5860 + offs + 1];
         if (galaxianFlipY)
             y = 255 - y;
-        if (x < screenWidth - 4)
-            GameDrawElement(screenData, x, y, galaxianFlipX, galaxianFlipY, 0, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+        if (x < screenGameWidth - 4)
+            GameDrawElement(screenGame, x, y, galaxianFlipX, galaxianFlipY, 0, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
     }
     /* Draw the sprites */
     element = allGfx[1];
@@ -108,6 +108,6 @@ void GalaxianRefreshScreen()
         uint8_t flipy = base[1] & 0x80;
         uint8_t color = base[2] & 7;
         uint8_t sy = base[3];
-        GameDrawElement(screenData, sx, sy, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+        GameDrawElement(screenGame, sx, sy, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
     }
 }

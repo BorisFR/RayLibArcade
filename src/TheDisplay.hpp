@@ -45,8 +45,6 @@
 #include <string>
 
 #ifdef ESP32P4
-#define SCREEN_WIDTH (800)
-#define SCREEN_HEIGHT (1280)
 #define SCREEN_BPP (16)
 #define SCREEN_RESET_PIN (27)
 #define SCREEN_BACK_LIGHT_PIN (23) // set to -1 if not used
@@ -69,16 +67,16 @@
 
 // 1 or 2
 #define SCREEN_FRAME_BUFFER (1)
+#define FRAME fbs[currentFrameBuffer]
 #else
-#define SCREEN_WIDTH (800)
-#define SCREEN_HEIGHT (1280)
 #define SCREEN_RATIO (float)((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)
 #define WINDOW_HEIGHT (float)(800.0f)
 #define WINDOW_WIDTH ((float)WINDOW_HEIGHT * (float)SCREEN_RATIO)
+#define FRAME pixels
 #include "raylib.h"
 #endif
 
-#define MAX_TOUCH_POINTS 10
+#define MAX_TOUCH_POINTS 1
 
 #define IS_KEY_PRESSED(key, button)     \
     if (IsKeyPressed(key))              \
@@ -115,8 +113,6 @@
 #define DEBUG_DISPLAY_COLOR
 #define DEBUG_DISPLAY_PALETTE
 #define DEBUG_DISPLAY_GFX
-// #define DEBUG_DISPLAY_TILES
-// #define DEBUG_DISPLAY_SPRITES
 
 #ifdef ESP32P4
 // #define LIMIT_FPS
@@ -131,10 +127,8 @@
 
 #ifdef ESP32P4
 #define TOUCH_DELAY_RELEASED 20
-#else
 #endif
 #define TOUCH_DELAY_CLICK 80
-//#define TOUCH_DELAY_SCROLL 150
 #define TOUCH_MOVE_DISTANCE 150
 
 class TheDisplay
@@ -154,7 +148,7 @@ public:
     void FillScreen(THE_COLOR color);
 
     bool CreateBackground();
-    uint32_t CreateEmptyImage(PNG_PTR_TYPE *image, uint32_t width, uint32_t height);
+    uint32_t CreateEmptyImage(THE_BACKGROUND_COLOR *image, uint32_t width, uint32_t height);
 
     bool TouchMoving();
     bool Clicked();
@@ -164,27 +158,18 @@ public:
     bool ScrollDown();
     bool ScrollLeft();
     bool ScrollRight();
-    uint16_t ScrollDistance();
     uint8_t ScrollSpeedHorizontal();
     uint8_t ScrollSpeedVertical();
 
+    COLOR_TYPE ConvertRGB565ToRGB888(uint16_t color565);
+
 #ifdef ESP32P4
-    THE_COLOR ConvertRGB565ToRGB888(uint16_t color565);
 #else
     void ChangeTitle(std::string text);
     bool MustExit();
     void ClearRectangle(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-
-    void Clear();
-    void BeginWrite();
-    void EndWrite();
-    // void DrawPng(uint8_t *pngImage, int16_t width, int16_t height);
-    // void Pixel(uint16_t x, uint16_t y, uint16_t color);
-
     void Print(std::string text, uint32_t x, uint32_t y);
-    Color ConvertRGB565ToRGB888(uint16_t color565);
     // Color ConvertRGB888ToRGBA8888(uint32_t rgb888);
-
 #endif
     THE_COLOR Rgb888ToRgb565(uint8_t red, uint8_t green, uint8_t blue);
     THE_COLOR GetColorFromPalette(uint8_t colorIndex, uint8_t paletteIndex);
@@ -208,33 +193,23 @@ private:
     uint16_t screenZoomY = 1;
 
 #ifdef ESP32P4
-    uint8_t byte_per_pixel;
-    uint16_t *color;
-    uint16_t base_color = 0;
-    uint16_t color_index = 0;
-
     esp_ldo_channel_handle_t ldo_mipi_phy = NULL;
     esp_lcd_panel_handle_t panel_handle = NULL;
     esp_lcd_dsi_bus_handle_t mipi_dsi_bus = NULL;
     esp_lcd_panel_io_handle_t mipi_dbi_io = NULL;
     SemaphoreHandle_t refresh_finish = NULL;
-    uint16_t *fbs[SCREEN_FRAME_BUFFER];
+    COLOR_TYPE *fbs[SCREEN_FRAME_BUFFER];
     uint8_t currentFrameBuffer;
-    // esp_lcd_panel_io_handle_t tp_io_handle = NULL;
-    // esp_lcd_touch_handle_t touch_handle;
     gsl3680_touch touch;
-    // uint16_t touchX;
-    // uint16_t touchY;
 #else
     Image fb_image;
-    Color *pixels;
+    COLOR_TYPE *pixels;
     Texture2D fb_texture;
     Rectangle srcRec;
     Rectangle dstRec;
     Vector2 origin;
     uint32_t actualScreenWidth;
     uint32_t actualScreenHeight;
-
     Vector2 touchPositions[MAX_TOUCH_POINTS] = {0};
 #endif
 

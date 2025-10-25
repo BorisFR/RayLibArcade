@@ -323,7 +323,7 @@ extern "C"
 		const uint32_t screenHeight;
 		const struct VisibleArea visibleArea;
 		const uint8_t orientation;
-		void (*drawDisplay)(); // must draw screen in screendata[]
+		void (*drawDisplay)(); // must draw screen in screenGame[]
 		const struct GfxDecodeInfo *decodeInfo;
 	};
 
@@ -346,7 +346,7 @@ extern "C"
 		// const uint32_t screenWidth;
 		// const uint32_t screenHeight;
 		// const uint8_t orientation;
-		// void (*drawDisplay)(); // must draw screen in screendata[]
+		// void (*drawDisplay)(); // must draw screen in screenGame[]
 		// const struct GfxDecodeInfo *decodeInfo;
 		const unsigned long frequency;
 		const struct TheMachine machine;

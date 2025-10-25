@@ -38,6 +38,30 @@ J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipp
 - Jean-Marc Harvengt pour son teensyMame : [https://github.com/Jean-MarcHarvengt/teensyMAME](https://github.com/Jean-MarcHarvengt/teensyMAME)  
 - bitbank2 pour son décodeur de fichier JPEG : [https://github.com/bitbank2/JPEGDEC](https://github.com/bitbank2/JPEGDEC)  
 
+## Development details  
+
+Windows version use RayLib which color format is RG8888, so 32 bit.  
+ESP32P4 version use color format RGB565, so 16 bit.  
+JPeg image load from SDcard are RGB565 (16 bit).  
+Game graphics are RGB565 too.  
+Coordinates X & Y are normaly uint16_t (0 to 65535)  
+
+Screen is compose of:
+* screenBackground  
+The background image, format is RGB565, so type is THE_BACKGROUND_COLOR (uint16_t).  
+screenBackgroundWidth: 800  
+screenBackgroundHeight: 1280  
+screenBackgroundMemorySize: screenBackgroundWidth * screenBackgroundHeight * sizeof(THE_BACKGROUND_COLOR)  
+* screenGame  
+Is where the game have to draw the graphics, format is THE_COLOR (16 for ESP32-P4 or 32 bit for Windows).  
+screenGameWidth: depend of the game  
+screenGameHeight: depend of the game  
+screenGameMemorySize: screenGameWidth * screenGameHeight * sizeof(THE_COLOR)  
+In sync, screenGameDirty:  
+  * 0: not need to redraw  
+  * 1: need to redraw  
+  * 2: is now transparent and background must be show  
+
 ## Blog
 
 <details>

@@ -27,8 +27,8 @@ private:
     const char *TAG = "TheMenu";
     uint16_t y;
     uint16_t x;
-    PNG_PTR_TYPE fullScreen;
-    PNG_PTR_TYPE *allEntry;
+    THE_BACKGROUND_COLOR fullScreen;
+    THE_BACKGROUND_COLOR *allEntry;
 };
 
 #endif

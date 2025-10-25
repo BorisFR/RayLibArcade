@@ -6,8 +6,6 @@
 #include "MyDefine.h"
 
 #include "TheMemory.h"
-#define USE_LIB_JPG 1
-#undef USE_LIB_PNG
 
 #ifdef ESP32P4
 #define CONFIG_EXAMPLE_SDMMC_BUS_WIDTH_4 
@@ -35,12 +33,7 @@
 #endif
 #include <string>
 
-#ifdef USE_LIB_PNG
-#include "libpng/PNGdec.h"
-#endif
-#ifdef USE_LIB_JPG
 #include "libjpg/JPEGDEC.h"
-#endif
 
 //#define DEBUG_LIST_DIR 1
 
@@ -51,15 +44,11 @@ public:
     ~TheSdCard();
 
     void Setup();
+    void ClearBackground();
     bool IsOk();
     bool LoadFile(std::string filename, unsigned char *toMemory, uint64_t size, uint64_t offset = 0);
-#ifdef USE_LIB_PNG    
-    bool LoadPngFile(const char *filename);
-#endif    
-#ifdef USE_LIB_JPG
-    bool LoadJpgFile(const char *filename);
-    bool LoadJpgFileTo(PNG_PTR_TYPE *image, const char *filename, uint32_t lineWidth);
-#endif    
+    bool LoadJpgFileToBackground(const char *filename);
+    bool LoadJpgFileTo(THE_BACKGROUND_COLOR *image, const char *filename, uint32_t lineWidth);
 
 private:
     const char *TAG = "TheSdCard";

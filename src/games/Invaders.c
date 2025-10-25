@@ -8,7 +8,7 @@ WRITE_HANDLER(invaders_videoram_w)
         return;
     videoram[offset] = data;
     uint16_t x = offset / 32;
-    uint16_t y = screenHeight - 8 * (offset % 32);
+    uint16_t y = screenGameHeight - 8 * (offset % 32);
     DIRTY_MIN(x - 0, screenDirtyMinX)
     DIRTY_MAX(x + 1, screenDirtyMaxX)
     DIRTY_MIN(y - 8 - 0, screenDirtyMinY)

@@ -105,7 +105,7 @@ void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)
     //    return;
     // dirtyMemoryTiles[tileAddress - 0x4000] = tileIndex;
     // dirtyMemoryTiles[paletteAddress - 0x4000] = paletteIndex;
-    GameDrawElement(screenData, atX, atY, false, false, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+    GameDrawElement(screenGame, atX, atY, false, false, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
 }
 
 // *******************************************************************
@@ -184,9 +184,9 @@ void PacmanRefreshScreen()
         int16_t posY = boardMemory[addressPosition];
         addressPosition--;
         int16_t posX = boardMemory[addressPosition];
-        int32_t atX = screenWidth - posX - 1;
-        int32_t atY = screenHeight - element->height - posY;
-        // if ((atX + element->width) < element->width || atX >= (screenWidth - element->width) || atY < 0 || atY >= screenHeight)
+        int32_t atX = screenGameWidth - posX - 1;
+        int32_t atY = screenGameHeight - element->height - posY;
+        // if ((atX + element->width) < element->width || atX >= (screenGameWidth - element->width) || atY < 0 || atY >= screenGameHeight)
         //{
         //     // nothing to draw
         // }
@@ -199,8 +199,8 @@ void PacmanRefreshScreen()
             bool flipX = (state & 0x02) == 0x02;
             bool flipY = (state & 0x01) == 0x01;
             uint8_t spriteIndex = (state & 0xFC) >> 2;
-            GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
-            // GameDrawElement(screenData, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            GameDrawElement(screenGame, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+            // GameDrawElement(screenGame, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
         } // something to draw
     }
 }

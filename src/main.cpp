@@ -19,6 +19,8 @@ TheDisplay display = TheDisplay();
 #endif
 TheGame *game;
 
+// *******************************************************************
+
 //
 // Start a game
 //
@@ -58,7 +60,7 @@ void StartGame()
 
   display.FillScreen(display.Rgb888ToRgb565(255, 80, 0));
   std::string temp = "_background/" + std::string(GAME_FOLDER) + ".jpg";
-  bool bgOk = sdCard.LoadJpgFile(temp.c_str());
+  bool bgOk = sdCard.LoadJpgFileToBackground(temp.c_str());
   if (bgOk)
   {
     display.DisplayPng(0, 0);
@@ -75,6 +77,8 @@ void StartGame()
   // if (bgOk)
   //   display.DisplayPng(0, 0);
 }
+
+// *******************************************************************
 
 void setup()
 {
@@ -101,6 +105,8 @@ void setup()
   StartGame();
 }
 
+// *******************************************************************
+
 void loop()
 {
   if (game->IsReady())
@@ -126,6 +132,8 @@ void loop()
     StartGame();
   }
 }
+
+// *******************************************************************
 
 #ifdef ESP32P4
 extern "C" void app_main(void)
@@ -170,7 +178,7 @@ extern "C" void app_main(void)
   while (true)
   {
     loop();
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    //vTaskDelay(1 / portTICK_PERIOD_MS);
   }
   delete game;
 }
