@@ -40,7 +40,9 @@ J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipp
 
 ## Development details  
 
-Windows version use RayLib which color format is RG8888, so 32 bit.  
+Je me rends compte que j'ai écrit ce paragraphe en anglais... et je ne sais pas pourquoi, c'est complétement involontaire. Surement parce que j'étais entrain d'écouter de la Pop Anglaise 😊  
+
+Windows version use RayLib which color format is RG8888 (R/G/B+Alpha), so 32 bit.  
 ESP32P4 version use color format RGB565, so 16 bit.  
 JPeg image load from SDcard are RGB565 (16 bit).  
 Game graphics are RGB565 too.  
