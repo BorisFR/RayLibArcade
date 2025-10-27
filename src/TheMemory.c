@@ -23,6 +23,83 @@ uint16_t screenPosY = 0;
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;
 
+bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t spriteWidth, uint16_t spriteHeight, uint16_t tileX, uint16_t tileY, uint16_t tileWidth, uint16_t tileHeight)
+{
+    // X sprite start in the tile
+    if (spriteX >= tileX && (spriteX) < (tileX + tileWidth))
+    {
+        if (spriteY >= tileY && spriteY < (tileY + tileHeight))
+        {
+            return true;
+        }
+        else
+        {
+            if ((spriteY + spriteHeight) >= tileY && (spriteY + spriteHeight) < (tileY + tileHeight))
+            {
+                return true;
+            }
+            else
+            {
+                if ((spriteY) < tileY && (spriteY + spriteHeight) > (tileY + tileHeight))
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    else
+    {
+        // X sprite end in the tile
+        if ((spriteX + spriteWidth) >= tileX && (spriteX + spriteWidth) < (tileX + tileWidth))
+        {
+            if (spriteY >= tileY && spriteY < (tileY + tileHeight))
+            {
+                return true;
+            }
+            else
+            {
+                if ((spriteY + spriteHeight) >= tileY && (spriteY + spriteHeight) < (tileY + tileHeight))
+                {
+                    return true;
+                }
+                else
+                {
+                    if ((spriteY) < tileY && (spriteY + spriteHeight) > (tileY + tileHeight))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // X sprite start before and end after the tile
+            if (spriteX < tileX && (spriteX + spriteWidth) > (tileX + tileWidth))
+            {
+                if (spriteY >= tileY && spriteY < (tileY + tileHeight))
+                {
+                    return true;
+                }
+                else
+                {
+                    if ((spriteY + spriteHeight) >= tileY && (spriteY + spriteHeight) < (tileY + tileHeight))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        if ((spriteY) < tileY && (spriteY + spriteHeight) > (tileY + tileHeight))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
 void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height)
 {
     for (uint8_t y = 0; y < height; y++)
@@ -68,19 +145,19 @@ void GameClearPixel(uint16_t x, uint16_t y)
     screenGameDirty[index] = DIRTY_TRANSPARENT;
 }
 
-void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
+void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
 {
     if (flipX && flipY)
     { // FLIP X & FLIP Y
         for (uint16_t y = 0; y < element->height; y++)
         {
-            uint16_t tempY = atY + element->height - 1 - y;
+            uint16_t tempY = tileY + element->height - 1 - y;
             if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
             {
                 uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
                 for (uint16_t x = 0; x < element->width; x++)
                 {
-                    uint16_t tempX = atX + element->width - x;
+                    uint16_t tempX = tileX + element->width - x;
                     if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
                         CHECK_IF_DIRTY_XY(tempX, tempY)
@@ -104,19 +181,17 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flip
         }
         return;
     } // FLIP X & FLIP Y
-    // else
-    //{ // else FLIP X & FLIP Y
     if (flipX)
     { // FLIP X
         for (uint16_t y = 0; y < element->height; y++)
         {
-            uint16_t tempY = atY + y;
+            uint16_t tempY = tileY + y;
             if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
             {
                 uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
                 for (uint16_t x = 0; x < element->width; x++)
                 {
-                    uint16_t tempX = atX + element->width - x;
+                    uint16_t tempX = tileX + element->width - x;
                     if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
                         CHECK_IF_DIRTY_XY(tempX, tempY)
@@ -140,19 +215,17 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flip
         }
         return;
     } // FLIP X
-    // else
-    //{ // else FLIP X
     if (flipY)
-    {
+    { // FLIP Y
         for (uint16_t y = 0; y < element->height; y++)
         {
-            uint16_t tempY = atY + element->height - 1 - y;
+            uint16_t tempY = tileY + element->height - 1 - y;
             if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
             {
                 uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
                 for (uint16_t x = 0; x < element->width; x++)
                 {
-                    uint16_t tempX = x + atX;
+                    uint16_t tempX = x + tileX;
                     if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
                         CHECK_IF_DIRTY_XY(tempX, tempY)
@@ -176,17 +249,16 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flip
         }
         return;
     } // FLIP Y
-    // else
-    //{ // NO FLIP
+    // NO FLIP
     for (uint16_t y = 0; y < element->height; y++)
     {
-        uint16_t tempY = atY + y;
+        uint16_t tempY = tileY + y;
         if (tempY >= visibleArea.minY && tempY < visibleArea.maxY)
         {
             uint8_t *pointerLine = element->gfxdata->line[y + tileIndex * element->height];
             for (uint16_t x = 0; x < element->width; x++)
             {
-                uint16_t tempX = x + atX;
+                uint16_t tempX = x + tileX;
                 if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                 {
                     CHECK_IF_DIRTY_XY(tempX, tempY)
@@ -214,9 +286,6 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flip
             }
         }
     }
-    //} // NO FLIP
-    //} // else FLIP X
-    //} // else FLIP X & FLIP Y
 }
 
 uint8_t Z80InterruptVector[MAX_Z80_CPU];

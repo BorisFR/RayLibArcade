@@ -59,7 +59,7 @@ void StartGame()
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
 
   display.FillScreen(display.Rgb888ToRgb565(255, 80, 0));
-  std::string temp = "_background/" + std::string(GAME_FOLDER) + ".jpg";
+  std::string temp = "/_background/" + std::string(GAME_FOLDER) + ".jpg";
   bool bgOk = sdCard.LoadJpgFileToBackground(temp.c_str());
   if (bgOk)
   {
@@ -101,7 +101,7 @@ void setup()
     MY_DEBUG(TAG, "There is no game!")
     return;
   }
-  currentGame = 0;
+  currentGame = 4; // 0 menu, 1 si, ... 4 pacman
   StartGame();
 }
 

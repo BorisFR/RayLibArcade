@@ -136,6 +136,7 @@ extern "C"
 	extern uint16_t screenPosX;
 	extern uint16_t screenPosY;
 
+	extern bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t spriteWidth, uint16_t spriteHeight, uint16_t tileX, uint16_t tileY, uint16_t tileWidth, uint16_t tileHeight);
 	extern void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height);
 	extern void GamePlotPixel(uint16_t x, uint16_t y, THE_COLOR color);
 	extern void GameClearPixel(uint16_t x, uint16_t y);

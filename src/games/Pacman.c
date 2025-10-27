@@ -22,6 +22,11 @@ struct GfxLayout pacmanSpriteLayout = {
     64 * 8 /* every sprite takes 64 bytes */
 };
 
+#define PACMAN_SPRITES_NUMBER 8
+uint8_t *pacmanDirtyTiles;
+uint8_t pacmanDirtySpriteX[8];
+uint8_t pacmanDirtySpriteY[8];
+
 // *******************************************************************
 
 void pacman_interrupt_enable_w(int offset, int data) { Z80InterruptEnable[Z80CurrentCpu] = (data & 0x01) == 0x01; }
@@ -96,22 +101,68 @@ void pacman_interrupt_vector_w(int offset, int data) { Z80InterruptVector[Z80Cur
 
 void PacmanDrawTile(uint32_t offset, uint32_t atX, uint32_t atY)
 {
+    // extract info for this tile
     uint16_t tileAddress = 0x4000 + offset;
     uint16_t paletteAddress = 0x4400 + offset;
     uint8_t tileIndex = boardMemory[tileAddress];
     uint8_t paletteIndex = boardMemory[paletteAddress] & 0x7F;
-    // not possible as we have to redraw behind sprite
-    // if (dirtyMemoryTiles[tileAddress - 0x4000] == tileIndex && dirtyMemoryTiles[paletteAddress - 0x4000] == paletteIndex)
-    //    return;
-    // dirtyMemoryTiles[tileAddress - 0x4000] = tileIndex;
-    // dirtyMemoryTiles[paletteAddress - 0x4000] = paletteIndex;
+    bool mustRedraw = false;
+    // new tile at this position?
+    if (pacmanDirtyTiles[offset] != tileIndex)
+    {
+        mustRedraw = true;
+    }
+    else
+    {
+        // new color for this tile?
+        if (pacmanDirtyTiles[offset + 0x400] != paletteIndex)
+        {
+            mustRedraw = true;
+        }
+        else
+        {
+            // check if tile is where there is a sprite previously
+            // it it is the case, we force redraw
+            uint8_t i = 0;
+            while (!mustRedraw && (i < PACMAN_SPRITES_NUMBER))
+            {
+                mustRedraw = GameTestSpriteOnTile(pacmanDirtySpriteX[i], pacmanDirtySpriteY[i], 16, 16, atX, atY, 8, 8);
+                if (mustRedraw)
+                    break;
+                i++;
+            }
+        }
+    }
+    if (!mustRedraw)
+        return;
+    pacmanDirtyTiles[offset] = tileIndex;
+    pacmanDirtyTiles[offset + 0x400] = paletteIndex;
     GameDrawElement(screenGame, atX, atY, false, false, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
 }
 
 // *******************************************************************
 
+void PacmanInit()
+{
+    if (pacmanDirtyTiles)
+        free(pacmanDirtyTiles);
+    pacmanDirtyTiles = (uint8_t *)malloc(2 * 0x400);
+    memset(pacmanDirtyTiles, 0, 2 * 0x400);
+    // old position for all sprites
+    for (uint8_t i = 0; i < PACMAN_SPRITES_NUMBER; i++)
+    {
+        pacmanDirtySpriteX[i] = 0;
+        pacmanDirtySpriteY[i] = 0;
+    }
+}
+
 void PacmanRefreshScreen()
 {
+    // for (uint8_t i = 0; i < PACMAN_SPRITES_NUMBER; i++)
+    // {
+    //     CHECK_IF_DIRTY_XY(pacmanDirtySpriteX[i], pacmanDirtySpriteY[i]);
+    //     CHECK_IF_DIRTY_XY(pacmanDirtySpriteX[i] + 16, pacmanDirtySpriteY[i] + 16);
+    // }
     element = allGfx[0];
     // visibleArea = VISIBLE_AREA_FULL;
 
@@ -178,7 +229,7 @@ void PacmanRefreshScreen()
 
     element = allGfx[1];
 
-    for (uint8_t offset = 0; offset < 8; offset++) // 8 is sprites max for pacman
+    for (uint8_t offset = 0; offset < PACMAN_SPRITES_NUMBER; offset++)
     {
         uint32_t addressPosition = 0x5060 + (15 - offset * 2);
         int16_t posY = boardMemory[addressPosition];
@@ -186,21 +237,15 @@ void PacmanRefreshScreen()
         int16_t posX = boardMemory[addressPosition];
         int32_t atX = screenGameWidth - posX - 1;
         int32_t atY = screenGameHeight - element->height - posY;
-        // if ((atX + element->width) < element->width || atX >= (screenGameWidth - element->width) || atY < 0 || atY >= screenGameHeight)
-        //{
-        //     // nothing to draw
-        // }
-        // else
-        { // something to draw
-            uint32_t addressState = 0x4FFF - offset * 2;
-            uint8_t paletteIndex = boardMemory[addressState];
-            addressState--;
-            uint8_t state = boardMemory[addressState];
-            bool flipX = (state & 0x02) == 0x02;
-            bool flipY = (state & 0x01) == 0x01;
-            uint8_t spriteIndex = (state & 0xFC) >> 2;
-            GameDrawElement(screenGame, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
-            // GameDrawElement(screenGame, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
-        } // something to draw
+        pacmanDirtySpriteX[offset] = atX;
+        pacmanDirtySpriteY[offset] = atY;
+        uint32_t addressState = 0x4FFF - offset * 2;
+        uint8_t paletteIndex = boardMemory[addressState];
+        addressState--;
+        uint8_t state = boardMemory[addressState];
+        bool flipX = (state & 0x02) == 0x02;
+        bool flipY = (state & 0x01) == 0x01;
+        uint8_t spriteIndex = (state & 0xFC) >> 2;
+        GameDrawElement(screenGame, atX, atY, flipX, flipY, spriteIndex, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
     }
 }

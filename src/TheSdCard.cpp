@@ -14,6 +14,10 @@ static void *myOpen(const char *filename, int32_t *size)
 {
     printf("file open: %s, ", filename);
     myfile = (FILE *)fopen(filename, "rb");
+    if(myfile == NULL) {
+        printf(" ERROR opening file\n");
+        return NULL;
+    }
     fseek(myfile, 0, SEEK_END);
     *size = ftell(myfile);
     rewind(myfile);
@@ -276,6 +280,7 @@ bool TheSdCard::LoadJpgFileToBackground(const char *filename)
     }
     screenBackgroundWidth = SCREEN_WIDTH;
     screenBackgroundHeight = SCREEN_HEIGHT;
+    MY_DEBUG(TAG, "Cleaning memory background")
     memset(screenBackground, 0xFFFF, screenBackgroundMemorySize);
     return LoadJpgFileTo(screenBackground, filename, SCREEN_WIDTH);
 }
