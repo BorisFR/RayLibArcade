@@ -29,6 +29,7 @@ extern "C"
     extern void frogger_objram_w(int offset, int data);
     extern void frogger_sh_irqtrigger_w(int offset, int data);
 
+    extern void FroggerInit();
     extern void frogger_decode_rom();
     extern void FroggerRefreshScreen();
 
@@ -36,7 +37,7 @@ extern "C"
 }
 #endif
 
-#define FROGGER {"frogger", "Frogger", {280, 32 * 8, 32 * 8, {2 * 8, 30 * 8 - 1, 0 * 8, 32 * 8 - 1}, ORIENTATION_DEFAULT, FroggerRefreshScreen, froggerGfxDecodeInfo}, 3072000 / 60, {frogger_rom, frogger_decode_rom, frogger_readmem, frogger_writemem, frogger_input_ports, NOTHING, NOTHING}, MACHINE_Z80}
+#define FROGGER {"frogger", "Frogger", {280, 32 * 8, 32 * 8, {2 * 8, 30 * 8 - 1, 0 * 8, 32 * 8 - 1}, ORIENTATION_DEFAULT, FroggerRefreshScreen, froggerGfxDecodeInfo}, 3072000 / 60, {frogger_rom, frogger_decode_rom, frogger_readmem, frogger_writemem, frogger_input_ports, NOTHING, NOTHING, FroggerInit}, MACHINE_Z80}
 
 ROM_START(frogger_rom) // CPU 1
 ROM_REGION(0x10000)    /* 64k for code */

@@ -112,10 +112,10 @@ void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height)
             if (shiftX >= visibleArea.minX && shiftX <= visibleArea.maxX)
             {
                 THE_COLOR c = screenBitmap[x + currentLine];
-                //if (c != screenGameOld[index])
+                // if (c != screenGameOld[index])
                 {
                     screenGame[index] = c;
-                    //screenGameOld[index] = c;
+                    // screenGameOld[index] = c;
                     CHECK_IF_DIRTY_XY(shiftX, line * height + y);
                     if (c == TRANSPARENCY_BLACK_COLOR)
                     {
@@ -137,20 +137,16 @@ void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height)
 
 void GamePlotPixel(uint16_t x, uint16_t y, THE_COLOR color)
 {
-    uint32_t index = x + y * screenGameWidth;
-    //if (screenGameOld[index] == color)
-    //    return;
     CHECK_IF_DIRTY_XY(x, y)
+    uint32_t index = x + y * screenGameWidth;
     screenGame[index] = color;
     screenGameDirty[index] = DIRTY_YES;
 }
 
 void GameClearPixel(uint16_t x, uint16_t y)
 {
-    uint32_t index = x + y * screenGameWidth;
-    //if (screenGameOld[index] == myBlack)
-    //    return;
     CHECK_IF_DIRTY_XY(x, y)
+    uint32_t index = x + y * screenGameWidth;
     screenGame[index] = myBlack;
     screenGameDirty[index] = DIRTY_TRANSPARENT;
 }
@@ -173,20 +169,27 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         uint32_t index = tempX + tempY * screenGameWidth;
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        // if (screenGameOld[index] != color)
+                        CHECK_IF_DIRTY_XY(tempX, tempY)
+                        if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
-                            //screenGameOld[index] = color;
-                            CHECK_IF_DIRTY_XY(tempX, tempY)
-                            if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
-                            {
-                                theScreen[index] = replacedColor;
-                                screenGameDirty[index] = DIRTY_TRANSPARENT;
-                            }
-                            else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
-                            {
+                            theScreen[index] = replacedColor;
+                            screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        }
+                        else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
+                        {
+                            if (color != TRANSPARENCY_BLACK_COLOR)
                                 theScreen[index] = color;
-                                screenGameDirty[index] = DIRTY_YES;
-                            }
+                            screenGameDirty[index] = DIRTY_YES;
+                        }
+                        // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
+                        // {
+                        //     theScreen[index] = myBlack;
+                        //     screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        // }
+                        else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
+                        {
+                            theScreen[index] = color;
+                            screenGameDirty[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -210,13 +213,23 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
                         uint32_t index = tempX + tempY * screenGameWidth;
-                        //screenGameOld[index] = color;
                         CHECK_IF_DIRTY_XY(tempX, tempY)
                         if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
                             theScreen[index] = replacedColor;
                             screenGameDirty[index] = DIRTY_TRANSPARENT;
                         }
+                        else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
+                        {
+                            if (color != TRANSPARENCY_BLACK_COLOR)
+                                theScreen[index] = color;
+                            screenGameDirty[index] = DIRTY_YES;
+                        }
+                        // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
+                        // {
+                        //     theScreen[index] = myBlack;
+                        //     screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        // }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             theScreen[index] = color;
@@ -244,13 +257,23 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
                         uint32_t index = tempX + tempY * screenGameWidth;
-                        //screenGameOld[index] = color;
                         CHECK_IF_DIRTY_XY(tempX, tempY)
                         if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
                             theScreen[index] = replacedColor;
                             screenGameDirty[index] = DIRTY_TRANSPARENT;
                         }
+                        else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
+                        {
+                            if (color != TRANSPARENCY_BLACK_COLOR)
+                                theScreen[index] = color;
+                            screenGameDirty[index] = DIRTY_YES;
+                        }
+                        // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
+                        // {
+                        //     theScreen[index] = myBlack;
+                        //     screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        // }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
                             theScreen[index] = color;
@@ -281,7 +304,6 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     else
                         color = colorRGB[paletteIndex * 4 + pixel];
                     uint32_t index = tempX + tempY * screenGameWidth;
-                    //screenGameOld[index] = color;
                     CHECK_IF_DIRTY_XY(tempX, tempY)
                     if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                     {
@@ -290,6 +312,17 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         // uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
                         // theScreen[index] = screenBackground[bg];
                     }
+                    else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
+                    {
+                        if (color != TRANSPARENCY_BLACK_COLOR)
+                            theScreen[index] = color;
+                        screenGameDirty[index] = DIRTY_YES;
+                    }
+                    // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
+                    // {
+                    //     theScreen[index] = myBlack;
+                    //     screenGameDirty[index] = DIRTY_TRANSPARENT;
+                    // }
                     else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                     {
                         theScreen[index] = color;
@@ -331,27 +364,20 @@ void GameInitTilesAndSprites(uint16_t spritesNumber, uint8_t spriteWidth, uint8_
 void GameDrawTile(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY)
 {
     bool mustRedraw = false;
-    if (gameTilesValue[index] != value)
-    { // tile have change
+    if (gameTilesValue[index] != value || gameTilesColor[index] != color || gameTilesX[index] != x || gameTilesY[index] != y)
+    {
         mustRedraw = true;
     }
     else
     {
-        if (gameTilesColor[index] != color || gameTilesX[index] != x || gameTilesY[index] != y)
-        { // color for the tile have change
-            mustRedraw = true;
-        }
-        else
+        // check if previously there is a sprite over there
+        uint8_t i = 0;
+        while (!mustRedraw && (i < gameSpritesNumber))
         {
-            // check if previously there is a sprite over there
-            uint8_t i = 0;
-            while (!mustRedraw && (i < gameSpritesNumber))
-            {
-                mustRedraw = GameTestSpriteOnTile(gameSpritesX[i], gameSpritesY[i], x, y);
-                if (mustRedraw)
-                    break;
-                i++;
-            }
+            mustRedraw = GameTestSpriteOnTile(gameSpritesX[i], gameSpritesY[i], x, y);
+            if (mustRedraw)
+                break;
+            i++;
         }
     }
     if (!mustRedraw)
@@ -369,25 +395,32 @@ void GameDrawSprite(uint32_t index, uint8_t value, uint8_t color, uint16_t x, ui
     gameSpritesY[index] = y;
     gameSpritesValue[index] = value;
     gameSpritesColor[index] = color;
-    GameDrawElement(screenGame, x, y, flipX, flipY, value, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+    GameDrawElement(screenGame, x, y, flipX, flipY, value, color, TRANSPARENT_BLACK_TO_TILE, TRANSPARENT_NONE_COLOR);
 }
 
 void GameDrawTileOnBitmap(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY)
 {
     bool mustRedraw = false;
-    if (gameTilesValue[index] != value)
-    { // tile have change
+    if (gameTilesValue[index] != value || gameTilesColor[index] != color || gameTilesX[index] != x || gameTilesY[index] != y)
+    {
         mustRedraw = true;
     }
-    else
-    {
-        if (gameTilesColor[index] != color)
-        { // color for the tile have change
-            mustRedraw = true;
-        }
-    }
+    // else
+    //{
+    //     // check if previously there is a sprite over there
+    //     uint8_t i = 0;
+    //     while (!mustRedraw && (i < gameSpritesNumber))
+    //     {
+    //         mustRedraw = GameTestSpriteOnTile(gameSpritesX[i], gameSpritesY[i], x, y);
+    //         if (mustRedraw)
+    //             break;
+    //         i++;
+    //     }
+    // }
     if (!mustRedraw)
         return;
+    gameTilesX[index] = x;
+    gameTilesY[index] = y;
     gameTilesValue[index] = value;
     gameTilesColor[index] = color;
     GameDrawElement(screenBitmap, x, y, false, false, value, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
@@ -608,15 +641,6 @@ uint32_t paletteColorSize;
 THE_COLOR *paletteColor;
 
 struct GfxElement *element;
-
-/*// uint8_t *tileGfx;
-uint16_t tileWidth;
-uint16_t tileHeight;
-uint16_t tilesCount;
-// uint8_t *spriteGfx;
-uint16_t spriteWidth;
-uint16_t spriteHeight;
-uint16_t spritesCount;*/
 
 THE_COLOR *screenGame = NULL;
 THE_COLOR *screenGameOld = NULL;

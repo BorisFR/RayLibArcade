@@ -22,6 +22,8 @@ struct GfxLayout froggerSpriteLayout = {
         32 * 8 /* every sprite takes 32 consecutive bytes */
 };
 
+#define FROGGER_SPRITES_NUMBER 8
+
 /*
 // I/O line states
 enum line_state
@@ -96,7 +98,7 @@ void frogger_interrupt_enable_w(int offset, int data)
 //    // frogger_attributesram[offset] = data;
 //}
 
-bool froggerScreenDirty[0x0400];
+//bool froggerScreenDirty[0x0400];
 int froggerScrollLine[32];
 
 //void frogger_videoram_w(int offset, int data)
@@ -109,7 +111,7 @@ WRITE_HANDLER(frogger_videoram_w)
     videoram[offset] = data;
     // m_bg_tilemap->mark_tile_dirty(offset - 0xa800);
     //froggerScreenDirty[offset - 0xa800] = true;
-    froggerScreenDirty[offset] = true;
+    //froggerScreenDirty[offset] = true;
 }
 
 void frogger_objram_w(int offset, int data)
@@ -136,17 +138,17 @@ void frogger_objram_w(int offset, int data)
             //  	m_bg_tilemap->set_scrollx(offset >> 1, m_x_scale*data);
         }
         // odd entries control the color base for the row
-        else
-        {
-            for (address >>= 1; address < 0x0400; address += 32)
-                froggerScreenDirty[address] = true;
-            //    m_bg_tilemap->mark_tile_dirty(address);
-        }
+        //else
+        //{
+        //    for (address >>= 1; address < 0x0400; address += 32)
+        //        froggerScreenDirty[address] = true;
+        //    //    m_bg_tilemap->mark_tile_dirty(address);
+        //}
     }
-    else
-    {
-        // sprite
-    }
+    //else
+    //{
+    //    // sprite
+    //}
 }
 
 void frogger_sh_irqtrigger_w(int offset, int data)
@@ -159,6 +161,11 @@ void frogger_sh_irqtrigger_w(int offset, int data)
     // 	cpu_cause_interrupt(1,0xff);
     // }
     // last = data & 0x08;
+}
+
+void FroggerInit()
+{
+        GameInitTilesAndSprites(FROGGER_SPRITES_NUMBER, 16, 16, 0x400, 8, 8);
 }
 
 void frogger_decode_rom()
@@ -181,59 +188,20 @@ void frogger_decode_rom()
     }
 }
 
-// uint8_t maxc = 0;
-uint8_t maxc2 = 0;
-// uint8_t last = 0;
-
 void FroggerRefreshScreen()
 {
-    // videoram_size = 0x03FF;
-    // frogger_attributesram => boardMemory from 0xb000
     element = allGfx[0];
     visibleArea = VISIBLE_AREA_FULL;
-    /* for every character in the Video RAM, check if it has been modified */
-    /* since last time and update it accordingly. */
     for (int offset = 0x0400 - 1; offset >= 0; offset--)
     {
-        // if (froggerScreen[offset])
-        //{
-        // froggerScreen[offset] = false;
-        int sx = (31 - offset / 32);
-        int sy = (offset % 32);
-        int col = boardMemory[0xb000 + 2 * sy + 1] & 7;
-        col = ((col >> 1) & 0x03) | ((col << 2) & 0x04);
-        // if (col > maxc)
-        //{
-        //     maxc = col;
-        //     MY_DEBUG2("CC", "Max tile:", maxc)
-        // } // 7
-        //  drawgfx(tmpbitmap,Machine->gfx[0],
-        //  		videoram[offset],
-        //  		col + (sy <= 15 ? 8 : 0),	// blue background in the upper 128 lines
-        //  		0,0,8*sx,8*sy,
-        //  		0,TRANSPARENCY_NONE,0);
+        int atX = (31 - offset / 32);
+        int atY = (offset % 32);
+        int paletteIndex = boardMemory[0xb000 + 2 * atY + 1] & 7;
+        paletteIndex = ((paletteIndex >> 1) & 0x03) | ((paletteIndex << 2) & 0x04);
         uint16_t tileAddress = 0xa800 + offset;
         uint8_t tileIndex = boardMemory[tileAddress];
-        if (sy < 16)
-        {
-            GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_REPLACE, froggerWater);
-            // if (last != col)
-            //{
-            //     last = col;
-            //     MY_DEBUG2("CC", "Palette:", last)
-            // } // O ou 3
-        }
-        else
-        {
-            GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
-            //GameDrawElement(screenBitmap, 8 * sx, 8 * sy, false, false, tileIndex, col, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
-            // if (last != col)
-            //{
-            //     last = col;
-            //     MY_DEBUG2("CC", "Palette:", last)
-            // } // 0 ou 4
-        }
-        //}
+        // now blue (water) is on background, no need to test y position
+        GameDrawTileOnBitmap(offset, tileIndex, paletteIndex, atX * 8, atY * 8, false, false);
     }
     // scroll
     visibleArea = allGames[currentGame].video.visibleArea;
@@ -242,106 +210,27 @@ void FroggerRefreshScreen()
         uint8_t scroll = froggerScrollLine[l] % screenGameWidth;
         GameScrollLine(l, scroll, 8);
     }
-    /*
-        // copy the temporary bitmap to the screen
-        {
-            int scroll[32];
-            for (int i = 0;i < 32;i++)
-            {
-                int s = frogger_attributesram[2 * i];
-                scroll[i] = ((s << 4) & 0xf0) | ((s >> 4) & 0x0f);
-            }
-            copyscrollbitmap(bitmap,tmpbitmap,32,scroll,0,0,&Machine->drv->visible_area,TRANSPARENCY_NONE,0);
-        }
-*/
-    // better to do completly by code!
-    // TODO: not good cause visiility area is not active...
-    // memcpy(screenGame, screenGameOld, screenLength);
-    //for (uint32_t i = 0; i < screenLength; i++)
-    //    screenGame[i] = screenGameOld[i];
-
-    // for (uint8_t line = 0; line < 32; line++)
-    //{
-    //     int scroll = froggerScrollLine[line] % screenGameWidth;
-    //     if (scroll > 0)
-    //     {
-    //         // for (int x = screenGameWidth - scroll; x >= 0; x--)
-    //         for (int x = screenGameWidth - 1; x >= 0; x--)
-    //         {
-    //             if (x + scroll >= 2 * 8 && x + scroll < 30 * 81)
-    //             {
-    //                 for (uint8_t y = 0; y < 8; y++)
-    //                 {
-    //                     CHECK_IF_DIRTY_XY(x + scroll, line * 8 + y)
-    //                     // uint32_t old = screenGameOld[(x + scroll) + (line * 8 + y) * screenGameWidth];
-    //                     screenGame[(x + scroll) + (line * 8 + y) * screenGameWidth] = screenGameOld[x + (line * 8 + y) * screenGameWidth];
-    //                     // screenGameOld[x + (line * 8 + y) * screenGameWidth] = old;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    // memcpy(screenGameOld, screenGame, screenLength);
-
-    // memcpy(screenGame, screenGameOld, screenLength);
     //  Draw the sprites. Note that it is important to draw them exactly in this
     //  order, to have the correct priorities.
     element = allGfx[1];
     visibleArea = allGames[currentGame].video.visibleArea;
-    /* old sprite draw
-        for (int offset = 0x20 - 4; offset >= 0; offset -= 4)
-        {
-            if (boardMemory[0xb040 + offset + 3] != 0)
-            {
-                int x = boardMemory[0xb040 + offset];
-                x = ((x << 4) & 0xf0) | ((x >> 4) & 0x0f);
-                int col = boardMemory[0xb040 + offset + 2] & 7;
-                col = ((col >> 1) & 0x03) | ((col << 2) & 0x04);
-                if (col > maxc)
-                {
-                    maxc = col;
-                    MY_DEBUG2("C2", "Max:", maxc)
-                }
-                // drawgfx(bitmap, Machine->gfx[1],
-                //         spriteram[0xb040 + offset + 1] & 0x3f,
-                //         col,
-                //         spriteram[0xb040 + offset + 1] & 0x80, spriteram[0xb040 + offset + 1] & 0x40,
-                //         x, spriteram[0xb040 + offset + 3],
-                //         &Machine->drv->visible_area, TRANSPARENCY_PEN, 0);
-                uint16_t tileAddress = 0xb040 + offset + 1;
-                uint8_t tileIndex = boardMemory[tileAddress] & 0x3f;
-                GameDrawElement(screenGame, x, boardMemory[0xb040 + offset + 3], false, false, tileIndex, col, TRANSPARENCY_BLACK);
-            }
-        }
-    */
     for (int spriteNumber = 7; spriteNumber >= 0; spriteNumber--)
     {
         const uint8_t *base = &boardMemory[0xb040 + spriteNumber * 4];
         if (base[3])
         {
             uint8_t base0 = ((base[0] >> 4) | (base[0] << 4));
-            uint8_t sy = 240 - (base0 - (spriteNumber < 3));
-            uint16_t code = base[1] & 0x3f;
-            uint8_t flipx = base[1] & 0x40;
-            uint8_t flipy = base[1] & 0x80;
-            uint8_t color = base[2] & 7;
-            color = ((color >> 1) & 0x03) | ((color << 2) & 0x04);
+            uint8_t atY = 240 - (base0 - (spriteNumber < 3));
+            uint16_t spriteIndex = base[1] & 0x3f;
+            uint8_t flipX = base[1] & 0x40;
+            uint8_t flipY = base[1] & 0x80;
+            uint8_t paletteIndex = base[2] & 7;
+            paletteIndex = ((paletteIndex >> 1) & 0x03) | ((paletteIndex << 2) & 0x04);
             const int hoffset = 1;
-            uint8_t sx = base[3] + hoffset;
-            // sx = 240 - sx;
-            sy = 240 - sy;
-            GameDrawElement(screenGame, sy, sx, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
-            // if (last != color)
-            // {
-            //     last = color;
-            //     MY_DEBUG2("CC", "Palette:", last)
-            // } // O ou 3
-            // if (color > maxc2)
-            //{
-            //    maxc2 = color;
-            //    MY_DEBUG2("CC", "Max sprite:", maxc2)
-            //} // 7
+            uint8_t atX = base[3] + hoffset;
+            // atX = 240 - atX;
+            atY = 240 - atY;
+            GameDrawSprite(spriteNumber, spriteIndex, paletteIndex, atY, atX, flipX, flipY);
         }
     }
 }
