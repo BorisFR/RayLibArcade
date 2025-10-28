@@ -144,6 +144,7 @@ extern "C"
 	extern void GameInitTilesAndSprites(uint16_t spritesNumber, uint8_t spriteWidth, uint8_t spriteHeight, uint16_t tilesNumber, uint8_t tileWidth, uint8_t tileHeight);
 	extern void GameDrawTile(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY);
 	extern void GameDrawSprite(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY);
+	extern void GameDrawTileOnBitmap(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY);
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];
 	extern uint8_t Z80CurrentRunningCpu;
@@ -239,20 +240,11 @@ extern "C"
 	extern THE_COLOR *paletteColor;
 
 	extern struct GfxElement *element;
-
-	/*extern uint8_t *tileGfx;
-	extern uint16_t tileWidth;
-	extern uint16_t tileHeight;
-	extern uint16_t tilesCount;
-	extern uint8_t *spriteGfx;
-	extern uint16_t spriteWidth;
-	extern uint16_t spriteHeight;
-	extern uint16_t spritesCount;*/
-
 	extern uint8_t countGfxElement;
 	extern struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 	extern THE_COLOR *screenGame;
+	extern THE_COLOR *screenGameOld;
 #define DIRTY_NOT 0
 #define DIRTY_YES 1
 #define DIRTY_TRANSPARENT 2
@@ -265,8 +257,8 @@ extern "C"
 	extern uint16_t screenDirtyMinY;
 	extern uint16_t screenDirtyMaxX;
 	extern uint16_t screenDirtyMaxY;
-	// extern uint8_t *gameTilesX;
-	// extern uint8_t *gameTilesY;
+	extern uint8_t *gameTilesX;
+	extern uint8_t *gameTilesY;
 	extern uint8_t *gameTilesValue;
 	extern uint8_t *gameTilesColor;
 	extern uint16_t gameTilesNumber;

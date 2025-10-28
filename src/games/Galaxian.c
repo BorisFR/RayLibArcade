@@ -34,6 +34,8 @@ struct GfxLayout galaxianBulletlayout = {
     0          /* no use */
 };
 
+#define GALAXIAN_SPRITES_NUMBER 8
+
 void galaxian_interrupt_enable_w(int offset, int data)
 {
     if (data & 1)
@@ -52,62 +54,70 @@ void galaxian_flipy_w(int offset, int data) { galaxianFlipY = data & 1; }
 
 void GalaxianInit()
 {
+    GameInitTilesAndSprites(GALAXIAN_SPRITES_NUMBER, 16, 16, 0x400 + 0x20, 8, 8);
 }
 
 void GalaxianRefreshScreen()
 {
+    // all tiles on screen
     element = allGfx[0];
     visibleArea = VISIBLE_AREA_FULL;
-    for (int offs = 0x400 - 1; offs >= 0; offs--)
+    for (int offset = 0x400 - 1; offset >= 0; offset--)
     {
         // int sx = offs % 32;
         // int sy = offs / 32;
         // int sx = (31 - offs / 32);
         // int sy = (offs % 32);
         // Because screen is rotate
-        int sy = offs % 32;
-        int sx = offs / 32;
+        uint16_t atY = offset % 32;
+        uint16_t atX = offset / 32;
         if (!galaxianFlipX)
-            sx = 31 - sx;
+            atX = 31 - atX;
         if (galaxianFlipY)
-            sy = 31 - sy;
-        int tileIndex = boardMemory[0x5000 + offs];
-        int paletteIndex = boardMemory[0x5800 + 2 * (offs % 32) + 1] & 0x07;
-        GameDrawElement(screenBitmap, sx * 8, sy * 8, galaxianFlipX, galaxianFlipY, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+            atY = 31 - atY;
+        uint8_t tileIndex = boardMemory[0x5000 + offset];
+        uint8_t paletteIndex = boardMemory[0x5800 + 2 * (offset % 32) + 1] & 0x07;
+        // GameDrawElement(screenBitmap, atX * 8, atY * 8, galaxianFlipX, galaxianFlipY, tileIndex, paletteIndex, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+        GameDrawTileOnBitmap(offset, tileIndex, paletteIndex, atX * 8, atY * 8, galaxianFlipX, galaxianFlipY);
     }
+
+    visibleArea = allGames[currentGame].video.visibleArea;
     // scroll
     for (uint8_t l = 0; l < 32; l++)
     {
         uint8_t scroll = boardMemory[0x5800 + 2 * l] % screenGameWidth;
         GameScrollLine(l, scroll, 8);
     }
-    /* Draw the bullets */
+    // Draw the bullets
     element = allGfx[2];
     visibleArea = allGames[currentGame].video.visibleArea;
-    for (int offs = 0; offs < 0x20; offs += 4)
+    for (uint8_t offset = 0; offset < 0x20; offset += 4)
     {
-        int color = 6; // 1; /* white */
-        if (offs == 7 * 4)
-            color = 7;                                    // 0; /* yellow */
-        int y = 255 - boardMemory[0x5860 + offs + 3] - 1; // Machine->drv->gfxdecodeinfo[2].gfxlayout->width;
-        int x = boardMemory[0x5860 + offs + 1];
+        uint8_t paletteIndex = 6; // 1; /* white */
+        if (offset == 7 * 4)
+            paletteIndex = 7;                                      // 0; /* yellow */
+        uint16_t atY = 255 - boardMemory[0x5860 + offset + 3] - 1; // Machine->drv->gfxdecodeinfo[2].gfxlayout->width;
+        uint16_t atX = boardMemory[0x5860 + offset + 1];
         if (galaxianFlipY)
-            y = 255 - y;
-        if (x < screenGameWidth - 4)
-            GameDrawElement(screenGame, x, y, galaxianFlipX, galaxianFlipY, 0, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+            atY = 255 - atY;
+        if (atX < screenGameWidth - 4)
+        {
+            //GameDrawElement(screenGame, atX, atY, galaxianFlipX, galaxianFlipY, 0, paletteIndex, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+            GameDrawTile(0x400 + offset, 0, paletteIndex, atX, atY, galaxianFlipX, galaxianFlipY);
+        }
     }
-    /* Draw the sprites */
+    // all sprites
     element = allGfx[1];
     visibleArea = allGames[currentGame].video.visibleArea;
     for (int spriteNumber = 7; spriteNumber >= 0; spriteNumber--)
     {
         const uint8_t *base = &boardMemory[0x5840 + spriteNumber * 4];
-        uint8_t sx = base[0];
-        uint16_t code = base[1] & 0x3f;
-        uint8_t flipx = base[1] & 0x40;
-        uint8_t flipy = base[1] & 0x80;
-        uint8_t color = base[2] & 7;
-        uint8_t sy = base[3];
-        GameDrawElement(screenGame, sx, sy, flipx, flipy, code, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
+        uint8_t atX = base[0];
+        uint16_t spriteIndex = base[1] & 0x3f;
+        uint8_t flipX = base[1] & 0x40;
+        uint8_t flipY = base[1] & 0x80;
+        uint8_t paletteIndex = base[2] & 7;
+        uint16_t atY = base[3];
+        GameDrawSprite(spriteNumber, spriteIndex, paletteIndex, atX, atY, flipX, flipY);
     }
 }

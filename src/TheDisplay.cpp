@@ -128,8 +128,8 @@ void TheDisplay::Setup()
     refresh_finish = xSemaphoreCreateBinary();
     esp_lcd_dpi_panel_register_event_callbacks(panel_handle, &cbs, refresh_finish);
 
-    //uint8_t byte_per_pixel = (SCREEN_BPP + 7) / 8;
-    // printf("Byte per pixel: %d\n", byte_per_pixel);
+    // uint8_t byte_per_pixel = (SCREEN_BPP + 7) / 8;
+    //  printf("Byte per pixel: %d\n", byte_per_pixel);
 #if SCREEN_FRAME_BUFFER == 1
     esp_lcd_dpi_panel_get_frame_buffer(panel_handle, SCREEN_FRAME_BUFFER, (void **)&fbs[0]); // SCREEN_FRAME_BUFFER == 1
 #else
@@ -656,53 +656,52 @@ void TheDisplay::Loop()
     if (screenDirtyMaxY > screenGameHeight)
         screenDirtyMaxY = screenGameHeight;
     //  DRAW SCREEN
-    uint32_t index = 0;
     for (uint32_t y = screenDirtyMinY; y < screenDirtyMaxY; y++)
     {
         uint16_t posY = screenPosY + y * screenZoomY;
+        uint32_t index = y * screenGameWidth + screenDirtyMinX;
         for (uint32_t x = screenDirtyMinX; x < screenDirtyMaxX; x++)
         {
-            index = y * screenGameWidth + x;
-            if (screenGameDirty[index])
+            if (screenGameDirty[index] != DIRTY_NOT)
             {
                 uint16_t posX = screenPosX + x * screenZoomX;
-                THE_COLOR color = screenGame[index];
-#ifndef ESP32P4
-                // Color pixelColor = GetColor(color);
-                Color pixelColor = ConvertRGB565ToRGB888(color);
-#endif
-                for (uint16_t zx = 0; zx < screenZoomX; zx++)
+                //if (screenGame[index] != screenGameOld[index])
                 {
-                    for (uint16_t zy = 0; zy < screenZoomY; zy++)
-                    {
+                    screenGameOld[index] = screenGame[index];
 #ifdef ESP32P4
-                        if (screenGameDirty[index] == DIRTY_TRANSPARENT)
-                        {
-                            uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
-                            FRAME[posX + zx + (posY + zy) * SCREEN_WIDTH] = screenBackground[p];
-                        }
-                        else
-                        {
-                            FRAME[posX + zx + (posY + zy) * SCREEN_WIDTH] = color;
-                        }
+                    COLOR_TYPE color = screenGame[index];
 #else
-                        if (screenGameDirty[index] == DIRTY_TRANSPARENT)
+                    COLOR_TYPE color = ConvertRGB565ToRGB888(screenGame[index]);
+#endif
+                    for (uint16_t zx = 0; zx < screenZoomX; zx++)
+                    {
+                        for (uint16_t zy = 0; zy < screenZoomY; zy++)
                         {
                             uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
-                            FRAME[posX + zx + (posY + zy) * SCREEN_WIDTH] = ConvertRGB565ToRGB888(screenBackground[p]);
-                        }
-                        else
-                        {
-                            FRAME[posX + zx + (posY + zy) * SCREEN_WIDTH] = pixelColor;
-                        }
+                            if (screenGameDirty[index] == DIRTY_TRANSPARENT)
+                            {
+#ifdef ESP32P4
+                                FRAME[p] = screenBackground[p];
+#else
+                                FRAME[p] = ConvertRGB565ToRGB888(screenBackground[p]);
 #endif
-                    }
-                }
+                            }
+                            else
+                            {
+#ifdef ESP32P4
+                                FRAME[p] = color;
+#else
+                                FRAME[p] = color;
+#endif
+                            }
+                        } // zy
+                    } // zx
+                } // != screenGameOld
                 screenGameDirty[index] = DIRTY_NOT;
-            }
+            } // != DIRTY_NOT
             index++;
-        }
-    }
+        } // for x
+    } // for y
     screenDirtyMinX = screenGameWidth;
     screenDirtyMaxX = 0;
     screenDirtyMinY = screenGameHeight;
@@ -749,7 +748,6 @@ void TheDisplay::Loop()
                 COLOR_TYPE color = paletteColor[p];
 #else
                 COLOR_TYPE color = GetColor(paletteColor[p]);
-                //Color pixelColor = GetColor(color);
 #endif
                 uint32_t posX = (p * dimension) % SCREEN_WIDTH;
                 uint32_t posY = debugStartY + ((p * dimension) / SCREEN_WIDTH) * dimension;

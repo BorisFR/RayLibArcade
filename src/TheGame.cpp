@@ -49,8 +49,8 @@ TheGame::~TheGame()
     }
     if (gameTilesNumber > 0)
     {
-        //FREE(gameTilesX);
-        //FREE(gameTilesY);
+        FREE(gameTilesX);
+        FREE(gameTilesY);
         FREE(gameTilesValue);
         FREE(gameTilesColor);
         gameTilesNumber = 0;
@@ -68,6 +68,7 @@ TheGame::~TheGame()
     screenGameWidth = 0;
     screenGameHeight = 0;
     FREE(screenGame);
+    FREE(screenGameOld);
     FREE(screenGameDirty);
     FREE(boardMemory);
     FREE(gfxMemory);
@@ -408,20 +409,21 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         return false;
     }
     memset(screenGame, 0, screenGameLength);
+    screenGameOld = (THE_COLOR *)malloc(screenGameLength);
+    if (screenGameOld == NULL)
+    {
+        MY_DEBUG(TAG, "Error allocating screen memory");
+        return false;
+    }
+    memset(screenGameOld, 0, screenGameLength);
     screenGameDirty = (uint8_t *)malloc(screenGameLength);
     if (screenGameDirty == NULL)
     {
         MY_DEBUG(TAG, "Error allocating screenGameDirty memory");
         return false;
     }
-    memset(screenGameDirty, DIRTY_TRANSPARENT, screenGameLength);
-    // screenGameOld = (THE_COLOR *)malloc(screenGameLength);
-    // if (screenGameOld == NULL)
-    // {
-    //     MY_DEBUG(TAG, "Error allocating old screen memory");
-    //     return false;
-    // }
-    // memset(screenGameOld, 0, screenGameLength);
+    memset(screenGameDirty, DIRTY_NOT, screenGameLength);
+    //memset(screenGameDirty, DIRTY_TRANSPARENT, screenGameLength);
     screenBitmap = (THE_COLOR *)malloc(screenGameLength);
     if (screenBitmap == NULL)
     {

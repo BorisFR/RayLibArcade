@@ -9,10 +9,6 @@ WRITE_HANDLER(invadpt2_videoram_w)
     videoram[offset] = data;
     uint16_t x = offset / 32;
     uint16_t y = screenGameHeight - 8 * (offset % 32);
-    DIRTY_MIN(x, screenDirtyMinX)
-    DIRTY_MAX(x + 1, screenDirtyMaxX)
-    DIRTY_MIN(y - 8, screenDirtyMinY)
-    DIRTY_MAX(y - 1 + 1, screenDirtyMaxY)
     THE_COLOR c = myWhite;
     if (y >= INVADERS_INVERT_Y(248) && y < INVADERS_INVERT_Y(240))
     {
