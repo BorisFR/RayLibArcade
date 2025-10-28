@@ -39,6 +39,22 @@ TheGame::TheGame()
 
 TheGame::~TheGame()
 {
+    if (gameSpritesNumber > 0)
+    {
+        FREE(gameSpritesX);
+        FREE(gameSpritesY);
+        FREE(gameSpritesValue);
+        FREE(gameSpritesColor);
+        gameSpritesNumber = 0;
+    }
+    if (gameTilesNumber > 0)
+    {
+        //FREE(gameTilesX);
+        //FREE(gameTilesY);
+        FREE(gameTilesValue);
+        FREE(gameTilesColor);
+        gameTilesNumber = 0;
+    }
     screenDirtyMaxX = 0;
     screenDirtyMinX = 0;
     screenDirtyMaxY = 0;
@@ -104,23 +120,23 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
     uint8_t portValue = 0;
     while (!finish)
     {
-        //MY_DEBUG2(TAG, "portValue=", portValue)
+        // MY_DEBUG2(TAG, "portValue=", portValue)
         switch (allGames[currentGame].machine.inputPorts[i].type)
         {
         case IPT_END:
             if (portNumber >= 0)
                 machineInputPort.InputPortSet(portNumber, portValue);
             finish = true;
-            //MY_DEBUG2(TAG, "==> Port ", portNumber)
-            //MY_DEBUG2(TAG, "    with default value ", portValue)
+            // MY_DEBUG2(TAG, "==> Port ", portNumber)
+            // MY_DEBUG2(TAG, "    with default value ", portValue)
             continue;
             break;
         case IPT_PORT:
             if (portNumber >= 0)
             {
                 machineInputPort.InputPortSet(portNumber, portValue);
-                //MY_DEBUG2(TAG, "=> Port ", portNumber)
-                //MY_DEBUG2(TAG, "    with default value ", portValue)
+                // MY_DEBUG2(TAG, "=> Port ", portNumber)
+                // MY_DEBUG2(TAG, "    with default value ", portValue)
             }
             portNumber++;
             portValue = 0;
@@ -174,12 +190,12 @@ void TheGame::Setup(TheDisplay &display, TheSdCard &sdCard)
             PORT_BIT_VALUE
             break;
         case IPT_DIPSWITCH_NAME:
-            //MY_DEBUG2TEXT(TAG, "IPT_DIPSWITCH_NAME", allGames[currentGame].machine.inputPorts[i].name)
+            // MY_DEBUG2TEXT(TAG, "IPT_DIPSWITCH_NAME", allGames[currentGame].machine.inputPorts[i].name)
             PORT_SWITCH_DEFAULT_VALUE(allGames[currentGame].machine.inputPorts[i].default_value)
             PORT_SWITCH_VALUE
             break;
         case IPT_DIPSWITCH_SETTING:
-            //MY_DEBUG2TEXT(TAG, "IPT_DIPSWITCH_SETTING", allGames[currentGame].machine.inputPorts[i].name)
+            // MY_DEBUG2TEXT(TAG, "IPT_DIPSWITCH_SETTING", allGames[currentGame].machine.inputPorts[i].name)
             PORT_SWITCH_VALUE
             break;
         default:

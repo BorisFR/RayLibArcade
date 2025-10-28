@@ -136,12 +136,14 @@ extern "C"
 	extern uint16_t screenPosX;
 	extern uint16_t screenPosY;
 
-	extern bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t spriteWidth, uint16_t spriteHeight, uint16_t tileX, uint16_t tileY, uint16_t tileWidth, uint16_t tileHeight);
+	extern bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t tileX, uint16_t tileY);
 	extern void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height);
 	extern void GamePlotPixel(uint16_t x, uint16_t y, THE_COLOR color);
 	extern void GameClearPixel(uint16_t x, uint16_t y);
 	extern void GameDrawElement(THE_COLOR *theScreen, uint16_t atX, uint16_t atY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor);
-
+	extern void GameInitTilesAndSprites(uint16_t spritesNumber, uint8_t spriteWidth, uint8_t spriteHeight, uint16_t tilesNumber, uint8_t tileWidth, uint8_t tileHeight);
+	extern void GameDrawTile(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY);
+	extern void GameDrawSprite(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY);
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];
 	extern uint8_t Z80CurrentRunningCpu;
@@ -251,9 +253,9 @@ extern "C"
 	extern struct GfxElement *allGfx[MAX_GFX_ELEMENTS];
 
 	extern THE_COLOR *screenGame;
-	#define DIRTY_NOT 0
-	#define DIRTY_YES 1
-	#define DIRTY_TRANSPARENT 2
+#define DIRTY_NOT 0
+#define DIRTY_YES 1
+#define DIRTY_TRANSPARENT 2
 	extern uint8_t *screenGameDirty;
 	extern THE_COLOR *screenBitmap;
 	extern uint16_t screenGameWidth;
@@ -263,9 +265,29 @@ extern "C"
 	extern uint16_t screenDirtyMinY;
 	extern uint16_t screenDirtyMaxX;
 	extern uint16_t screenDirtyMaxY;
+	// extern uint8_t *gameTilesX;
+	// extern uint8_t *gameTilesY;
+	extern uint8_t *gameTilesValue;
+	extern uint8_t *gameTilesColor;
+	extern uint16_t gameTilesNumber;
+	extern uint8_t gameTilesWidth;
+	extern uint8_t gameTilesHeight;
+	extern uint8_t *gameSpritesX;
+	extern uint8_t *gameSpritesY;
+	extern uint8_t *gameSpritesValue;
+	extern uint8_t *gameSpritesColor;
+	extern uint16_t gameSpritesNumber;
+	extern uint8_t gameSpritesWidth;
+	extern uint8_t gameSpritesHeight;
 
-
-	#define FREE(x) {if(x != nullptr) { free(x); } x = nullptr;}
+#define FREE(x)           \
+	{                     \
+		if (x != nullptr) \
+		{                 \
+			free(x);      \
+		}                 \
+		x = nullptr;      \
+	}
 
 	// extern int readbit(const uint8_t *src,int bitnum);
 	// static int readbit(const uint8_t *src, int bitnum)

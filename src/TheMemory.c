@@ -23,24 +23,24 @@ uint16_t screenPosY = 0;
 struct VisibleArea visibleArea;
 THE_COLOR froggerWater;
 
-bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t spriteWidth, uint16_t spriteHeight, uint16_t tileX, uint16_t tileY, uint16_t tileWidth, uint16_t tileHeight)
+bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t tileX, uint16_t tileY)
 {
     // X sprite start in the tile
-    if (spriteX >= tileX && (spriteX) < (tileX + tileWidth))
+    if (spriteX >= tileX && (spriteX) < (tileX + gameTilesWidth))
     {
-        if (spriteY >= tileY && spriteY < (tileY + tileHeight))
+        if (spriteY >= tileY && spriteY < (tileY + gameTilesHeight))
         {
             return true;
         }
         else
         {
-            if ((spriteY + spriteHeight) >= tileY && (spriteY + spriteHeight) < (tileY + tileHeight))
+            if ((spriteY + gameSpritesHeight) >= tileY && (spriteY + gameSpritesHeight) < (tileY + gameTilesHeight))
             {
                 return true;
             }
             else
             {
-                if ((spriteY) < tileY && (spriteY + spriteHeight) > (tileY + tileHeight))
+                if ((spriteY) < tileY && (spriteY + gameSpritesHeight) > (tileY + gameTilesHeight))
                 {
                     return true;
                 }
@@ -50,21 +50,21 @@ bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t spriteWid
     else
     {
         // X sprite end in the tile
-        if ((spriteX + spriteWidth) >= tileX && (spriteX + spriteWidth) < (tileX + tileWidth))
+        if ((spriteX + gameSpritesWidth) >= tileX && (spriteX + gameSpritesWidth) < (tileX + gameTilesWidth))
         {
-            if (spriteY >= tileY && spriteY < (tileY + tileHeight))
+            if (spriteY >= tileY && spriteY < (tileY + gameTilesHeight))
             {
                 return true;
             }
             else
             {
-                if ((spriteY + spriteHeight) >= tileY && (spriteY + spriteHeight) < (tileY + tileHeight))
+                if ((spriteY + gameSpritesHeight) >= tileY && (spriteY + gameSpritesHeight) < (tileY + gameTilesHeight))
                 {
                     return true;
                 }
                 else
                 {
-                    if ((spriteY) < tileY && (spriteY + spriteHeight) > (tileY + tileHeight))
+                    if ((spriteY) < tileY && (spriteY + gameSpritesHeight) > (tileY + gameTilesHeight))
                     {
                         return true;
                     }
@@ -74,21 +74,21 @@ bool GameTestSpriteOnTile(uint16_t spriteX, uint16_t spriteY, uint16_t spriteWid
         else
         {
             // X sprite start before and end after the tile
-            if (spriteX < tileX && (spriteX + spriteWidth) > (tileX + tileWidth))
+            if (spriteX < tileX && (spriteX + gameSpritesWidth) > (tileX + gameTilesWidth))
             {
-                if (spriteY >= tileY && spriteY < (tileY + tileHeight))
+                if (spriteY >= tileY && spriteY < (tileY + gameTilesHeight))
                 {
                     return true;
                 }
                 else
                 {
-                    if ((spriteY + spriteHeight) >= tileY && (spriteY + spriteHeight) < (tileY + tileHeight))
+                    if ((spriteY + gameSpritesHeight) >= tileY && (spriteY + gameSpritesHeight) < (tileY + gameTilesHeight))
                     {
                         return true;
                     }
                     else
                     {
-                        if ((spriteY) < tileY && (spriteY + spriteHeight) > (tileY + tileHeight))
+                        if ((spriteY) < tileY && (spriteY + gameSpritesHeight) > (tileY + gameTilesHeight))
                         {
                             return true;
                         }
@@ -286,6 +286,75 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
             }
         }
     }
+}
+
+void GameInitTilesAndSprites(uint16_t spritesNumber, uint8_t spriteWidth, uint8_t spriteHeight, uint16_t tilesNumber, uint8_t tileWidth, uint8_t tileHeight)
+{
+    gameSpritesNumber = spritesNumber;
+    gameSpritesWidth = spriteWidth;
+    gameSpritesHeight = spriteHeight;
+    gameTilesNumber = tilesNumber;
+    gameTilesWidth = tileWidth;
+    gameTilesHeight = tileHeight;
+    // free are done in TheGame.cpp when destroyed
+    gameSpritesX = (uint8_t *)malloc(gameSpritesNumber);
+    memset(gameSpritesX, 0, gameSpritesNumber);
+    gameSpritesY = (uint8_t *)malloc(gameSpritesNumber);
+    memset(gameSpritesY, 0, gameSpritesNumber);
+    gameSpritesValue = (uint8_t *)malloc(gameSpritesNumber);
+    memset(gameSpritesValue, 0, gameSpritesNumber);
+    gameSpritesColor = (uint8_t *)malloc(gameSpritesNumber);
+    memset(gameSpritesColor, 0, gameSpritesNumber);
+    // gameTilesX = (uint8_t *)malloc(gameTilesNumber);
+    // memset(gameTilesX, 0, gameTilesNumber);
+    // gameTilesY = (uint8_t *)malloc(gameTilesNumber);
+    // memset(gameTilesY, 0, gameTilesNumber);
+    gameTilesValue = (uint8_t *)malloc(gameTilesNumber);
+    memset(gameTilesValue, 0, gameTilesNumber);
+    gameTilesColor = (uint8_t *)malloc(gameTilesNumber);
+    memset(gameTilesColor, 0, gameTilesNumber);
+}
+
+void GameDrawTile(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY)
+{
+    bool mustRedraw = false;
+    if (gameTilesValue[index] != value)
+    { // tile have change
+        mustRedraw = true;
+    }
+    else
+    {
+        if (gameTilesColor[index] != color)
+        { // color for the tile have change
+            mustRedraw = true;
+        }
+        else
+        {
+            // check if previously there is a sprite over there
+            uint8_t i = 0;
+            while (!mustRedraw && (i < gameSpritesNumber))
+            {
+                mustRedraw = GameTestSpriteOnTile(gameSpritesX[i], gameSpritesY[i], x, y);
+                if (mustRedraw)
+                    break;
+                i++;
+            }
+        }
+    }
+    if (!mustRedraw)
+        return;
+    gameTilesValue[index] = value;
+    gameTilesColor[index] = color;
+    GameDrawElement(screenGame, x, y, false, false, value, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+}
+
+void GameDrawSprite(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY)
+{
+    gameSpritesX[index] = x;
+    gameSpritesY[index] = y;
+    gameSpritesValue[index] = value;
+    gameSpritesColor[index] = color;
+    GameDrawElement(screenGame, x, y, flipX, flipY, value, color, TRANSPARENCY_BLACK, TRANSPARENT_NONE_COLOR);
 }
 
 uint8_t Z80InterruptVector[MAX_Z80_CPU];
@@ -524,3 +593,17 @@ uint16_t screenDirtyMinX;
 uint16_t screenDirtyMinY;
 uint16_t screenDirtyMaxX;
 uint16_t screenDirtyMaxY;
+// uint8_t *gameTilesX;
+// uint8_t *gameTilesY;
+uint8_t *gameTilesValue;
+uint8_t *gameTilesColor;
+uint16_t gameTilesNumber;
+uint8_t gameTilesWidth;
+uint8_t gameTilesHeight;
+uint8_t *gameSpritesX;
+uint8_t *gameSpritesY;
+uint8_t *gameSpritesValue;
+uint8_t *gameSpritesColor;
+uint16_t gameSpritesNumber;
+uint8_t gameSpritesWidth;
+uint8_t gameSpritesHeight;
