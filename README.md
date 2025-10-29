@@ -12,6 +12,7 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 
 > <ins>Auteur :</ins> Boris  
 <ins>Démarrage :</ins> Août 2025  
+[Test](/wiki/index.html)
 
 ## Jeux  
 
