@@ -1,0 +1,10 @@
+{
+  "name": "Space Invaders", 
+  "machine": "BW8080",
+  "rom": [
+    {"type": "CPU", "name": "9316b-0869_m739h.h1", "length": "2048", "crc": "1934580440"},
+    {"type": "CPU", "name": "9316b-0856_m739g.g1", "length": "2048", "crc": "1811597898"},
+    {"type": "CPU", "name": "9316b-0855_m739f.f1", "length": "2048", "crc": "214871446"},
+    {"type": "CPU", "name": "9316b-0854_m739e.e1", "length": "2048", "crc": "350566576"}
+  ]
+}

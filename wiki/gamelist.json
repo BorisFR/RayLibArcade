@@ -1,0 +1,10 @@
+{
+  "games": [
+    {"id": "invaders", "name": "Space Invaders"},
+    {"id": "invadpt2", "name": "Space Invaders part II"},
+    {"id": "frogger", "name": "Frogger"},
+    {"id": "pacman", "name": "Pacman"},
+    {"id": "galaxian", "name": "Galaxian"},
+    {"id": "pengo", "name": "Pengo"}
+  ]
+}

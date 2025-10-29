@@ -50,6 +50,10 @@ public:
     bool LoadJpgFileToBackground(const char *filename);
     bool LoadJpgFileTo(THE_BACKGROUND_COLOR *image, const char *filename, uint32_t lineWidth);
 
+    FILE *CreateJsonFileOnWiki(const char *filename);
+    void CloseFile(FILE *file);
+    void FileWriteText(FILE *file, const char *text);
+
 private:
     const char *TAG = "TheSdCard";
 #ifdef ESP32P4

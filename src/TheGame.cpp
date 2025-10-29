@@ -439,7 +439,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         if (GAME_ROMS[i].length == 0 && GAME_ROMS[i].offset == 0)
         {
             finish = true;
-            continue;
+            break;
         }
         if (GAME_ROMS[i].name == NULL)
         {

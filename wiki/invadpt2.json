@@ -1,0 +1,13 @@
+{
+  "name": "Space Invaders part II", 
+  "machine": "BW8080",
+  "rom": [
+    {"type": "CPU", "name": "pv01", "length": "2048", "crc": "1921557777"},
+    {"type": "CPU", "name": "pv02", "length": "2048", "crc": "159242453"},
+    {"type": "CPU", "name": "pv03", "length": "2048", "crc": "392573822"},
+    {"type": "CPU", "name": "pv04", "length": "2048", "crc": "2400084704"},
+    {"type": "CPU", "name": "pv05", "length": "2048", "crc": "431293929"},
+    {"type": "COLOR", "name": "pv06.1", "length": "1024", "crc": "2805104907"},
+    {"type": "COLOR", "name": "pv07.2", "length": "1024", "crc": "744198603"}
+  ]
+}

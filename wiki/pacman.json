@@ -1,0 +1,16 @@
+{
+  "name": "Pacman", 
+  "machine": "Z80",
+  "rom": [
+    {"type": "CPU", "name": "pacman.6e", "length": "4096", "crc": "3253119760"},
+    {"type": "CPU", "name": "pacman.6f", "length": "4096", "crc": "443527892"},
+    {"type": "CPU", "name": "pacman.6h", "length": "4096", "crc": "3168607211"},
+    {"type": "CPU", "name": "pacman.6j", "length": "4096", "crc": "2172490979"},
+    {"type": "GFX", "name": "pacman.5e", "length": "4096", "crc": "211044708"},
+    {"type": "GFX", "name": "pacman.5f", "length": "4096", "crc": "2509237753"},
+    {"type": "COLOR", "name": "82s123.7f", "length": "32", "crc": "801525949"},
+    {"type": "PALETTE", "name": "82s126.4a", "length": "256", "crc": "1051961572"},
+    {"type": "SOUND", "name": "82s126.1m", "length": "256", "crc": "2848753343"},
+    {"type": "SOUND", "name": "82s126.3m", "length": "256", "crc": "1998871398"}
+  ]
+}

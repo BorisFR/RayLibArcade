@@ -12,6 +12,7 @@
 				"${workspaceFolder}/src/machines/*.cpp",
 				"${workspaceFolder}/src/machines/*.c",
 				"${workspaceFolder}/src/libjpg/*.cpp",
+				"${workspaceFolder}/src/export/*.cpp",
 				"${workspaceFolder}/src/*.cpp",
 				"${workspaceFolder}/src/*.c",
 				"-o",

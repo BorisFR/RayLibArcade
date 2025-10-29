@@ -1,0 +1,62 @@
+<html>
+
+<head>
+    <title>Games</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Honk&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: "Orbitron", sans-serif; }
+        a {
+            text-decoration: none;
+            font-size: 3.3em;
+            font-weight: 400;
+            font-style: normal;
+            font-optical-sizing: auto;
+            font-family: "Honk", system-ui;
+            font-variation-settings: "MORF" 15, "SHLN" 50;
+        }
+    </style>
+    <script>
+        function createLink(element) {
+            var x = "<img src=\"../sdcard/_icon/" + element["id"] + ".png\" /> <a href=\"" + element["id"] + ".html\">" + element["name"] + "</a>";
+            return x;
+        }
+        function dolist() {
+            fetch('gamelist.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP Error Status: ${response.status}');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    //document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('output').innerHTML = "";
+                    data.games.sort((a, b) => {
+                        if (a["name"] < b["name"]) return -1;
+                        return 1;
+                    });
+                    data.games.forEach(element => {
+                        document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + createLink(element) + "<br/>";
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading JSON:', error);
+                    document.getElementById('output').textContent = 'Failed to load JSON: ' + error;
+                })
+        }
+        function onPageLoad() {
+            console.log("Page loaded successfully!");
+            dolist();
+        }        
+    </script>
+</head>
+
+<body onload="onPageLoad()">
+    <h1>Games</h1>
+    <div id="output"></div>
+</body>
+
+</html>

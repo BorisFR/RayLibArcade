@@ -1,0 +1,15 @@
+{
+  "name": "Frogger", 
+  "machine": "Z80",
+  "rom": [
+    {"type": "CPU", "name": "frogger.26", "length": "4096", "crc": "1500944086"},
+    {"type": "CPU", "name": "frogger.27", "length": "4096", "crc": "3068591299"},
+    {"type": "CPU", "name": "frsm3.7", "length": "4096", "crc": "2896308960"},
+    {"type": "GFX", "name": "frogger.607", "length": "2048", "crc": "100128899"},
+    {"type": "GFX", "name": "frogger.606", "length": "2048", "crc": "4112838192"},
+    {"type": "COLOR", "name": "pr-91.6l", "length": "32", "crc": "1094124479"},
+    {"type": "SOUND", "name": "frogger.608", "length": "2048", "crc": "3903521366"},
+    {"type": "SOUND", "name": "frogger.609", "length": "2048", "crc": "1937810575"},
+    {"type": "SOUND", "name": "frogger.610", "length": "2048", "crc": "836234023"}
+  ]
+}

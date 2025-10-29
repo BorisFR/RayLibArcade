@@ -1,0 +1,20 @@
+{
+  "name": "Pengo", 
+  "machine": "Z80",
+  "rom": [
+    {"type": "CPU", "name": "epr-5128.ic8", "length": "4096", "crc": "1040101902"},
+    {"type": "CPU", "name": "epr-5129.ic7", "length": "4096", "crc": "498287037"},
+    {"type": "CPU", "name": "epr-5130.ic15", "length": "4096", "crc": "2083013333"},
+    {"type": "CPU", "name": "epr-5131a.ic14", "length": "4096", "crc": "1849433903"},
+    {"type": "CPU", "name": "epr-5132.ic21", "length": "4096", "crc": "2515752191"},
+    {"type": "CPU", "name": "epr-5133.ic20", "length": "4096", "crc": "266011832"},
+    {"type": "CPU", "name": "epr-5134.ic32", "length": "4096", "crc": "3851552552"},
+    {"type": "CPU", "name": "epr-5135a.ic31", "length": "4096", "crc": "333334509"},
+    {"type": "GFX", "name": "epr-1640.ic92", "length": "8192", "crc": "3622749901"},
+    {"type": "GFX", "name": "epr-1695.ic105", "length": "8192", "crc": "1543317225"},
+    {"type": "COLOR", "name": "pr1633.ic78", "length": "32", "crc": "978863340"},
+    {"type": "COLOR", "name": "pr1634.ic88", "length": "1024", "crc": "1986728859"},
+    {"type": "SOUND", "name": "pr1635.ic51", "length": "256", "crc": "3265128999"},
+    {"type": "SOUND", "name": "pr1636.ic70", "length": "256", "crc": "1998871398"}
+  ]
+}

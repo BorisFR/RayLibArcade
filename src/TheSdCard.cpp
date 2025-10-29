@@ -14,7 +14,8 @@ static void *myOpen(const char *filename, int32_t *size)
 {
     printf("file open: %s, ", filename);
     myfile = (FILE *)fopen(filename, "rb");
-    if(myfile == NULL) {
+    if (myfile == NULL)
+    {
         printf(" ERROR opening file\n");
         return NULL;
     }
@@ -313,4 +314,29 @@ bool TheSdCard::LoadJpgFileTo(THE_BACKGROUND_COLOR *image, const char *filename,
     }
     myJpeg.close();
     return true;
+}
+
+FILE *TheSdCard::CreateJsonFileOnWiki(const char *filename)
+{
+    std::string fullPath = std::string(PC_PATH) + "wiki/" + filename + ".json";
+    MY_DEBUG2TEXT(TAG, "Creating file... ", fullPath.c_str());
+    const char *fname = fullPath.c_str();
+    remove(fname);
+    FILE *pFile = fopen(fname, "wb");
+    if (pFile == NULL)
+    {
+        MY_DEBUG2TEXT(TAG, "Could not create file: ", fullPath.c_str());
+        return NULL;
+    }
+    return pFile;
+}
+
+void TheSdCard::CloseFile(FILE *file)
+{
+    fclose(file);
+}
+
+void TheSdCard::FileWriteText(FILE *file, const char *text)
+{
+    fprintf(file, "%s", text);
 }

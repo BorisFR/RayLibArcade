@@ -19,6 +19,10 @@ TheDisplay display = TheDisplay();
 #endif
 TheGame *game;
 
+#ifndef ESP32P4
+#include "export/Export.hpp"
+#endif
+
 // *******************************************************************
 
 //
@@ -101,6 +105,13 @@ void setup()
     MY_DEBUG(TAG, "There is no game!")
     return;
   }
+
+#ifndef ESP32P4
+  Export ex = Export();
+  ex.GenerateAll(sdCard);
+  ex.~Export();
+#endif
+
   currentGame = 3; // 0 menu, 1 si, ... 4 pacman
   StartGame();
 }

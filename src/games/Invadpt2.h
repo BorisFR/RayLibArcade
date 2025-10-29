@@ -18,7 +18,7 @@ extern "C"
 }
 #endif
 
-#define INVADPT2 {"invadpt2", "Space Invaders II", {386, 224, 256, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING}, 3000000 / 60, {invadpt2_rom, NOTHING, invaders_readmem, invadpt2_writemem, invadpt2_input_ports, invadpt2_readport, invadpt2_writeport}, MACHINE_8080BW}
+#define INVADPT2 {"invadpt2", "Space Invaders part II", {386, 224, 256, VISIBLE_AREA_FULL, ORIENTATION_DEFAULT, NOTHING, NOTHING}, 3000000 / 60, {invadpt2_rom, NOTHING, invaders_readmem, invadpt2_writemem, invadpt2_input_ports, invadpt2_readport, invadpt2_writeport}, MACHINE_8080BW}
 
 ROM_START(invadpt2_rom)
 ROM_REGION(0x10000)

@@ -1,0 +1,14 @@
+{
+  "name": "Galaxian", 
+  "machine": "Z80",
+  "rom": [
+    {"type": "CPU", "name": "galmidw.u", "length": "2048", "crc": "1952329057"},
+    {"type": "CPU", "name": "galmidw.v", "length": "2048", "crc": "2627312192"},
+    {"type": "CPU", "name": "galmidw.w", "length": "2048", "crc": "3045673253"},
+    {"type": "CPU", "name": "galmidw.y", "length": "2048", "crc": "1799135499"},
+    {"type": "CPU", "name": "7l", "length": "2048", "crc": "462631431"},
+    {"type": "GFX", "name": "1h.bin", "length": "2048", "crc": "972768164"},
+    {"type": "GFX", "name": "1k.bin", "length": "2048", "crc": "2118080162"},
+    {"type": "COLOR", "name": "6l.bpr", "length": "32", "crc": "3282867303"}
+  ]
+}
