@@ -1,0 +1,103 @@
+.center {
+    text-align: center;
+}
+
+.vtop {
+    vertical-align: top;
+}
+
+.bold {
+    font-weight: 900;
+}
+
+.tableAll {
+    width: 100%;
+}
+
+.tableBorder1 {
+    margin: 4px auto;
+    padding: 4px;
+    border-collapse: collapse;
+    border: 1px solid #333;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.monospace {
+    font-family: "Roboto Mono", monospace;
+}
+
+.font {
+    font-family: "Orbitron", sans-serif;
+}
+
+.gameTitle {
+    font-size: 3.3em;
+    font-weight: 400;
+    font-style: normal;
+    font-optical-sizing: auto;
+    font-family: "Honk", system-ui;
+    font-variation-settings: "MORF" 15, "SHLN" 50;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+}
+body {
+    font-family: "Orbitron", sans-serif;
+}
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+a {
+    color: black;
+    text-decoration: none;
+    font-size: 3.3em;
+    font-weight: 400;
+    font-style: normal;
+    font-optical-sizing: auto;
+}
+
+.overlay {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent black */
+    z-index: 999;
+    /* Above everything else */
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    width: 80%;
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.close-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    float: right;
+}
+
+.close-btn:hover {
+    background: #e60000;
+}
