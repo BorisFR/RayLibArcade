@@ -103,7 +103,7 @@
         let gamesInfo = new Map();
         function populatePopup(game) {
             let info = gamesInfo.get(game);
-            document.getElementById("gameTitle").innerHTML = "<img src=\"../sdcard/_icon/" + game + ".png\" alt=\"\" /> " + info["name"];
+            document.getElementById("gameTitle").innerHTML = "<img src=\"../sdcard/_icon/" + game + ".png\" alt=\""+info["name"]+"\" /> " + info["name"];
             document.getElementById('romName').textContent = game;
             document.getElementById('machineType').textContent = info["machine"];
             const tableBody = document.getElementById("romList").getElementsByTagName("tbody")[0];
@@ -151,7 +151,7 @@
             else if (event.keyCode === 27) { closePopup(); }
         });
         function createLink(element) {
-            var x = "<div onclick=\"openPopup('" + element["id"] + "')\"><img src=\"../sdcard/_icon/" + element["id"] + ".png\" alt=\"\" /> <span class=\"gameTitle\">" + element["name"] + "</span></div>";
+            var x = "<div onclick=\"openPopup('" + element["id"] + "')\"><img src=\"../sdcard/_icon/" + element["id"] + ".png\" alt=\"" + element["name"] + "\" /> <span class=\"gameTitle\">" + element["name"] + "</span></div>";
             return x;
         }
         function dolist() {
