@@ -29,8 +29,8 @@ function includeHTML() {
 let gamesInfo = new Map();
 function populatePopup(game) {
     let info = gamesInfo.get(game);
-    document.getElementById("gameTitle").innerHTML = "<img src=\"../sdcard/_icon/" + game + ".png\" alt=\"" + info["name"] + "\" /> " + info["name"];
-    document.getElementById("gameScreen").src = "../sdcard/ss/" + game + ".png";
+    document.getElementById("gameTitle").innerHTML = "<img src=\"./sdcard/_icon/" + game + ".png\" alt=\"" + info["name"] + "\" /> " + info["name"];
+    document.getElementById("gameScreen").src = "./sdcard/ss/" + game + ".png";
     document.getElementById('romName').textContent = game;
     document.getElementById('machineType').textContent = info["machine"];
     const tableBody = document.getElementById("romList").getElementsByTagName("tbody")[0];
@@ -54,7 +54,7 @@ function populatePopup(game) {
 };
 function openPopup(game) {
     if (!gamesInfo.has(game)) {
-        let name = game + ".json";
+        let name = './wiki/' + game + ".json";
         fetch(name)
             .then(response => {
                 if (!response.ok) { throw new Error('HTTP Error Status: ' + response.status); }
@@ -78,7 +78,7 @@ document.addEventListener('keydown', function (event) {
     else if (event.keyCode === 27) { closePopup(); }
 });
 function createLink(element) {
-    var x = "<div onclick=\"openPopup('" + element["id"] + "')\"><img src=\"../sdcard/_icon/" + element["id"] + ".png\" alt=\"" + element["name"] + "\" /> <span class=\"gameTitle\">" + element["name"] + "</span></div>";
+    var x = "<div onclick=\"openPopup('" + element["id"] + "')\"><img src=\"./sdcard/_icon/" + element["id"] + ".png\" alt=\"" + element["name"] + "\" /> <span class=\"gameTitle\">" + element["name"] + "</span></div>";
     return x;
 };
 function dolist() {
