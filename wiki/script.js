@@ -83,7 +83,7 @@ function createLink(element) {
 };
 function dolist() {
     console.log("loading");
-    fetch('gamelist.json')
+    fetch('./wiki/gamelist.json')
         .then(response => {
             if (!response.ok) { throw new Error('HTTP Error Status: ' + response.status); }
             return response.json();
