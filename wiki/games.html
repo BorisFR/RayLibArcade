@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -98,8 +98,8 @@
         .close-btn:hover {
             background: #e60000;
         }
-    </style>
-    <script>
+    </style>-->
+    <!--<script>
         let gamesInfo = new Map();
         function populatePopup(game) {
             let info = gamesInfo.get(game);
@@ -177,14 +177,14 @@
                 })
         }
         function onPageLoad() { dolist(); }  
-    </script>
-</head>
+    </script>-->
+<!--</head>
 
-<body onload="onPageLoad()">
+<body onload="onPageLoad()">-->
     <div id="overlay" class="overlay">
         <div class="popup" onclick="closePopup()">
             <button class="close-btn" onclick="closePopup()">X</button>
-            <h2 id="gameTitle" class="gameTitle center">game title</h2>
+            <div id="gameTitle" class="gameTitle center">game title</div>
             <div id="gameDetail">
                 <table class="tableBorder1 tableAll">
                     <tr class="tableBorder1">
@@ -223,6 +223,7 @@
     </div>
     <h1>Games</h1>
     <div id="output"></div>
-</body>
+    <script>dolist();</script>
+<!--</body>
 
-</html>
+</html>-->

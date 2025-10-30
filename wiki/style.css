@@ -51,6 +51,7 @@ iframe {
     height: 100%;
     border: none;
 }
+.footer { background-color: black; color: white; padding:12px; text-align: center;}
 a {
     color: black;
     text-decoration: none;

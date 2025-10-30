@@ -11,11 +11,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="wiki/style.css" />   
-    </head>
-    <body style="height: 100%;;">
-        <div class="gameTitle center">Raylib Arcade</div>
-        <!--<div><a href="wiki/games.html">Games list</a></div>-->
-        <iframe src="wiki/games.html" />
-    </body>
+    <link rel="stylesheet" href="wiki/style.css" />
+    <script src="wiki/script.js"></script>
+</head>
+
+<body style="height: 100%;;">
+    <div class="gameTitle center">Raylib Arcade</div>
+    <!--<div><a href="wiki/games.html">Games list</a></div>-->
+    <div w3-include-html="wiki/games.html"></div>
+    <!--<iframe src="wiki/games.html"></iframe>-->
+    <div w3-include-html="wiki/footer.html" class="footer"></div>
+    <script>
+        includeHTML(); dolist();
+    </script>
+</body>
+
 </html>
