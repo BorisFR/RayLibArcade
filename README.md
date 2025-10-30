@@ -16,7 +16,7 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 ## Jeux  
 
 J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipper les fichiers dans le nom de dossier correspondant.  
-Pour le détail et les informations de chaque jeu : [Liste des jeux](https://borisfr.github.io/RayLibArcade/wiki/games.html)
+Pour le détail et les informations de chaque jeu : [Liste des jeux](https://borisfr.github.io/RayLibArcade/)
 
 <img src="sdcard/ss/invaders.png" alt="Space Invaders" width="150" /> <img src="sdcard/ss/invadpt2.png" alt="Space Invaders Part II" width="150" /> <img src="sdcard/ss/pacman.png" alt="Pacman" width="150" /> <img src="sdcard/ss/galaxian.png" alt="Galaxian" width="150" /> <img src="sdcard/ss/frogger.png" alt="Frogger" width="150" /> <img src="sdcard/ss/pengo.png" alt="Pengo" width="150" />  
 
