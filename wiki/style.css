@@ -51,6 +51,14 @@ iframe {
     height: 100%;
     border: none;
 }
+.gameScreen {
+    width: 250px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.5));
+    transition: filter 0.3s ease;
+}
 .footer { background-color: black; color: white; padding:12px; text-align: center;}
 a {
     color: black;
