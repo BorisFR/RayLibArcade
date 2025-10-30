@@ -1,13 +1,52 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Games</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Honk&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
-        body { font-family: "Orbitron", sans-serif; }
+        .center {
+            text-align: center;
+        }
+
+        .vtop {
+            vertical-align: top;
+        }
+
+        .bold {
+            font-weight: 900;
+        }
+        .tableAll { width: 100%;}
+        .tableBorder1 {
+            margin: 4px auto;
+            padding: 4px;
+            border-collapse: collapse;
+            border: 1px solid #333;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .monospace{ font-family: "Roboto Mono", monospace; }
+        .font { font-family: "Orbitron", sans-serif; }
+        .gameTitle {
+            font-size: 3.3em;
+            font-weight: 400;
+            font-style: normal;
+            font-optical-sizing: auto;
+            font-family: "Honk", system-ui;
+            font-variation-settings: "MORF" 15, "SHLN" 50;
+        }
+
+        body {
+            font-family: "Orbitron", sans-serif;
+        }
+
         a {
             text-decoration: none;
             font-size: 3.3em;
@@ -17,29 +56,118 @@
             font-family: "Honk", system-ui;
             font-variation-settings: "MORF" 15, "SHLN" 50;
         }
+
+        .overlay {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent black */
+            z-index: 999;
+            /* Above everything else */
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            width: 80%;
+            max-width: 90%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .close-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            float: right;
+        }
+
+        .close-btn:hover {
+            background: #e60000;
+        }
     </style>
     <script>
+        let gamesInfo = new Map();
+        function populatePopup(game) {
+            let info = gamesInfo.get(game);
+            document.getElementById("gameTitle").innerHTML = "<img src=\"../sdcard/_icon/" + game + ".png\" alt=\"\" /> " + info["name"];
+            document.getElementById('romName').textContent = game;
+            document.getElementById('machineType').textContent = info["machine"];
+            const tableBody = document.getElementById("romList").getElementsByTagName("tbody")[0];
+            while (tableBody.firstChild) { tableBody.removeChild(tableBody.firstChild); }
+            info["rom"].forEach(rom => {
+                let newRow = tableBody.insertRow();
+                newRow.classList.add("tableBorder1");
+                let nameCell = newRow.insertCell(0);
+                nameCell.classList.add("tableBorder1");
+                nameCell.textContent = rom["name"];
+                nameCell = newRow.insertCell(1);
+                nameCell.classList.add("tableBorder1");
+                nameCell.textContent = rom["length"];
+                nameCell = newRow.insertCell(2);
+                nameCell.classList.add("tableBorder1");
+                nameCell.textContent = rom["crc"];
+                nameCell = newRow.insertCell(3);
+                nameCell.classList.add("tableBorder1");
+                nameCell.textContent = rom["type"];
+            });
+        }
+        function openPopup(game) {
+            if (!gamesInfo.has(game)) {
+                let name = game + ".json";
+                fetch(name)
+                    .then(response => {
+                        if (!response.ok) { throw new Error('HTTP Error Status: ${response.status}'); }
+                        return response.json();
+                    })
+                    .then(data => { gamesInfo.set(game, data); populatePopup(game); })
+                    .catch(error => {
+                        console.error('Error loading JSON:', error);
+                        document.getElementById('output').textContent = 'Failed to load JSON: ' + error;
+                    })
+            } else { populatePopup(game); }
+            document.getElementById("overlay").style.display = "block";
+        }
+        function closePopup() { document.getElementById("overlay").style.display = "none"; }
+        window.onclick = function (event) {
+            const overlay = document.getElementById("overlay");
+            if (event.target === overlay) { closePopup(); }
+        }
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') { closePopup(); }
+            else if (event.keyCode === 27) { closePopup(); }
+        });
         function createLink(element) {
-            var x = "<img src=\"../sdcard/_icon/" + element["id"] + ".png\" /> <a href=\"" + element["id"] + ".html\">" + element["name"] + "</a>";
+            var x = "<div onclick=\"openPopup('" + element["id"] + "')\"><img src=\"../sdcard/_icon/" + element["id"] + ".png\" alt=\"\" /> <span class=\"gameTitle\">" + element["name"] + "</span></div>";
             return x;
         }
         function dolist() {
             fetch('gamelist.json')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('HTTP Error Status: ${response.status}');
-                    }
+                    if (!response.ok) { throw new Error('HTTP Error Status: ${response.status}'); }
                     return response.json();
                 })
                 .then(data => {
-                    //document.getElementById('output').textContent = JSON.stringify(data, null, 2);
                     document.getElementById('output').innerHTML = "";
                     data.games.sort((a, b) => {
                         if (a["name"] < b["name"]) return -1;
                         return 1;
                     });
                     data.games.forEach(element => {
-                        document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + createLink(element) + "<br/>";
+                        document.getElementById('output').innerHTML = document.getElementById('output').innerHTML + createLink(element);
                     });
                 })
                 .catch(error => {
@@ -47,14 +175,51 @@
                     document.getElementById('output').textContent = 'Failed to load JSON: ' + error;
                 })
         }
-        function onPageLoad() {
-            console.log("Page loaded successfully!");
-            dolist();
-        }        
+        function onPageLoad() { dolist(); }        
     </script>
 </head>
 
 <body onload="onPageLoad()">
+    <div id="overlay" class="overlay">
+        <div class="popup" onclick="closePopup()">
+            <button class="close-btn" onclick="closePopup()">X</button>
+            <h2 id="gameTitle" class="gameTitle center">game title</h2>
+            <div id="gameDetail">
+                <table class="tableBorder1 tableAll">
+                    <tr class="tableBorder1">
+                        <td class="tableBorder1 bold">Rom</td>
+                        <td class="tableBorder1 monospace" id="romName">name</td>
+                        <td class="tableBorder1 monospace vtop center" rowspan="3"><img src="../sdcard/ss/invaders.png" alt="Space Invaders" width="250" /></td>
+                    </tr>
+                    <tr class="tableBorder1">
+                        <td class="tableBorder1 bold">Machine</td>
+                        <td class="tableBorder1 monospace" id="machineType">68000</td>
+                    </tr>
+                    <tr class="tableBorder1">
+                        <td class="tableBorder1 vtop bold"></td>
+                        <td class="tableBorder1">
+                            <table class="tableBorder1 monospace" id="romList">
+                                <thead class="tableBorder1">
+                                    <tr class="tableBorder1 font">
+                                        <td class="tableBorder1">File</td>
+                                        <td class="tableBorder1">Length</td>
+                                        <td class="tableBorder1">CRC</td>
+                                        <td class="tableBorder1">Type</td>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td>AYRIAU</td>
+                                    <td>2048</td>
+                                    <td>637258167451926</td>
+                                    <td>CPU</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
     <h1>Games</h1>
     <div id="output"></div>
 </body>

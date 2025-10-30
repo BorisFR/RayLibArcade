@@ -12,18 +12,11 @@ Pour le moment, l'audio n'est pas du tout pris en compte. C'est une fonctionalit
 
 > <ins>Auteur :</ins> Boris  
 <ins>Démarrage :</ins> Août 2025  
-[Test](https://borisfr.github.io/RayLibArcade/)
 
 ## Jeux  
 
 J'utilise actuellement les ROMs de la version de M.A.M.E. 0.279. Il faut de-zipper les fichiers dans le nom de dossier correspondant.  
-- ~~Crush Roller (set 1) : crush.zip~~ (abandon pour le moment)  
-- Frogger : frogger.zip  
-- Galaxian (Namco set 1) : galaxian.zip  
-- Pac-Man (Midway) : pacman.zip  
-- Pengo (World, not encrypted, rev A) : pengo.zip (ne fonctionne pas du tout)
-- Space Invaders / Space Invaders M : invaders.zip  
-- Space Invaders Part II : invadpt2.zip  
+Pour le détail et les informations de chaque jeu : [Liste des jeux](https://borisfr.github.io/RayLibArcade/wiki/games.html)
 
 <img src="sdcard/ss/invaders.png" alt="Space Invaders" width="150" /> <img src="sdcard/ss/invadpt2.png" alt="Space Invaders Part II" width="150" /> <img src="sdcard/ss/pacman.png" alt="Pacman" width="150" /> <img src="sdcard/ss/galaxian.png" alt="Galaxian" width="150" /> <img src="sdcard/ss/frogger.png" alt="Frogger" width="150" /> <img src="sdcard/ss/pengo.png" alt="Pengo" width="150" />  
 
