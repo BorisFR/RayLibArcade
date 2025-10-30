@@ -104,6 +104,7 @@
         function populatePopup(game) {
             let info = gamesInfo.get(game);
             document.getElementById("gameTitle").innerHTML = "<img src=\"../sdcard/_icon/" + game + ".png\" alt=\""+info["name"]+"\" /> " + info["name"];
+            document.getElementById("gameScreen").src = "../sdcard/ss/" + game + ".png";
             document.getElementById('romName').textContent = game;
             document.getElementById('machineType').textContent = info["machine"];
             const tableBody = document.getElementById("romList").getElementsByTagName("tbody")[0];
@@ -189,7 +190,7 @@
                     <tr class="tableBorder1">
                         <td class="tableBorder1 bold">Rom</td>
                         <td class="tableBorder1 monospace" id="romName">name</td>
-                        <td class="tableBorder1 monospace vtop center" rowspan="3"><img src="../sdcard/ss/invaders.png" alt="Space Invaders" width="250" /></td>
+                        <td class="tableBorder1 monospace vtop center" rowspan="3"><img id="gameScreen" width="250" /></td>
                     </tr>
                     <tr class="tableBorder1">
                         <td class="tableBorder1 bold">Machine</td>
