@@ -655,57 +655,75 @@ void TheDisplay::Loop()
         screenDirtyMaxX = screenGameWidth;
     if (screenDirtyMaxY > screenGameHeight)
         screenDirtyMaxY = screenGameHeight;
-    //  DRAW SCREEN
-    for (uint32_t y = screenDirtyMinY; y < screenDirtyMaxY; y++)
+
+#ifdef USE_DIRTY
+    DirtyOptimize();
+    uint16_t cpt = 0;
+    OneDirtyNode *temp = DirtyNodeList;
+    while (temp)
     {
-        uint16_t posY = screenPosY + y * screenZoomY;
-        uint32_t index = y * screenGameWidth + screenDirtyMinX;
-        for (uint32_t x = screenDirtyMinX; x < screenDirtyMaxX; x++)
+        cpt++;
+        screenDirtyMinY = temp->y;
+        screenDirtyMaxY = temp->y + temp->height;
+        screenDirtyMinX = temp->x;
+        screenDirtyMaxX = temp->x + temp->width;
+#endif
+        //  DRAW SCREEN
+        for (uint32_t y = screenDirtyMinY; y < screenDirtyMaxY; y++)
         {
-            if (screenGameDirty[index] != DIRTY_NOT)
+            uint16_t posY = screenPosY + y * screenZoomY;
+            uint32_t index = y * screenGameWidth + screenDirtyMinX;
+            for (uint32_t x = screenDirtyMinX; x < screenDirtyMaxX; x++)
             {
-                uint16_t posX = screenPosX + x * screenZoomX;
-                //if (screenGame[index] != screenGameOld[index])
+                if (screenGameDirty[index] != DIRTY_NOT)
                 {
-                    screenGameOld[index] = screenGame[index];
+                    uint16_t posX = screenPosX + x * screenZoomX;
+                    if (screenGame[index] != screenGameOld[index])
+                    {
+                        screenGameOld[index] = screenGame[index];
 #ifdef ESP32P4
-                    COLOR_TYPE color = screenGame[index];
+                        COLOR_TYPE color = screenGame[index];
 #else
                     COLOR_TYPE color = ConvertRGB565ToRGB888(screenGame[index]);
 #endif
-                    for (uint16_t zx = 0; zx < screenZoomX; zx++)
-                    {
-                        for (uint16_t zy = 0; zy < screenZoomY; zy++)
+                        for (uint16_t zx = 0; zx < screenZoomX; zx++)
                         {
-                            uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
-                            if (screenGameDirty[index] == DIRTY_TRANSPARENT)
+                            for (uint16_t zy = 0; zy < screenZoomY; zy++)
                             {
+                                uint32_t p = posX + zx + (posY + zy) * SCREEN_WIDTH;
+                                if (screenGameDirty[index] == DIRTY_TRANSPARENT)
+                                {
 #ifdef ESP32P4
-                                FRAME[p] = screenBackground[p];
+                                    FRAME[p] = screenBackground[p];
 #else
                                 FRAME[p] = ConvertRGB565ToRGB888(screenBackground[p]);
 #endif
-                            }
-                            else
-                            {
-#ifdef ESP32P4
-                                FRAME[p] = color;
-#else
-                                FRAME[p] = color;
+                                }
+                                else
+                                {
+                                    FRAME[p] = color;
+                                }
+                            } // zy
+                        } // zx
+                    } // != screenGameOld
+                    screenGameDirty[index] = DIRTY_NOT;
+                } // != DIRTY_NOT
+                index++;
+            } // for x
+        } // for y
+#ifdef USE_DIRTY
+
+        temp = temp->nextNode;
+    }
+    // printf("%d\n", cpt);
+    DirtyPrint();
+    DirtyClearNode();
 #endif
-                            }
-                        } // zy
-                    } // zx
-                } // != screenGameOld
-                screenGameDirty[index] = DIRTY_NOT;
-            } // != DIRTY_NOT
-            index++;
-        } // for x
-    } // for y
     screenDirtyMinX = screenGameWidth;
     screenDirtyMaxX = 0;
     screenDirtyMinY = screenGameHeight;
     screenDirtyMaxY = 0;
+    memcpy(screenGameOld, screenGame, screenGameLength);
     if (gfxDebug)
     {
         uint32_t debugStartY = 0;

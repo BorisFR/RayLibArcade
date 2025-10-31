@@ -104,32 +104,34 @@ void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height)
 {
     for (uint16_t y = 0; y < height; y++)
     {
-        uint32_t currentLine = (line * height + y) * screenGameWidth;
+        uint32_t theLine = line * height + y;
+        uint32_t currentLine = theLine * screenGameWidth;
         for (int x = screenGameWidth - 1; x >= 0; x--)
         {
             uint32_t shiftX = (x + scroll) % screenGameWidth;
-            uint32_t index = shiftX + currentLine;
+            // uint32_t index = shiftX + currentLine;
             if (shiftX >= visibleArea.minX && shiftX <= visibleArea.maxX)
             {
                 THE_COLOR c = screenBitmap[x + currentLine];
                 // if (c != screenGameOld[index])
                 {
-                    screenGame[index] = c;
-                    // screenGameOld[index] = c;
-                    CHECK_IF_DIRTY_XY(shiftX, line * height + y);
+                    // screenGame[index] = c;
                     if (c == TRANSPARENCY_BLACK_COLOR)
                     {
-                        screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        // screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        DirtyAdd(screenGame, c, DIRTY_TRANSPARENT, shiftX, theLine);
                     }
                     else
                     {
-                        screenGameDirty[index] = DIRTY_YES;
+                        // screenGameDirty[index] = DIRTY_YES;
+                        DirtyAdd(screenGame, c, DIRTY_YES, shiftX, theLine);
                     }
                 }
             }
             else
             {
-                screenGameDirty[index] = DIRTY_TRANSPARENT;
+                // screenGameDirty[index] = DIRTY_TRANSPARENT;
+                DirtyAdd(screenGame, myBlack, DIRTY_TRANSPARENT, shiftX, theLine);
             }
         }
     }
@@ -137,18 +139,18 @@ void GameScrollLine(uint16_t line, uint16_t scroll, uint16_t height)
 
 void GamePlotPixel(uint16_t x, uint16_t y, THE_COLOR color)
 {
-    CHECK_IF_DIRTY_XY(x, y)
-    uint32_t index = x + y * screenGameWidth;
-    screenGame[index] = color;
-    screenGameDirty[index] = DIRTY_YES;
+    DirtyAdd(screenGame, color, DIRTY_YES, x, y);
+    // uint32_t index = x + y * screenGameWidth;
+    // screenGame[index] = color;
+    // screenGameDirty[index] = DIRTY_YES;
 }
 
 void GameClearPixel(uint16_t x, uint16_t y)
 {
-    CHECK_IF_DIRTY_XY(x, y)
-    uint32_t index = x + y * screenGameWidth;
-    screenGame[index] = myBlack;
-    screenGameDirty[index] = DIRTY_TRANSPARENT;
+    DirtyAdd(screenGame, myBlack, DIRTY_TRANSPARENT, x, y);
+    // uint32_t index = x + y * screenGameWidth;
+    // screenGame[index] = myBlack;
+    // screenGameDirty[index] = DIRTY_TRANSPARENT;
 }
 
 void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool flipX, bool flipY, uint16_t tileIndex, uint8_t paletteIndex, uint8_t blackIsTransparent, THE_COLOR replacedColor)
@@ -166,20 +168,28 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     uint16_t tempX = tileX + element->width - x;
                     if (tempX >= visibleArea.minX && tempX < visibleArea.maxX)
                     {
-                        uint32_t index = tempX + tempY * screenGameWidth;
+                        // uint32_t index = tempX + tempY * screenGameWidth;
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        CHECK_IF_DIRTY_XY(tempX, tempY)
+                        // DirtyAdd(tempX, tempY);
                         if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
-                            theScreen[index] = replacedColor;
-                            screenGameDirty[index] = DIRTY_TRANSPARENT;
+                            DirtyAdd(theScreen, replacedColor, DIRTY_TRANSPARENT, tempX, tempY);
+                            // theScreen[index] = replacedColor;
+                            // screenGameDirty[index] = DIRTY_TRANSPARENT;
                         }
                         else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
                         {
                             if (color != TRANSPARENCY_BLACK_COLOR)
-                                theScreen[index] = color;
-                            screenGameDirty[index] = DIRTY_YES;
+                            {
+                                DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                                // theScreen[index] = color;
+                            }
+                            else
+                            {
+                                DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                                // screenGameDirty[index] = DIRTY_YES;
+                            }
                         }
                         // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
                         // {
@@ -188,8 +198,9 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         // }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
-                            theScreen[index] = color;
-                            screenGameDirty[index] = DIRTY_YES;
+                            DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                            // theScreen[index] = color;
+                            // screenGameDirty[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -212,18 +223,25 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     {
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        uint32_t index = tempX + tempY * screenGameWidth;
-                        CHECK_IF_DIRTY_XY(tempX, tempY)
+                        // uint32_t index = tempX + tempY * screenGameWidth;
                         if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
-                            theScreen[index] = replacedColor;
-                            screenGameDirty[index] = DIRTY_TRANSPARENT;
+                            DirtyAdd(theScreen, replacedColor, DIRTY_TRANSPARENT, tempX, tempY);
+                            // theScreen[index] = replacedColor;
+                            // screenGameDirty[index] = DIRTY_TRANSPARENT;
                         }
                         else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
                         {
                             if (color != TRANSPARENCY_BLACK_COLOR)
-                                theScreen[index] = color;
-                            screenGameDirty[index] = DIRTY_YES;
+                            {
+                                DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                                // theScreen[index] = color;
+                            }
+                            else
+                            {
+                                DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                                // screenGameDirty[index] = DIRTY_YES;
+                            }
                         }
                         // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
                         // {
@@ -232,8 +250,9 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         // }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
-                            theScreen[index] = color;
-                            screenGameDirty[index] = DIRTY_YES;
+                            DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                            // theScreen[index] = color;
+                            // screenGameDirty[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -256,18 +275,25 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     {
                         uint8_t pixel = pointerLine[x];
                         THE_COLOR color = paletteColor[paletteIndex * 4 + pixel];
-                        uint32_t index = tempX + tempY * screenGameWidth;
-                        CHECK_IF_DIRTY_XY(tempX, tempY)
+                        // uint32_t index = tempX + tempY * screenGameWidth;
                         if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                         {
-                            theScreen[index] = replacedColor;
-                            screenGameDirty[index] = DIRTY_TRANSPARENT;
+                            DirtyAdd(theScreen, replacedColor, DIRTY_TRANSPARENT, tempX, tempY);
+                            // theScreen[index] = replacedColor;
+                            // screenGameDirty[index] = DIRTY_TRANSPARENT;
                         }
                         else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
                         {
                             if (color != TRANSPARENCY_BLACK_COLOR)
-                                theScreen[index] = color;
-                            screenGameDirty[index] = DIRTY_YES;
+                            {
+                                DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                                // theScreen[index] = color;
+                            }
+                            else
+                            {
+                                DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                                // screenGameDirty[index] = DIRTY_YES;
+                            }
                         }
                         // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
                         // {
@@ -276,8 +302,9 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         // }
                         else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                         {
-                            theScreen[index] = color;
-                            screenGameDirty[index] = DIRTY_YES;
+                            DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                            // theScreen[index] = color;
+                            // screenGameDirty[index] = DIRTY_YES;
                         }
                     }
                 }
@@ -303,20 +330,25 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                         color = paletteColor[paletteIndex * 4 + pixel];
                     else
                         color = colorRGB[paletteIndex * 4 + pixel];
-                    uint32_t index = tempX + tempY * screenGameWidth;
-                    CHECK_IF_DIRTY_XY(tempX, tempY)
+                    // uint32_t index = tempX + tempY * screenGameWidth;
                     if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                     {
-                        theScreen[index] = replacedColor;
-                        screenGameDirty[index] = DIRTY_TRANSPARENT;
-                        // uint32_t bg = tempX + screenPosX + (tempY+screenPosY) * 800;
-                        // theScreen[index] = screenBackground[bg];
+                        DirtyAdd(theScreen, replacedColor, DIRTY_TRANSPARENT, tempX, tempY);
+                        //theScreen[index] = replacedColor;
+                        //screenGameDirty[index] = DIRTY_TRANSPARENT;
                     }
                     else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
                     {
                         if (color != TRANSPARENCY_BLACK_COLOR)
-                            theScreen[index] = color;
-                        screenGameDirty[index] = DIRTY_YES;
+                        {
+                            DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                            //theScreen[index] = color;
+                        }
+                        else
+                        {
+                            DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                            //screenGameDirty[index] = DIRTY_YES;
+                        }
                     }
                     // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
                     // {
@@ -325,8 +357,9 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     // }
                     else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                     {
-                        theScreen[index] = color;
-                        screenGameDirty[index] = DIRTY_YES;
+                        DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
+                        //theScreen[index] = color;
+                        //screenGameDirty[index] = DIRTY_YES;
                     }
                 }
             }

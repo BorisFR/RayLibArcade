@@ -4,6 +4,7 @@
 #pragma once
 
 #include "MyDefine.h"
+#include "TheDirty.h"
 
 extern uint8_t countGames;
 

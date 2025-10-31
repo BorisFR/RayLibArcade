@@ -6,6 +6,8 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-function"
 
+//#define USE_DIRTY
+
 // to comment for RayLib on PC :)
 // #define ESP32P4 1
 
