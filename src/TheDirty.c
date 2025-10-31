@@ -177,7 +177,7 @@ void DirtyAdd(uint16_t *screenGame, uint16_t color, uint8_t state, uint16_t x, u
 {
     CHECK_IF_DIRTY_XY(x, y)
     uint32_t index = x + y * screenGameWidth;
-    if(screenGameOld[index] == color && screenGameDirty[index] == state) return;
+    //if(screenGameOld[index] == color && screenGameDirty[index] == state) return;
     screenGame[index] = color;
     screenGameDirty[index] = state;
 #ifdef USE_DIRTY
