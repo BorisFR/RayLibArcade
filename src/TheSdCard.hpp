@@ -49,10 +49,11 @@ public:
     bool LoadFile(std::string filename, unsigned char *toMemory, uint64_t size, uint64_t offset = 0);
     bool LoadJpgFileToBackground(const char *filename);
     bool LoadJpgFileTo(THE_BACKGROUND_COLOR *image, const char *filename, uint32_t lineWidth);
-
+#ifndef ESP32P4
     FILE *CreateJsonFileOnWiki(const char *filename);
     void CloseFile(FILE *file);
     void FileWriteText(FILE *file, const char *text);
+#endif
 
 private:
     const char *TAG = "TheSdCard";

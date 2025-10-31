@@ -316,6 +316,7 @@ bool TheSdCard::LoadJpgFileTo(THE_BACKGROUND_COLOR *image, const char *filename,
     return true;
 }
 
+#ifndef ESP32P4
 FILE *TheSdCard::CreateJsonFileOnWiki(const char *filename)
 {
     std::string fullPath = std::string(PC_PATH) + "wiki/" + filename + ".json";
@@ -340,3 +341,4 @@ void TheSdCard::FileWriteText(FILE *file, const char *text)
 {
     fprintf(file, "%s", text);
 }
+#endif
