@@ -43,6 +43,9 @@
 #include "TheTools.hpp"
 #include "GameDefinition.h"
 #include <string>
+#ifdef USE_DIRTY
+#include "TheDirty.h"
+#endif
 
 #ifdef ESP32P4
 #define SCREEN_BPP (16)
