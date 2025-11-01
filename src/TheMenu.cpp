@@ -7,17 +7,21 @@ TheMenu::TheMenu()
     allEntry = nullptr;
 }
 
+// *******************************************************************
+
 TheMenu::~TheMenu()
 {
     MY_DEBUG(TAG, "destroyed")
     FREE(allEntry)
 }
+
+// *******************************************************************
+
 void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
 {
     MY_DEBUG(TAG, "setup");
     TheGame::Setup(display, sdCard);
     display.CreateBackground();
-    uint32_t deltaY = MENU_LEFT + MENU_TOP * SCREEN_WIDTH;
     uint32_t size = MENU_WIDTH * MENU_HEIGHT * sizeof(THE_BACKGROUND_COLOR);
     allEntry = (THE_BACKGROUND_COLOR *)malloc((MENU_MAX + 1) * size);
     if (allEntry == NULL)
@@ -25,6 +29,7 @@ void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
         MY_DEBUG(TAG, "Error allocating allEntry memory");
         return;
     }
+    uint32_t deltaY = MENU_LEFT + MENU_TOP * screenGameWidth;
     uint32_t index = 0;
     for (uint8_t i = 0; i < (MENU_MAX + 1); i++)
     {
@@ -39,7 +44,7 @@ void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
             for (uint32_t y = 0; y < MENU_HEIGHT; y++)
             {
                 uint32_t from = y * MENU_WIDTH;
-                uint32_t to = deltaY + y * SCREEN_WIDTH;
+                uint32_t to = deltaY + y * screenGameWidth;
                 for (uint32_t x = 0; x < MENU_WIDTH; x++)
                 {
                     screenBackground[to + x] = pointer[from + x];
@@ -49,13 +54,15 @@ void TheMenu::Setup(TheDisplay &display, TheSdCard &sdCard)
             }
         }
         index += MENU_WIDTH * MENU_HEIGHT;
-        deltaY += MENU_HEIGHT * SCREEN_WIDTH;
+        deltaY += MENU_HEIGHT * screenGameWidth;
     }
     CHECK_IF_DIRTY_XY(0, 0)
-    CHECK_IF_DIRTY_XY(SCREEN_WIDTH, SCREEN_HEIGHT)
+    CHECK_IF_DIRTY_XY(screenGameWidth, screenGameHeight)
     x = 0;
     y = 0;
 }
+
+// *******************************************************************
 
 uint8_t gameX = 1;
 void TheMenu::Loop(TheDisplay &display)
@@ -69,7 +76,7 @@ void TheMenu::Loop(TheDisplay &display)
     if (x >= MENU_WIDTH)
         x -= MENU_WIDTH;
     GamePlotPixel(x, y, myRed);
-    CHECK_IF_DIRTY_XY(x, y)
+    //CHECK_IF_DIRTY_XY(x, y)
     // if ((InputPorts[0] & (1 << 0x10)) != 0)
     if (InputPorts[0] > 0)
     {
@@ -78,7 +85,7 @@ void TheMenu::Loop(TheDisplay &display)
             gameX = 1;
         return;
     }
-    if (display.TouchMoving())
-    {
-    }
+    // if (display.TouchMoving())
+    // {
+    // }
 }

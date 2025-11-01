@@ -128,7 +128,7 @@
 #ifdef ESP32P4
 #define TOUCH_DELAY_RELEASED 20
 #endif
-#define TOUCH_DELAY_CLICK 80
+#define TOUCH_DELAY_CLICK 100
 #define TOUCH_MOVE_DISTANCE 150
 
 class TheDisplay

@@ -1,8 +1,9 @@
 #ifndef THE_DIRTY_H
 #define THE_DIRTY_H
 
-//#include "MyDefine.h"
 #include "TheMemory.h"
+
+#ifdef USE_DIRTY
 
 typedef struct MyDirtyNode
 {
@@ -21,6 +22,9 @@ extern void DirtyPrint();
 extern void DirtySort();
 extern void DirtyMerge();
 extern void DirtyOptimize();
+//extern void DirtyRefreshTile(uint16_t *screenGame, uint16_t x, uint16_t y);
+#endif
+
 //extern void DirtyAdd(THE_COLOR *screenGame, THE_COLOR color, uint8_t state, uint16_t x, uint16_t y);
 extern void DirtyAdd(uint16_t *screenGame, uint16_t color, uint8_t state, uint16_t x, uint16_t y);
 

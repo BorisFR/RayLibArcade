@@ -246,6 +246,7 @@ extern "C"
 #define DIRTY_NOT 0
 #define DIRTY_YES 1
 #define DIRTY_TRANSPARENT 2
+#define DIRTY_SPRITE_TO_TILE 3
 	extern uint8_t *screenGameDirty;
 	extern THE_COLOR *screenBitmap;
 	extern uint16_t screenGameWidth;

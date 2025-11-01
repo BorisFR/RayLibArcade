@@ -187,7 +187,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                             }
                             else
                             {
-                                DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                                DirtyAdd(theScreen, myBlack, DIRTY_SPRITE_TO_TILE, tempX, tempY);
                                 // screenGameDirty[index] = DIRTY_YES;
                             }
                         }
@@ -239,7 +239,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                             }
                             else
                             {
-                                DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                                DirtyAdd(theScreen, myBlack, DIRTY_SPRITE_TO_TILE, tempX, tempY);
                                 // screenGameDirty[index] = DIRTY_YES;
                             }
                         }
@@ -291,7 +291,7 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                             }
                             else
                             {
-                                DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
+                                DirtyAdd(theScreen, myBlack, DIRTY_SPRITE_TO_TILE, tempX, tempY);
                                 // screenGameDirty[index] = DIRTY_YES;
                             }
                         }
@@ -334,20 +334,20 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     if (blackIsTransparent == TRANSPARENCY_REPLACE && color == TRANSPARENCY_BLACK_COLOR)
                     {
                         DirtyAdd(theScreen, replacedColor, DIRTY_TRANSPARENT, tempX, tempY);
-                        //theScreen[index] = replacedColor;
-                        //screenGameDirty[index] = DIRTY_TRANSPARENT;
+                        // theScreen[index] = replacedColor;
+                        // screenGameDirty[index] = DIRTY_TRANSPARENT;
                     }
                     else if (blackIsTransparent == TRANSPARENT_BLACK_TO_TILE)
                     {
                         if (color != TRANSPARENCY_BLACK_COLOR)
                         {
                             DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
-                            //theScreen[index] = color;
+                            // theScreen[index] = color;
                         }
                         else
                         {
-                            DirtyAdd(theScreen, myBlack, DIRTY_YES, tempX, tempY);
-                            //screenGameDirty[index] = DIRTY_YES;
+                            DirtyAdd(theScreen, myBlack, DIRTY_SPRITE_TO_TILE, tempX, tempY);
+                            // screenGameDirty[index] = DIRTY_YES;
                         }
                     }
                     // else if (blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENT_NONE_COLOR)
@@ -358,8 +358,8 @@ void GameDrawElement(THE_COLOR *theScreen, uint16_t tileX, uint16_t tileY, bool 
                     else if (!(blackIsTransparent == TRANSPARENCY_BLACK && color == TRANSPARENCY_BLACK_COLOR))
                     {
                         DirtyAdd(theScreen, color, DIRTY_YES, tempX, tempY);
-                        //theScreen[index] = color;
-                        //screenGameDirty[index] = DIRTY_YES;
+                        // theScreen[index] = color;
+                        // screenGameDirty[index] = DIRTY_YES;
                     }
                 }
             }
@@ -409,7 +409,18 @@ void GameDrawTile(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint
         {
             mustRedraw = GameTestSpriteOnTile(gameSpritesX[i], gameSpritesY[i], x, y);
             if (mustRedraw)
+            {
+                // tag other tiles if sprite bigger in widthand height... not really need
+                // for (uint8_t i = gameTilesWidth; i < gameSpritesWidth; i++)
+                //{
+                //     for (uint8_t j = gameTilesHeight; j < gameSpritesHeight; j++)
+                //     {
+                //         // DirtyRefreshTile(screenGame, i, j);
+                //         DirtyAdd(screenGame, 0, DIRTY_SPRITE_TO_TILE, x + i, y + j);
+                //     }
+                // }
                 break;
+            }
             i++;
         }
     }

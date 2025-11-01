@@ -651,18 +651,18 @@ void TheDisplay::Loop()
             exitGame = true;
         }
     }
-    if (screenDirtyMaxX > screenGameWidth)
-        screenDirtyMaxX = screenGameWidth;
-    if (screenDirtyMaxY > screenGameHeight)
-        screenDirtyMaxY = screenGameHeight;
+    // if (screenDirtyMaxX > screenGameWidth)
+    //     screenDirtyMaxX = screenGameWidth;
+    // if (screenDirtyMaxY > screenGameHeight)
+    //     screenDirtyMaxY = screenGameHeight;
 
 #ifdef USE_DIRTY
     DirtyOptimize();
-    uint16_t cpt = 0;
+    //uint16_t cpt = 0;
     OneDirtyNode *temp = DirtyNodeList;
     while (temp)
     {
-        cpt++;
+        //cpt++;
         screenDirtyMinY = temp->y;
         screenDirtyMaxY = temp->y + temp->height;
         screenDirtyMinX = temp->x;
@@ -716,7 +716,7 @@ void TheDisplay::Loop()
         temp = temp->nextNode;
     }
     // printf("%d\n", cpt);
-    DirtyPrint();
+    //DirtyPrint();
     DirtyClearNode();
 #endif
     screenDirtyMinX = screenGameWidth;

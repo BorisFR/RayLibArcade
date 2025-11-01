@@ -6,6 +6,7 @@
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-function"
 
+// seem not really better :(
 //#define USE_DIRTY
 
 // to comment for RayLib on PC :)

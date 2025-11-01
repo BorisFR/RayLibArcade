@@ -1,5 +1,5 @@
 #include "TheDirty.h"
-
+#ifdef USE_DIRTY
 OneDirtyNode *DirtyNodeList = NULL;
 
 // *******************************************************************
@@ -25,7 +25,9 @@ void DirtyAddNode(uint16_t x, uint16_t y)
     OneDirtyNode *temp = DirtyCreateNode(x, y);
     temp->nextNode = *(&DirtyNodeList);
     DirtyNodeList = temp;
-}
+    DirtySort();
+    DirtyMerge();
+ }
 
 // *******************************************************************
 
@@ -69,30 +71,33 @@ void DirtySort()
                 break;
             if (next->x < current->x)
             {
-                OneDirtyNode *temp = current;
+                uint16_t x = current->x;
+                uint16_t y = current->y;
+                uint16_t width = current->width;
+                uint16_t height = current->height;
                 current->x = next->x;
                 current->y = next->y;
                 current->width = next->width;
                 current->height = next->height;
-                next->x = temp->x;
-                next->y = temp->y;
-                next->width = temp->width;
-                next->height = temp->height;
+                next->x = x;
+                next->y = y;
+                next->width = width;
+                next->height = height;
                 change = true;
             }
             else
             {
                 if (next->x == current->x && next->y < current->y)
                 {
-                    OneDirtyNode *temp = current;
-                    current->x = next->x;
+                    uint16_t y = current->y;
+                    uint16_t width = current->width;
+                    uint16_t height = current->height;
                     current->y = next->y;
                     current->width = next->width;
                     current->height = next->height;
-                    next->x = temp->x;
-                    next->y = temp->y;
-                    next->width = temp->width;
-                    next->height = temp->height;
+                    next->y = y;
+                    next->width = width;
+                    next->height = height;
                     change = true;
                 }
             }
@@ -116,10 +121,11 @@ void DirtyMerge()
             if (!next)
                 break;
 
-            if ((next->x >= current->x) && (next->x <= current->x + current->width) && (next->y >= current->y) & (next->y <= current->y + current->height))
+            if ((next->x >= current->x) && (next->x <= current->x + current->width) \
+                && (next->y >= current->y) & (next->y <= current->y + current->height))
             {
-                current->width = next->x + next->width;
-                current->height = next->y + next->height;
+                current->width += next->x - current->x + next->width;
+                current->height += next->y - current->y + next->height;
                 current->nextNode = next->nextNode;
                 free(next);
                 next = NULL;
@@ -143,7 +149,9 @@ void DirtyMerge()
 void DirtyOptimize()
 {
     DirtySort();
+    //return;
     DirtyMerge();
+    //return;
     while (true)
     {
         OneDirtyNode *temp = DirtyNodeList;
@@ -169,23 +177,25 @@ void DirtyOptimize()
             break;
     }
 }
+#endif
 
 // *******************************************************************
 
-//void DirtyAdd(THE_COLOR *screenGame, THE_COLOR color, uint8_t state, uint16_t x, uint16_t y)
+// void DirtyAdd(THE_COLOR *screenGame, THE_COLOR color, uint8_t state, uint16_t x, uint16_t y)
 void DirtyAdd(uint16_t *screenGame, uint16_t color, uint8_t state, uint16_t x, uint16_t y)
 {
     CHECK_IF_DIRTY_XY(x, y)
     uint32_t index = x + y * screenGameWidth;
-    //if(screenGameOld[index] == color && screenGameDirty[index] == state) return;
-    screenGame[index] = color;
+    // if(screenGameOld[index] == color && screenGameDirty[index] == state) return;
+    if (state != DIRTY_SPRITE_TO_TILE)
+        screenGame[index] = color;
     screenGameDirty[index] = state;
 #ifdef USE_DIRTY
     OneDirtyNode *temp = DirtyNodeList;
     while (temp)
     {
         // same
-        if ((x >= temp->x) && (x <= (temp->x + temp->width)) && (y >= temp->y) && (y <= (temp->y + temp->height)))
+        if ((x >= temp->x) && (x < (temp->x + temp->width)) && (y >= temp->y) && (y < (temp->y + temp->height)))
         {
             return;
         }

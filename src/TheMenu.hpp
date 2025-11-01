@@ -10,7 +10,8 @@
 #define MENU_MAX 7
 #define MENU_WIDTH 500
 #define MENU_HEIGHT 140
-#define MENU_LEFT ((SCREEN_WIDTH - MENU_WIDTH)/2)
+#define MENU_LEFT 0
+//((SCREEN_WIDTH - MENU_WIDTH)/2)
 #define MENU_TOP 200
 
 class TheMenu : public TheGame
