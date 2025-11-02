@@ -20,7 +20,7 @@ extern "C"
 {
 #endif
 
-    extern void pacman_interrupt_enable_w(int offset, int data);
+    //extern void pacman_interrupt_enable_w(int offset, int data);
     extern void pacman_sound_enable_w(int offset, int data);
     extern void pacman_flipscreen_w(int offset, int data);
     extern void pacman_osd_led_w(int offset, int data);
@@ -79,7 +79,7 @@ static struct MemoryWriteAddress pacman_writemem[] = {
     {0x4ff0, 0x4fff, MWA_RAM}, //, &spriteram, &spriteram_size }, //8 pairs of two bytes:
                                // the first byte contains the sprite image number (bits 2-7), Y flip (bit 0),
                                // X flip (bit 1); the second byte the color
-    {0x5000, 0x5000, pacman_interrupt_enable_w},
+    {0x5000, 0x5000, Z80_interrupt_enable_w},
     {0x5001, 0x5001, pacman_sound_enable_w},
     {0x5002, 0x5002, MWA_NOP},
     {0x5003, 0x5003, pacman_flipscreen_w},

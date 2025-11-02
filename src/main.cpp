@@ -112,7 +112,7 @@ void setup()
   ex.~Export();
 #endif
 
-  currentGame = 0; // 0 menu, 1 si, ... 4 pacman
+  currentGame = 7; // 0 menu, 1 si, ... 4 pacman
   StartGame();
 }
 

@@ -10,7 +10,7 @@ extern "C"
 {
 #endif
 
-// Declaration moved after struct OneGame definition
+	// Declaration moved after struct OneGame definition
 
 #define IP_ACTIVE_HIGH 0x00
 #define IP_ACTIVE_LOW 0xff
@@ -73,7 +73,7 @@ extern "C"
 		IPT_UNKNOWN
 	};
 
-//#define IPT_UNUSED IPF_UNUSED
+// #define IPT_UNUSED IPF_UNUSED
 #define IPT_UNUSED IPT_UNKNOWN
 
 #define IPF_MASK 0xffff0000
@@ -94,11 +94,11 @@ extern "C"
 #define IPF_PLAYER3 0x00020000	  /* IPF_PLAYER1 is the default and can be left out to */
 #define IPF_PLAYER4 0x00030000	  /* increase readability. */
 
-#define IPF_8WAY 0			/* Joystick modes of operation. 8WAY is the default, */
-#define IPF_4WAY 0//0x00080000 /* it prevents left/right or up/down to be pressed at */
-#define IPF_2WAY 0			/* the same time. 4WAY prevents diagonal directions. */
-							/* 2WAY should be used for joysticks wich move only */
-							/* on one axis (e.g. Battle Zone) */
+#define IPF_8WAY 0 /* Joystick modes of operation. 8WAY is the default, */
+#define IPF_4WAY 0 // 0x00080000 /* it prevents left/right or up/down to be pressed at */
+#define IPF_2WAY 0 /* the same time. 4WAY prevents diagonal directions. */
+				   /* 2WAY should be used for joysticks wich move only */
+				   /* on one axis (e.g. Battle Zone) */
 
 #define IPF_IMPULSE 0x00100000 /* When this is set, when the key corrisponding to */
 							   /* the input bit is pressed it will be reported as */
@@ -143,7 +143,9 @@ extern "C"
 #define IP_JOY_NONE -2
 #define IP_JOY_PREVIOUS -3 /* use the same joy as the previous input bit */
 
-#define RGN_FRAC(num,den)       (0x80000000 | (((num) & 0x0f) << 27) | (((den) & 0x0f) << 23))
+#define KEYCODE_F2 0
+
+#define RGN_FRAC(num, den) (0x80000000 | (((num) & 0x0f) << 27) | (((den) & 0x0f) << 23))
 
 // https://github.com/Jean-MarcHarvengt/teensyMAME/blob/master/teensyMAMEClassic1/common.h
 #define ROMFLAG_MASK 0xf0000000		 /* 4 bits worth of flags in the high nibble */
@@ -239,11 +241,11 @@ extern "C"
 	same so you can interchange them. Of course there is no 'base' pointer for
 	IO ports.
 	***************************************************************************/
-
+#define DEF_STR(x) "x"
 #define INPUT_PORTS_START(name) static struct InputPort name[] = {
 #define PORT_START {0, 0, IPT_PORT, 0, 0, 0, 0},
 #define INPUT_PORTS_END { 0, 0, IPT_END, 0, 0 } \
-} \
+}                                               \
 	;
 #define PORT_BIT(mask, default, type) {mask, default, type, IP_NAME_DEFAULT, IP_KEY_DEFAULT, IP_JOY_DEFAULT, 0},
 #define PORT_DIPNAME(mask, default, name, key) {mask, default, IPT_DIPSWITCH_NAME, name, key, IP_JOY_NONE, 0},
@@ -254,17 +256,17 @@ extern "C"
 	// #define IOWP_NOP 0 /* do nothing */
 
 	// https://github.com/Jean-MarcHarvengt/teensyMAME/blob/master/teensyMAMEClassic1/_unused/vidhrdw/driver.h#L404
-#define	ORIENTATION_DEFAULT		0x00
-#define	ORIENTATION_FLIP_X		0x01	/* mirror everything in the X direction */
-#define	ORIENTATION_FLIP_Y		0x02	/* mirror everything in the Y direction */
-#define ORIENTATION_SWAP_XY		0x04	/* mirror along the top-left/bottom-right diagonal */
-#define	ORIENTATION_ROTATE_90	(ORIENTATION_SWAP_XY|ORIENTATION_FLIP_X)	/* rotate clockwise 90 degrees */
-#define	ORIENTATION_ROTATE_180	(ORIENTATION_FLIP_X|ORIENTATION_FLIP_Y)	/* rotate 180 degrees */
-#define	ORIENTATION_ROTATE_270	(ORIENTATION_SWAP_XY|ORIENTATION_FLIP_Y)	/* rotate counter-clockwise 90 degrees */
-/* IMPORTANT: to perform more than one transformation, DO NOT USE |, use ^ instead. */
-/* For example, to rotate 90 degrees counterclockwise and flip horizontally, use: */
-/* ORIENTATION_ROTATE_270 ^ ORIENTATION_FLIP_X*/
-/* Always remember that FLIP is performed *after* SWAP_XY. */
+#define ORIENTATION_DEFAULT 0x00
+#define ORIENTATION_FLIP_X 0x01											  /* mirror everything in the X direction */
+#define ORIENTATION_FLIP_Y 0x02											  /* mirror everything in the Y direction */
+#define ORIENTATION_SWAP_XY 0x04										  /* mirror along the top-left/bottom-right diagonal */
+#define ORIENTATION_ROTATE_90 (ORIENTATION_SWAP_XY | ORIENTATION_FLIP_X)  /* rotate clockwise 90 degrees */
+#define ORIENTATION_ROTATE_180 (ORIENTATION_FLIP_X | ORIENTATION_FLIP_Y)  /* rotate 180 degrees */
+#define ORIENTATION_ROTATE_270 (ORIENTATION_SWAP_XY | ORIENTATION_FLIP_Y) /* rotate counter-clockwise 90 degrees */
+																		  /* IMPORTANT: to perform more than one transformation, DO NOT USE |, use ^ instead. */
+																		  /* For example, to rotate 90 degrees counterclockwise and flip horizontally, use: */
+																		  /* ORIENTATION_ROTATE_270 ^ ORIENTATION_FLIP_X*/
+																		  /* Always remember that FLIP is performed *after* SWAP_XY. */
 
 	// https://github.com/Jean-MarcHarvengt/teensyMAME/blob/master/teensyMAMEClassic4/common.h
 	struct RomModule
@@ -315,9 +317,10 @@ extern "C"
 		void (*handler)(int offset, int data); /* see special values below */
 	};
 
-	#define NOTHING 0
+#define NOTHING 0
 
-	struct TheVideo {
+	struct TheVideo
+	{
 		const uint32_t top;
 		const uint32_t screenWidth;
 		const uint32_t screenHeight;
@@ -327,7 +330,8 @@ extern "C"
 		const struct GfxDecodeInfo *decodeInfo;
 	};
 
-	struct TheMachine {
+	struct TheMachine
+	{
 		const struct RomModule *roms;
 		void (*decode)();
 		const struct MemoryReadAddress *readAddress;
@@ -336,7 +340,7 @@ extern "C"
 		const struct IOReadPort *readPorts;
 		const struct IOWritePort *writePorts;
 		void (*gameInit)();
-};
+	};
 
 	struct OneGame
 	{

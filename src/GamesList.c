@@ -12,6 +12,7 @@
         PACMAN,
         GALAXIAN,
         PENGO,
+        DKONG,
         //CRUSH,
 #endif
 #ifdef MACHINE_xxx

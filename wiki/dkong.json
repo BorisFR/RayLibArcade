@@ -1,0 +1,21 @@
+{
+  "name": "Donkey Kong", 
+  "machine": "Z80",
+  "rom": [
+    {"type": "CPU", "name": "c_5et_g.bin", "length": "4096", "crc": "3127949451"},
+    {"type": "CPU", "name": "c_5ct_g.bin", "length": "4096", "crc": "1589928428"},
+    {"type": "CPU", "name": "c_5bt_g.bin", "length": "4096", "crc": "479712036"},
+    {"type": "CPU", "name": "c_5at_g.bin", "length": "4096", "crc": "3103808192"},
+    {"type": "CPU", "name": "s_3i_b.bin", "length": "2048", "crc": "1168436486"},
+    {"type": "CPU", "name": "s_3j_b.bin", "length": "2048", "crc": "1195638418"},
+    {"type": "GFX", "name": "v_5h_b.bin", "length": "2048", "crc": "315148637"},
+    {"type": "GFX", "name": "v_3pt.bin", "length": "2048", "crc": "367642089"},
+    {"type": "GFX", "name": "l_4m_b.bin", "length": "2048", "crc": "1509426509"},
+    {"type": "GFX", "name": "l_4n_b.bin", "length": "2048", "crc": "1731086100"},
+    {"type": "GFX", "name": "l_4r_b.bin", "length": "2048", "crc": "4272577006"},
+    {"type": "GFX", "name": "l_4s_b.bin", "length": "2048", "crc": "552791934"},
+    {"type": "COLOR", "name": "c-2k.bpr", "length": "256", "crc": "3799248357"},
+    {"type": "COLOR", "name": "c-2j.bpr", "length": "256", "crc": "3594593112"},
+    {"type": "COLOR", "name": "v-5e.bpr", "length": "256", "crc": "3093936373"}
+  ]
+}

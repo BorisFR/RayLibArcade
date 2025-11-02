@@ -5,6 +5,7 @@
     {"id": "frogger", "name": "Frogger"},
     {"id": "pacman", "name": "Pacman"},
     {"id": "galaxian", "name": "Galaxian"},
-    {"id": "pengo", "name": "Pengo"}
+    {"id": "pengo", "name": "Pengo"},
+    {"id": "dkong", "name": "Donkey Kong"}
   ]
 }

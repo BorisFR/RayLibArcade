@@ -41,13 +41,13 @@ private:
     TheDisplay *display;
     uint32_t crc32_table[256];
     void InitCrc32Table();
-    uint32_t GetCrc32(uint16_t offset, uint16_t length, uint8_t *fromMemory);
+    uint32_t GetCrc32(uint32_t offset, uint16_t length, uint8_t *fromMemory);
     int16_t countInportPortReadFunction;
     int16_t countInportPortWriteFunction;
     int16_t countMemoryReadFunction;
     int16_t countMemoryWriteFunction;
     bool Initialize(TheDisplay &display, TheSdCard &sdCard);
-    bool LoadOneRom(TheSdCard &sdCard, std::string folder, std::string filename, uint8_t *toMemory, uint16_t size, uint16_t offset = 0, uint32_t expectedCrc = 0);
+    bool LoadOneRom(TheSdCard &sdCard, std::string folder, std::string filename, uint8_t *toMemory, uint16_t size, uint32_t offset = 0, uint32_t expectedCrc = 0);
     bool DecodeColors(TheDisplay &display);
     bool DecodePalette();
     bool GeneratePalette(TheDisplay &display);

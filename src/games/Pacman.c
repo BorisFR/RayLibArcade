@@ -26,7 +26,7 @@ struct GfxLayout pacmanSpriteLayout = {
 
 // *******************************************************************
 
-void pacman_interrupt_enable_w(int offset, int data) { Z80InterruptEnable[Z80CurrentCpu] = (data & 0x01) == 0x01; }
+// void pacman_interrupt_enable_w(int offset, int data) { Z80InterruptEnable[Z80CurrentCpu] = (data & 0x01) == 0x01; }
 
 void pacman_sound_enable_w(int offset, int data)
 {

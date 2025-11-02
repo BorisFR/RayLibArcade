@@ -65,6 +65,7 @@ typedef struct
 #define WRITE_HANDLER(function) void function(int offset, int data)
 WRITE_HANDLER(videoram_w);
 WRITE_HANDLER(colorram_w);
+#define READ_HANDLER(function) int function(int offset)
 
 typedef struct
 {
@@ -145,6 +146,8 @@ extern "C"
 	extern void GameDrawTileOnBitmap(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY);
 	extern uint8_t Z80InterruptVector[MAX_Z80_CPU];
 	extern bool Z80InterruptEnable[MAX_Z80_CPU];
+	extern void Z80_interrupt_enable_w(int offset, int data);
+
 	extern uint8_t Z80CurrentRunningCpu;
 	extern uint8_t Z80CurrentCpu;
 	extern bool Z80AskForNMI[MAX_Z80_CPU];

@@ -379,10 +379,10 @@ void TheGame::InitCrc32Table()
 
 // *******************************************************************
 
-uint32_t TheGame::GetCrc32(uint16_t offset, uint16_t length, uint8_t *fromMemory)
+uint32_t TheGame::GetCrc32(uint32_t offset, uint16_t length, uint8_t *fromMemory)
 {
     uint32_t crc = 0xFFFFFFFF;
-    for (uint16_t i = 0; i < length; ++i)
+    for (uint32_t i = 0; i < length; ++i)
     {
         uint8_t index = (crc ^ fromMemory[i + offset]) & 0xFF;
         crc = (crc >> 8) ^ crc32_table[index];
@@ -608,7 +608,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
 
 // *******************************************************************
 
-bool TheGame::LoadOneRom(TheSdCard &sdCard, std::string folder, std::string filename, uint8_t *toMemory, uint16_t size, uint16_t offset, uint32_t expectedCrc)
+bool TheGame::LoadOneRom(TheSdCard &sdCard, std::string folder, std::string filename, uint8_t *toMemory, uint16_t size, uint32_t offset, uint32_t expectedCrc)
 {
     std::string fullPath = folder + "/" + filename;
     MY_DEBUG2TEXT(TAG, "Full ROM path:", fullPath.c_str());

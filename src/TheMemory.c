@@ -472,6 +472,8 @@ void GameDrawTileOnBitmap(uint32_t index, uint8_t value, uint8_t color, uint16_t
 
 uint8_t Z80InterruptVector[MAX_Z80_CPU];
 bool Z80InterruptEnable[MAX_Z80_CPU];
+void Z80_interrupt_enable_w(int offset, int data) { Z80InterruptEnable[Z80CurrentCpu] = (data & 0x01) == 0x01; }
+
 uint8_t Z80CurrentRunningCpu;
 uint8_t Z80CurrentCpu;
 bool Z80AskForNMI[MAX_Z80_CPU];

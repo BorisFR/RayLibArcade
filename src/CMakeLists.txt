@@ -13,6 +13,7 @@ idf_component_register(SRCS  "main.cpp"
 "machines/MachineDriver8080bw.cpp" "machines/MachineInputPort.cpp" "machines/MachineTheZ80.cpp"
 "machines/mb14241.c"
 
+"games/DKong.c"
 "games/Frogger.c"
 "games/Galaxian.c"
 "games/Invaders.c"
