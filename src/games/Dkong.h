@@ -13,7 +13,7 @@ extern struct GfxLayout dkongSpriteLayout;
 static struct GfxDecodeInfo dkongGfxDecodeInfo[] =
     {
         {ROM_GFX, 0x0000, &dkongTileLayout, 0, 64},
-        {ROM_GFX, 0x0000, &dkongSpriteLayout, 0, 64},
+        {ROM_GFX, 0x1000, &dkongSpriteLayout, 0, 64},
         {-1}};
 
 #ifdef __cplusplus
@@ -33,11 +33,13 @@ extern "C"
     WRITE_HANDLER(dkong_sh_sound5_w);
     WRITE_HANDLER(dkong_sh_tuneselect_w);
 
+    extern void DkongInit();
+
 #ifdef __cplusplus
 }
 #endif
 
-#define DKONG {"dkong", "Donkey Kong", {356, 32 * 8, 32 * 8, {0 * 8, 32 * 8 - 1, 2 * 8, 30 * 8 - 1}, ORIENTATION_ROTATE_270, dkong_vh_screenrefresh, dkongGfxDecodeInfo}, 3072000 / 60, {dkong_rom, NOTHING, dkong_readmem, dkong_writemem, dkong_input_ports, NOTHING, NOTHING}, MACHINE_Z80}
+#define DKONG {"dkong", "Donkey Kong", {356, 32 * 8, 32 * 8, {0 * 8, 32 * 8 - 1, 2 * 8, 30 * 8 - 1}, ORIENTATION_ROTATE_270, dkong_vh_screenrefresh, dkongGfxDecodeInfo}, 3072000 / 60, {dkong_rom, NOTHING, dkong_readmem, dkong_writemem, dkong_input_ports, NOTHING, NOTHING, DkongInit}, MACHINE_Z80}
 
 /*
 static struct MachineDriver machine_driver_dkong =
@@ -88,7 +90,7 @@ static struct MachineDriver machine_driver_dkong =
 }; */
 
 ROM_START(dkong_rom)
-ROM_REGION(0x10000 + 0x1000)
+ROM_REGION(0x10000)
 ROM_LOAD("c_5et_g.bin", 0x0000, 0x1000, 0xba70b88b)
 ROM_LOAD("c_5ct_g.bin", 0x1000, 0x1000, 0x5ec461ec)
 ROM_LOAD("c_5bt_g.bin", 0x2000, 0x1000, 0x1c97d324)
@@ -96,8 +98,9 @@ ROM_LOAD("c_5at_g.bin", 0x3000, 0x1000, 0xb9005ac0)
 // space for diagnostic ROM
 
 // ROM_REGION( 0x1000, REGION_CPU2 )	// sound
-ROM_LOAD("s_3i_b.bin", 0x10000 + 0x0000, 0x0800, 0x45a4ed06)
-ROM_LOAD("s_3j_b.bin", 0x10000 + 0x0800, 0x0800, 0x4743fe92)
+ROM_REGION_SND(0x1000)
+ROM_LOAD("s_3i_b.bin", 0x0000, 0x0800, 0x45a4ed06)
+ROM_LOAD("s_3j_b.bin", 0x0800, 0x0800, 0x4743fe92)
 
 ROM_REGION_GFX(0x1000 + 0x2000) //, REGION_GFX1 | REGIONFLAG_DISPOSE )
 ROM_LOAD("v_5h_b.bin", 0x0000, 0x0800, 0x12c8c95d)
