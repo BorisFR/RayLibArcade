@@ -1,0 +1,15 @@
+{
+  "name": "Polaris (latest version)", 
+  "machine": "BW8080",
+  "rom": [
+    {"type": "CPU", "name": "ps01-1.ic71", "length": "2048", "crc": "2101411964"},
+    {"type": "CPU", "name": "ps02-9.ic70", "length": "2048", "crc": "2589756594"},
+    {"type": "CPU", "name": "ps03-1.ic69", "length": "2048", "crc": "569582613"},
+    {"type": "CPU", "name": "ps04-18.ic62", "length": "2048", "crc": "3608653555"},
+    {"type": "CPU", "name": "ps05.ic61", "length": "2048", "crc": "1999516147"},
+    {"type": "CPU", "name": "ps06-10.ic60", "length": "2048", "crc": "1039629228"},
+    {"type": "CPU", "name": "ps26.ic60a", "length": "2048", "crc": "2640067920"},
+    {"type": "COLOR", "name": "ps08.1b", "length": "1024", "crc": "373989469"},
+    {"type": "UNKNOW ROM TYPE", "name": "ps07.2c", "length": "256", "crc": "693314875"}
+  ]
+}

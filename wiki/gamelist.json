@@ -2,6 +2,7 @@
   "games": [
     {"id": "invaders", "name": "Space Invaders"},
     {"id": "invadpt2", "name": "Space Invaders part II"},
+    {"id": "polaris", "name": "Polaris (latest version)"},
     {"id": "frogger", "name": "Frogger"},
     {"id": "pacman", "name": "Pacman"},
     {"id": "galaxian", "name": "Galaxian"},

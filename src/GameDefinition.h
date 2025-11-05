@@ -163,7 +163,7 @@ extern "C"
 #define ROM_PALETTE 0x00000010 /* Palette ROM */
 							   // #define ROM_TILE 0x00000020	   /* Tile ROM */
 							   // #define ROM_SPRITE 0x00000040  /* Sprite ROM */
-
+#define ROM_USER1 0x00000020
 	// change are made, I add ROM_CPU/GFX/SND at the end
 
 #define ROM_START(name) static struct RomModule name[] = {
@@ -172,6 +172,7 @@ extern "C"
 #define ROM_REGION_SND(length) {0, length, 0, ROM_SOUND},
 #define ROM_REGION_COLOR(length) {0, length, 0, ROM_COLOR},
 #define ROM_REGION_PALETTE(length) {0, length, 0, ROM_PALETTE},
+#define ROM_REGION_USER1(length) {0, length, 0, ROM_USER1},
 // #define ROM_REGION_TILE(length) {0, length, 0, ROM_TILE},
 // #define ROM_REGION_SPRITE(length) {0, length, 0, ROM_SPRITE},
 #define ROM_REGION_DISPOSE(length) {0, length, 0, ROMFLAG_DISPOSE},
@@ -347,19 +348,8 @@ extern "C"
 		const char *folder;
 		const char *name;
 		const struct TheVideo video;
-		// const uint32_t screenWidth;
-		// const uint32_t screenHeight;
-		// const uint8_t orientation;
-		// void (*drawDisplay)(); // must draw screen in screenGame[]
-		// const struct GfxDecodeInfo *decodeInfo;
 		const unsigned long frequency;
 		const struct TheMachine machine;
-		// const RomModule *roms;
-		// const MemoryReadAddress *readAddress;
-		// const MemoryWriteAddress *writeAddress;
-		// const InputPort *inputPorts;
-		// const IOReadPort *readPorts;
-		// const IOWritePort *writePorts;
 		const int8_t machineType;
 	};
 

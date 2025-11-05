@@ -19,6 +19,7 @@ extern "C"
 #ifdef MACHINE_8080BW
 #include "games/Invaders.h"
 #include "games/Invadpt2.h"
+#include "games/Polaris.h"
 #endif
 
     // *******************************************************************

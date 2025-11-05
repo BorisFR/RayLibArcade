@@ -75,6 +75,7 @@ TheGame::~TheGame()
     FREE(colorMemory);
     FREE(paletteMemory);
     FREE(soundMemory);
+    FREE(user1Memory);
     FREE(colorRGB);
     FREE(paletteColor);
     FREE(memoryReadHandler);
@@ -530,6 +531,17 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
                     return false;
                 }
                 toMemory = soundMemory;
+                break;
+            case ROM_USER1:
+                MY_DEBUG(TAG, "** Loading to USER1 memory");
+                user1MemorySize = GAME_ROMS[i].offset;
+                user1Memory = (uint8_t *)malloc(user1MemorySize * sizeof(uint8_t));
+                if (user1Memory == NULL)
+                {
+                    MY_DEBUG(TAG, "Error allocating USER1 memory");
+                    return false;
+                }
+                toMemory = user1Memory;
                 break;
             default:
                 MY_DEBUG(TAG, "** Loading to UNKNOW memory type!!");

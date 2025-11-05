@@ -669,6 +669,8 @@ uint8_t *colorMemory;
 uint32_t colorMemorySize;
 uint8_t *soundMemory;
 uint32_t soundMemorySize;
+uint8_t *user1Memory;
+uint32_t user1MemorySize;
 uint8_t *paletteMemory;
 uint32_t paletteMemorySize;
 uint8_t *tileMemory;

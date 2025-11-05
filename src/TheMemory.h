@@ -232,6 +232,9 @@ extern "C"
 	// sound memory
 	extern uint8_t *soundMemory;
 	extern uint32_t soundMemorySize;
+	// user1 (at least for polaris game)
+	extern uint8_t *user1Memory;
+	extern uint32_t user1MemorySize;
 
 	extern uint8_t *dirtyMemoryTiles;
 	extern uint8_t *dirtyMemorySprites;

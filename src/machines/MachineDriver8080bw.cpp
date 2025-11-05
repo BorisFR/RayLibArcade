@@ -38,4 +38,6 @@ void MachineDriver8080bw::Loop(TheDisplay &display)
     cpu.EmulateCycles(33333);
     cpu.Interrupt(0xd7); // RST 2
 #endif
+    if (allGames[currentGame].video.drawDisplay)
+        allGames[currentGame].video.drawDisplay();
 }

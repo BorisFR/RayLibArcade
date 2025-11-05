@@ -6,6 +6,7 @@
 #ifdef MACHINE_8080BW
         INVADERS,
         INVADPT2,
+        POLARIS,
 #endif
 #ifdef MACHINE_Z80
         FROGGER,
