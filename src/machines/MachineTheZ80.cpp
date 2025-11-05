@@ -2,31 +2,22 @@
 
 uint8_t Z80PortIn(z80 *const z, uint8_t port)
 {
-    // if(allGames[currentGame].readPorts == NULL) return InputPorts[port];
     return InputPortRead[port]->handler(port);
 }
 
 void Z80PortOut(z80 *const z, uint8_t port, uint8_t value)
 {
-    // InputPorts[port] = value;
     InputPortWrite[port]->handler(port, value);
 }
 
 uint8_t Z80MemoryRead(void *xx, uint16_t address)
 {
     return readMemoryHandler(address);
-    // return memoryReadHandler[address].handler(address);
 }
 
 void Z80MemoryWrite(void *xx, uint16_t address, uint8_t value)
 {
     writeMemoryHandler(address, value);
-    // if (memoryWriteHandler[address].handler != NULL)
-    //{
-    //     memoryWriteHandler[address].handler(address, value);
-    //     return;
-    // }
-    // boardMemory[address] = value;
 }
 
 // *******************************************************************

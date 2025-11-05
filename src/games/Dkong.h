@@ -7,6 +7,9 @@
 #include "../TheMemory.h"
 #include "../GameDefinition.h"
 
+#include "../machines/CpuI8048.h"
+
+
 extern struct GfxLayout dkongTileLayout;
 extern struct GfxLayout dkongSpriteLayout;
 
@@ -39,7 +42,7 @@ extern "C"
 }
 #endif
 
-#define DKONG {"dkong", "Donkey Kong", {356, 32 * 8, 32 * 8, {0 * 8, 32 * 8 - 1, 2 * 8, 30 * 8 - 1}, ORIENTATION_ROTATE_270, dkong_vh_screenrefresh, dkongGfxDecodeInfo}, 3072000 / 60, {dkong_rom, NOTHING, dkong_readmem, dkong_writemem, dkong_input_ports, NOTHING, NOTHING, DkongInit}, MACHINE_Z80}
+#define DKONG {"dkong", "Donkey Kong", {273, 32 * 8, 32 * 8, {0 * 8, 32 * 8 - 1, 2 * 8, 30 * 8 - 1}, ORIENTATION_ROTATE_270, dkong_vh_screenrefresh, dkongGfxDecodeInfo}, 3072000 / 60, {dkong_rom, NOTHING, dkong_readmem, dkong_writemem, dkong_input_ports, NOTHING, NOTHING, DkongInit}, MACHINE_Z80}
 
 /*
 static struct MachineDriver machine_driver_dkong =

@@ -8,7 +8,7 @@ idf_component_register(SRCS  "main.cpp"
 
 "libjpg/JPEGDEC.cpp"
 
-"machines/CpuI8085.c" "machines/CpuZ80.c"
+"machines/CpuI8048.c""machines/CpuI8085.c" "machines/CpuZ80.c"
 "machines/i8080.cpp" "machines/i8080instructions.cpp"
 "machines/MachineDriver8080bw.cpp" "machines/MachineInputPort.cpp" "machines/MachineTheZ80.cpp"
 "machines/mb14241.c"
