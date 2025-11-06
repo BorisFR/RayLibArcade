@@ -12,17 +12,20 @@ extern "C"
 {
 #endif
 
+    READ_HANDLER(polaris_scattered_colorram_r);
+    WRITE_HANDLER(polaris_scattered_colorram_w);
     WRITE_HANDLER(polaris_videoram_w);
     WRITE_HANDLER(polaris_sh_port_1_w);
     WRITE_HANDLER(polaris_sh_port_2_w);
     WRITE_HANDLER(polaris_sh_port_3_w);
+    extern void PolarisInit();
     extern void PolarisRefreshScreen();
 
 #ifdef __cplusplus
 }
 #endif
 
-#define POLARIS {"polaris", "Polaris (latest version)", {307, 28*8, 32*8, { 0*8, 28*8-1, 0*8, 32*8-1 }, ORIENTATION_ROTATE_270, PolarisRefreshScreen, NOTHING}, 1996800 / 60, {polaris_rom, NOTHING, polaris_readmem, polaris_writemem, polaris_input_ports, polaris_readport, polaris_writeport}, MACHINE_8080BW}
+#define POLARIS {"polaris", "Polaris (latest version)", {307, 28*8, 32*8, { 0*8, 28*8-1, 0*8, 32*8-1 }, ORIENTATION_ROTATE_270, PolarisRefreshScreen, NOTHING}, 1996800 / 60, {polaris_rom, NOTHING, polaris_readmem, polaris_writemem, polaris_input_ports, polaris_readport, polaris_writeport, PolarisInit}, MACHINE_8080BW}
 
 ROM_START(polaris_rom)
 ROM_REGION(0x10000)
@@ -44,6 +47,7 @@ static struct MemoryReadAddress polaris_readmem[] =
 	{ 0x0000, 0x1fff, MRA_ROM },
 	{ 0x2000, 0x3fff, MRA_RAM },
 	{ 0x4000, 0x4fff, MRA_ROM },
+	{ 0xc000, 0xdfff, polaris_scattered_colorram_r },
 	{ -1 }  // end of table
 };
 
@@ -53,6 +57,7 @@ static struct MemoryWriteAddress polaris_writemem[] =
 	{ 0x2000, 0x23ff, MWA_RAM },
 	{ 0x2400, 0x3fff, polaris_videoram_w, &videoram, &videoram_size },
 	{ 0x4000, 0x4fff, MWA_ROM },
+	{ 0xc000, 0xdfff, polaris_scattered_colorram_w },
 	{ -1 }  // end of table
 };
 

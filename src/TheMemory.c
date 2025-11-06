@@ -617,6 +617,7 @@ THE_COLOR myBlack;
 THE_COLOR myGreen;
 THE_COLOR myRed;
 THE_COLOR myYellow;
+THE_COLOR myBlue;
 THE_COLOR myCyan;
 THE_COLOR myPurple;
 

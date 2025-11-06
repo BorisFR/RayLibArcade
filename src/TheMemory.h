@@ -188,6 +188,7 @@ extern "C"
 	extern THE_COLOR myGreen;
 	extern THE_COLOR myRed;
 	extern THE_COLOR myYellow;
+	extern THE_COLOR myBlue;
 	extern THE_COLOR myCyan;
 	extern THE_COLOR myPurple;
 
