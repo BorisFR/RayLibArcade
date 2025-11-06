@@ -25,7 +25,7 @@ extern "C"
 }
 #endif
 
-#define POLARIS {"polaris", "Polaris (latest version)", {307, 28*8, 32*8, { 0*8, 28*8-1, 0*8, 32*8-1 }, ORIENTATION_ROTATE_270, PolarisRefreshScreen, NOTHING}, 1996800 / 60, {polaris_rom, NOTHING, polaris_readmem, polaris_writemem, polaris_input_ports, polaris_readport, polaris_writeport, PolarisInit}, MACHINE_8080BW}
+#define POLARIS {"polaris", "Polaris", {307, 28*8, 32*8, { 0*8, 28*8-1, 0*8, 32*8-1 }, ORIENTATION_ROTATE_270, PolarisRefreshScreen, NOTHING}, 1996800 / 60, {polaris_rom, NOTHING, polaris_readmem, polaris_writemem, polaris_input_ports, polaris_readport, polaris_writeport, PolarisInit}, MACHINE_8080BW}
 
 ROM_START(polaris_rom)
 ROM_REGION(0x10000)
