@@ -61,6 +61,10 @@ In sync, screenGameDirty:
 ## Blog
 
 <details>
+<summary>Novembre 2025</summary>  
+
+* Pour le fun, tentative d'ajout du jeu Polaris. Relativement facile à faire mais il manque la partie couleur. Je n'arrive pas à comprendre comment cela est géré par Mame.   
+
 <summary>Octobre 2025</summary>  
 
 * Création d'un export automatique de la liste des jeux et de leur caractéristiques. J'ai maintenant une page web automatique qui liste tout cela : [Liste des jeux](https://borisfr.github.io/RayLibArcade/).  
