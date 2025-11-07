@@ -38,7 +38,7 @@ extern "C"
 }
 #endif
 
-#define AMIDAR {"amidar", "Amidar", {273, 32*8, 32*8, { 2*8, 30*8-1, 0*8, 32*8-1 }, ORIENTATION_ROTATE_90, AmidarRefreshScreen, amidarGfxDecodeInfo}, 3072000 / 60, {amidar_rom, NOTHING, amidar_readmem, amidar_writemem, amidar_input_ports, NOTHING, NOTHING, AmidarInit}, MACHINE_Z80}
+#define AMIDAR {"amidar", "Amidar", {350, 32*8, 32*8, { 2*8, 30*8-1, 0*8, 32*8-1 }, ORIENTATION_ROTATE_90, AmidarRefreshScreen, amidarGfxDecodeInfo}, 3072000 / 60, {amidar_rom, NOTHING, amidar_readmem, amidar_writemem, amidar_input_ports, NOTHING, NOTHING, AmidarInit}, MACHINE_Z80}
 
 ROM_START(amidar_rom)
 ROM_REGION(0x10000)
