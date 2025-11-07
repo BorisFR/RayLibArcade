@@ -30,6 +30,7 @@ extern void DirtyOptimize();
 //extern void DirtyRefreshTile(uint16_t *screenGame, uint16_t x, uint16_t y);
 #endif
 
+extern void DirtyAll();
 //extern void DirtyAdd(THE_COLOR *screenGame, THE_COLOR color, uint8_t state, uint16_t x, uint16_t y);
 extern void DirtyAdd(uint16_t *screenGame, uint16_t color, uint8_t state, uint16_t x, uint16_t y);
 

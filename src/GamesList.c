@@ -14,6 +14,7 @@
         GALAXIAN,
         PENGO,
         DKONG,
+        AMIDAR,
         //CRUSH,
 #endif
 #ifdef MACHINE_xxx

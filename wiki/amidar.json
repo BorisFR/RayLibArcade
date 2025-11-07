@@ -1,0 +1,16 @@
+{
+  "name": "Amidar", 
+  "machine": "Z80",
+  "rom": [
+    {"type": "CPU", "name": "1.2c", "length": "4096", "crc": "1645966558"},
+    {"type": "CPU", "name": "2.2e", "length": "4096", "crc": "944999320"},
+    {"type": "CPU", "name": "3.2f", "length": "4096", "crc": "161401636"},
+    {"type": "CPU", "name": "4.2h", "length": "4096", "crc": "3121912467"},
+    {"type": "CPU", "name": "5.2j", "length": "4096", "crc": "4006353599"},
+    {"type": "SOUND", "name": "s1.5c", "length": "4096", "crc": "2359801680"},
+    {"type": "SOUND", "name": "s2.5d", "length": "4096", "crc": "2606488586"},
+    {"type": "GFX", "name": "c2.5f", "length": "2048", "crc": "754867934"},
+    {"type": "GFX", "name": "c2.5d", "length": "2048", "crc": "1472527629"},
+    {"type": "COLOR", "name": "amidar.clr", "length": "32", "crc": "4181777603"}
+  ]
+}

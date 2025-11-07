@@ -30,6 +30,7 @@ extern "C"
 #include "games/Galaxian.h"
 #include "games/Pengo.h"
 #include "games/Dkong.h"
+#include "games/Amidar.h"
 //#include "games/Crush.h"
 #endif
 

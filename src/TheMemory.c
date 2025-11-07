@@ -430,7 +430,7 @@ void GameDrawTile(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint
     gameTilesY[index] = y;
     gameTilesValue[index] = value;
     gameTilesColor[index] = color;
-    GameDrawElement(screenGame, x, y, false, false, value, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+    GameDrawElement(screenGame, x, y, flipX, flipY, value, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
 }
 
 void GameDrawSprite(uint32_t index, uint8_t value, uint8_t color, uint16_t x, uint16_t y, bool flipX, bool flipY)
@@ -467,7 +467,7 @@ void GameDrawTileOnBitmap(uint32_t index, uint8_t value, uint8_t color, uint16_t
     gameTilesY[index] = y;
     gameTilesValue[index] = value;
     gameTilesColor[index] = color;
-    GameDrawElement(screenBitmap, x, y, false, false, value, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
+    GameDrawElement(screenBitmap, x, y, flipX, flipY, value, color, TRANSPARENCY_NONE, TRANSPARENT_NONE_COLOR);
 }
 
 uint8_t Z80InterruptVector[MAX_Z80_CPU];
@@ -565,6 +565,9 @@ int readMemoryHandler(int address)
 
 WRITE_HANDLER(videoram_w) { videoram[offset] = data; }
 WRITE_HANDLER(colorram_w) { colorram[offset] = data; }
+
+bool screenFlipWidth;
+bool screenFlipHeight;
 
 void writeMemoryHandler(int address, int value)
 {

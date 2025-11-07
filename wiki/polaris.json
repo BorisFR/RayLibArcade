@@ -1,5 +1,5 @@
 {
-  "name": "Polaris (latest version)", 
+  "name": "Polaris", 
   "machine": "BW8080",
   "rom": [
     {"type": "CPU", "name": "ps01-1.ic71", "length": "2048", "crc": "2101411964"},

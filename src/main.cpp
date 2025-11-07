@@ -112,7 +112,7 @@ void setup()
   ex.~Export();
 #endif
 
-  currentGame = 3; // 0 menu, 1 si, ... 5 pacman
+  currentGame = 9; // 0 menu, voir GamesList.c
   StartGame();
 }
 

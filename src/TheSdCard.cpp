@@ -237,7 +237,9 @@ bool TheSdCard::LoadFile(std::string filename, unsigned char *toMemory, uint64_t
     rewind(pFile);
     if (size != lSize)
     {
-        // MY_DEBUG(TAG, "File size mismatch: " + std::to_string(size) + " != " + std::to_string(lSize));
+        MY_DEBUG2(TAG, "Expected:", size);
+        MY_DEBUG2(TAG, "Read:", lSize);
+        //MY_DEBUG(TAG, "File size mismatch: " + std::to_string(size) + " != " + std::to_string(lSize));
         fclose(pFile);
         return false;
     }

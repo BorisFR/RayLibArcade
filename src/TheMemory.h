@@ -67,6 +67,9 @@ WRITE_HANDLER(videoram_w);
 WRITE_HANDLER(colorram_w);
 #define READ_HANDLER(function) int function(int offset)
 
+extern bool screenFlipWidth;
+extern bool screenFlipHeight;
+
 typedef struct
 {
 	void (*handler)(int offset, int data);
