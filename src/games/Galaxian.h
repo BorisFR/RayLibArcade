@@ -22,10 +22,10 @@ extern "C"
 {
 #endif
 
-    extern void galaxian_interrupt_enable_w(int offset, int data);
-    extern void galaxian_stars_w(int offset, int data);
-    extern void galaxian_flipx_w(int offset, int data);
-    extern void galaxian_flipy_w(int offset, int data);
+    WRITE_HANDLER(galaxian_interrupt_enable_w);
+    WRITE_HANDLER(galaxian_stars_w);
+    WRITE_HANDLER(galaxian_flipx_w);
+    WRITE_HANDLER(galaxian_flipy_w);
 
     extern void GalaxianInit();
     extern void GalaxianRefreshScreen();
@@ -56,10 +56,10 @@ static struct MemoryReadAddress galaxian_readmem[] = {
     {0x0000, 0x3fff, MRA_ROM},
     {0x4000, 0x43ff, MRA_RAM},
     {0x5000, 0x5fff, MRA_RAM},   // video RAM, screen attributes, sprites, bullets
-    {0x6000, 0x6000, readPort0}, // IN0
-    {0x6800, 0x6800, readPort1}, // IN1
-    {0x7000, 0x7000, readPort2}, // DSW
-    {0x7800, 0x7800, boardMemoryRead0}, //watchdog_reset_r},
+    {0x6000, 0x6000, input_port_0_r}, // IN0
+    {0x6800, 0x6800, input_port_1_r}, // IN1
+    {0x7000, 0x7000, input_port_2_r}, // DSW
+    {0x7800, 0x7800, watchdog_reset_r},
     {-1}
 };
 

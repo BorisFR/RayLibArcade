@@ -59,6 +59,8 @@ void StartGame()
   //zoomFactor = 1;
   if (zoomFactor == 0)
     MY_DEBUG2TEXT(TAG, "*** ERROR ***", "Zoom is 0")
+    else
+    MY_DEBUG2(TAG, "Zoom factor:", zoomFactor)
   // zoomFactor=1;
   display.SetDisplayForGame(zoomFactor, zoomFactor, display.GetPaddingLeftForZoom(zoomFactor), display.GetPaddingTopForZoom(zoomFactor));
 
@@ -97,7 +99,8 @@ void setup()
       finish = true;
       continue;
     }
-    MY_DEBUG2TEXT(TAG, "Available:", allGames[countGames].name);
+    std::string temp = "Available " + std::to_string(countGames) + ":";
+    MY_DEBUG2TEXT(TAG, temp.c_str(), allGames[countGames].name);
     countGames++;
   }
   if (countGames == 0)
@@ -112,7 +115,19 @@ void setup()
   ex.~Export();
 #endif
 
-  currentGame = 9; // 0 menu, voir GamesList.c
+  currentGame = 6; // 0 menu, voir GamesList.c
+/*
+[Main] Available 0: >> Menu <<
+[Main] Available 1: Space Invaders
+[Main] Available 2: Space Invaders part II
+[Main] Available 3: Polaris
+[Main] Available 4: Frogger
+[Main] Available 5: Pacman
+[Main] Available 6: Galaxian
+[Main] Available 7: Pengo
+[Main] Available 8: Donkey Kong
+[Main] Available 9: Amidar
+*/  
   StartGame();
 }
 

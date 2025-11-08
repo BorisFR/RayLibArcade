@@ -424,7 +424,7 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
         return false;
     }
     memset(screenGameDirty, DIRTY_NOT, screenGameLength);
-    //memset(screenGameDirty, DIRTY_TRANSPARENT, screenGameLength);
+    // memset(screenGameDirty, DIRTY_TRANSPARENT, screenGameLength);
     screenBitmap = (THE_COLOR *)malloc(screenGameLength);
     if (screenBitmap == NULL)
     {
@@ -543,6 +543,9 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
                 }
                 toMemory = user1Memory;
                 break;
+            // case ROM_COPY:
+            //     memcpy(&boardMemory[GAME_ROMS[i].offset], &boardMemory[GAME_ROMS[i].crc], GAME_ROMS[i].length - GAME_ROMS[i].offset);
+            //     break;
             default:
                 MY_DEBUG(TAG, "** Loading to UNKNOW memory type!!");
                 return false;
@@ -557,10 +560,17 @@ bool TheGame::Initialize(TheDisplay &display, TheSdCard &sdCard)
             MY_DEBUG(TAG, "toMemory not initialized");
             return false;
         }
-        if (!LoadOneRom(sdCard, GAME_FOLDER, name, toMemory, GAME_ROMS[i].length, GAME_ROMS[i].offset, GAME_ROMS[i].crc))
+        if (name == "x")
         {
-            MY_DEBUG(TAG, "Error loading roms, exit");
-            return false;
+            memcpy(&toMemory[GAME_ROMS[i].offset], &toMemory[GAME_ROMS[i].crc], GAME_ROMS[i].length - GAME_ROMS[i].offset);
+        }
+        else
+        {
+            if (!LoadOneRom(sdCard, GAME_FOLDER, name, toMemory, GAME_ROMS[i].length, GAME_ROMS[i].offset, GAME_ROMS[i].crc))
+            {
+                MY_DEBUG(TAG, "Error loading roms, exit");
+                return false;
+            }
         }
         i++;
     } // while

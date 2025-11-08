@@ -205,12 +205,13 @@ extern "C"
 	// main CPU memory
 	extern uint8_t *boardMemory;
 	extern uint32_t boardMemorySize;
-	extern int boardMemoryRead0(int address);
-	extern int boardMemoryRead(int address);
-	extern int boardMemoryReadDecode(int address);
-	extern void boardMemoryWrite(int address, int value);
-	extern void boardMemoryWriteDecode(int address, int value);
-	extern void boardMemoryWriteNone(int address, int value);
+	#define watchdog_reset_r boardMemoryRead0
+	extern READ_HANDLER(boardMemoryRead0);
+	extern READ_HANDLER(boardMemoryRead);
+	extern READ_HANDLER(boardMemoryReadDecode);
+	extern WRITE_HANDLER(boardMemoryWrite);
+	extern WRITE_HANDLER(boardMemoryWriteDecode);
+	extern WRITE_HANDLER(boardMemoryWriteNone);
 
 	/* use this to set the a different opcode base address when using a CPU with
    opcodes and data encrypted separately */

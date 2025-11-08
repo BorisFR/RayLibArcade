@@ -164,6 +164,7 @@ extern "C"
 							   // #define ROM_TILE 0x00000020	   /* Tile ROM */
 							   // #define ROM_SPRITE 0x00000040  /* Sprite ROM */
 #define ROM_USER1 0x00000020
+#define ROM_COPY 0x00000040
 	// change are made, I add ROM_CPU/GFX/SND at the end
 
 #define ROM_START(name) static struct RomModule name[] = {
@@ -180,6 +181,7 @@ extern "C"
 #define ROM_LOAD(name, offset, length, crc) {name, offset, length, crc},
 #define ROM_END { 0, 0, 0, 0 } } \
 	;
+#define ROM_MIRROR(start, end, source) {"x", start, end, source},
 
 	// https://github.com/Jean-MarcHarvengt/teensyMAME/blob/master/teensyMAMEClassic5/common.h
 

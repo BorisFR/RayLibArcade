@@ -634,22 +634,12 @@ uint8_t *boardMemory;
 uint32_t boardMemorySize;
 // uint32_t boardMemoryWriteMin;
 // uint32_t boardMemoryWriteMax;
-int boardMemoryRead0(int address) { return 0; }
-int boardMemoryRead(int address) { return boardMemory[address]; }
-int boardMemoryReadDecode(int address) { return boardMemory[address + 0x10000]; /*romptr[0][address];*/ }
-void boardMemoryWrite(int address, int value)
-{
-    boardMemory[address] = value;
-}
-void boardMemoryWriteDecode(int address, int value)
-{
-    boardMemory[address] = value;
-    boardMemory[address + 0x10000] = value;
-}
-void boardMemoryWriteNone(int address, int value)
-{
-    return;
-}
+READ_HANDLER(boardMemoryRead0) { return 0; }
+READ_HANDLER(boardMemoryRead) { return boardMemory[offset]; }
+READ_HANDLER(boardMemoryReadDecode) { return boardMemory[offset + 0x10000]; /*romptr[0][address];*/ }
+WRITE_HANDLER(boardMemoryWrite) { boardMemory[offset] = data; }
+WRITE_HANDLER(boardMemoryWriteDecode) { boardMemory[offset] = data; boardMemory[offset + 0x10000] = data; }
+WRITE_HANDLER(boardMemoryWriteNone) { return; }
 /*
         public void Write16(int address, ushort value)
         {

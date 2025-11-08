@@ -1,0 +1,92 @@
+
+
+	/* video extension callbacks */
+	typedef void (galaxian_state::*extend_tile_info_func)(uint16_t *code, uint8_t *color, uint8_t attrib, uint8_t x, uint8_t y);
+	typedef void (galaxian_state::*extend_sprite_info_func)(const uint8_t *base, uint8_t *sx, uint8_t *sy, uint8_t *flipx, uint8_t *flipy, uint16_t *code, uint8_t *color);
+	typedef void (galaxian_state::*draw_bullet_func)(bitmap_rgb32 &bitmap, const rectangle &cliprect, int offs, int x, int y);
+	typedef void (galaxian_state::*draw_background_func)(bitmap_rgb32 &bitmap, const rectangle &cliprect);
+
+
+void galaxian_state::common_init(
+		draw_bullet_func draw_bullet,
+		draw_background_func draw_background,
+		extend_tile_info_func extend_tile_info,
+		extend_sprite_info_func extend_sprite_info)
+{
+	m_draw_bullet_ptr = draw_bullet_delegate(draw_bullet ? draw_bullet : &galaxian_state::galaxian_draw_bullet, this);
+	m_draw_background_ptr = draw_background_delegate(draw_background ? draw_background : &galaxian_state::galaxian_draw_background, this);
+	m_extend_tile_info_ptr = extend_tile_info_delegate(extend_tile_info ? extend_tile_info : &galaxian_state::empty_extend_tile_info, this);
+	m_extend_sprite_info_ptr = extend_sprite_info_delegate(extend_sprite_info ? extend_sprite_info : &galaxian_state::empty_extend_sprite_info, this);
+}
+
+void galaxian_state::init_galaxian()
+	common_init(&galaxian_state::galaxian_draw_bullet, &galaxian_state::galaxian_draw_background, nullptr, nullptr);
+void galaxian_state::galaxian_draw_bullet(bitmap_rgb32 &bitmap, const rectangle &cliprect, int offs, int x, int y)
+	//  Both "shells" and "missiles" begin displaying when the horizontal counter
+	//  reaches $FC, and they stop displaying when it reaches $00, resulting in
+	//  4-pixel-long shots. The first 7 entries are called "shells" and render as
+	//  white; the final entry is called a "missile" and renders as yellow.
+	x -= 4;
+	galaxian_draw_pixel(bitmap, cliprect, y, x++, m_bullet_color[offs]);
+	galaxian_draw_pixel(bitmap, cliprect, y, x++, m_bullet_color[offs]);
+	galaxian_draw_pixel(bitmap, cliprect, y, x++, m_bullet_color[offs]);
+	galaxian_draw_pixel(bitmap, cliprect, y, x++, m_bullet_color[offs]);
+void galaxian_state::galaxian_draw_background(bitmap_rgb32 &bitmap, const rectangle &cliprect)
+	// erase the background to black first
+	bitmap.fill(rgb_t::black(), cliprect);
+	galaxian_draw_stars(bitmap, cliprect, 256);
+
+
+void galaxian_state::init_frogger()
+	// video extensions
+	common_init(nullptr, &galaxian_state::frogger_draw_background, &galaxian_state::frogger_extend_tile_info, &galaxian_state::frogger_extend_sprite_info);
+	m_frogger_adjust = true;
+	// decrypt
+	decode_frogger_sound();
+	decode_frogger_gfx();
+void galaxian_state::frogger_draw_background(bitmap_rgb32 &bitmap, const rectangle &cliprect)
+	// according to schematics it is at 128+8; but it has been verified different on real machine.
+	//Video proof: http://www.youtube.com/watch?v=ssr69mQf224
+	background_draw_colorsplit(bitmap, cliprect, rgb_t(0,0,0x47), 128, 128);
+void galaxian_state::frogger_extend_tile_info(uint16_t *code, uint8_t *color, uint8_t attrib, uint8_t x, uint8_t y)
+	*color = ((*color >> 1) & 0x03) | ((*color << 2) & 0x04);
+void galaxian_state::frogger_extend_sprite_info(const uint8_t *base, uint8_t *sx, uint8_t *sy, uint8_t *flipx, uint8_t *flipy, uint16_t *code, uint8_t *color)
+	*color = ((*color >> 1) & 0x03) | ((*color << 2) & 0x04);
+
+
+void galaxian_state::init_amidar()
+	// no existing amidar sets run on Amidar hardware as described by Amidar schematics!
+	// video extensions
+	common_init(&galaxian_state::scramble_draw_bullet, &galaxian_state::amidar_draw_background, nullptr, nullptr);
+void galaxian_state::scramble_draw_bullet(bitmap_rgb32 &bitmap, const rectangle &cliprect, int offs, int x, int y)
+	//  Scramble only has "shells", which begin displaying when the counter
+	//  reaches $FA, and stop displaying two pixel clock layers, as verified
+	//  on real hardware.
+	//  All shells are rendered as yellow.
+	x -= 4;
+	galaxian_draw_pixel(bitmap, cliprect, y, --x, rgb_t(0xff, 0xff, 0x00));
+	galaxian_draw_pixel(bitmap, cliprect, y, --x, rgb_t(0xff, 0xff, 0x00));
+void galaxian_state::amidar_draw_background(bitmap_rgb32 &bitmap, const rectangle &cliprect)
+{
+	const uint8_t *prom = memregion("user1")->base();
+	rectangle draw;
+	for (int x = 0; x < 32; x++)
+		if (flip_and_clip(&draw, x * 8, x * 8 + 7, cliprect))
+		{
+			//  The background PROM is connected the following way:
+			//     bit 0 = 0 enables the blue gun if BCB is asserted
+			//     bit 1 = 0 enables the red gun if BCR is asserted and
+			//               the green gun if BCG is asserted
+			//     bits 2-7 are unconnected
+			//  The background color generator is connected this way:
+			//      RED   - 270 ohm resistor
+			//      GREEN - 560 ohm resistor
+			//      BLUE  - 470 ohm resistor
+			//
+			uint8_t red = ((~prom[x] & 0x02) && m_background_red) ? 0x7c : 0x00;
+			uint8_t green = ((~prom[x] & 0x02) && m_background_green) ? 0x3c : 0x00;
+			uint8_t blue = ((~prom[x] & 0x01) && m_background_blue) ? 0x47 : 0x00;
+			bitmap.fill(rgb_t(red, green, blue, draw));
+		}
+}    
+

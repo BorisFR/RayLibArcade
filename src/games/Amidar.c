@@ -83,6 +83,61 @@ WRITE_HANDLER(amidar_sh_irqtrigger_w)
 
 // *******************************************************************
 
+//READ_HANDLER(amidar_ppi8255_0_r) { return m_ppi8255[0]->read((offset >> 4) & 3); }
+
+// *******************************************************************
+
+//READ_HANDLER(amidar_ppi8255_1_r) { return m_ppi8255[1]->read((offset >> 4) & 3); }
+
+// *******************************************************************
+
+//WRITE_HANDLER(amidar_ppi8255_0_w) { m_ppi8255[0]->write((offset >> 4) & 3, data); }
+
+// *******************************************************************
+
+//WRITE_HANDLER(amidar_ppi8255_1_w) { m_ppi8255[1]->write((offset >> 4) & 3, data); }
+
+// *******************************************************************
+
+//uint8_t m_background_enable = 0;
+//uint8_t m_background_red = 0;
+//uint8_t m_background_green = 0;
+//uint8_t m_background_blue = 0;
+/*void galaxian_state::scramble_background_enable_w(uint8_t data)
+{
+    if ((m_background_enable ^ data) & 0x01)
+        m_screen->update_partial(m_screen->vpos());
+
+    m_background_enable = data & 0x01;
+}*/
+
+//WRITE_HANDLER(amidar_background_red_w)
+//{
+//    // if ((m_background_red ^ data) & 0x01)
+//    //     m_screen->update_partial(m_screen->vpos());
+//    m_background_red = data & 0x01;
+//}
+
+// *******************************************************************
+
+//WRITE_HANDLER(amidar_background_green_w)
+//{
+//    // if ((m_background_green ^ data) & 0x01)
+//    //     m_screen->update_partial(m_screen->vpos());
+//    m_background_green = data & 0x01;
+//}
+
+// *******************************************************************
+
+//WRITE_HANDLER(amidar_background_blue_w)
+//{
+//    // if ((m_background_blue ^ data) & 0x01)
+//    //     m_screen->update_partial(m_screen->vpos());
+//    m_background_blue = data & 0x01;
+//}
+
+// *******************************************************************
+
 void AmidarInit()
 {
     GameInitTilesAndSprites(8, 16, 16, 0x400, 8, 8);
@@ -119,8 +174,21 @@ void AmidarRefreshScreen()
     }
 
     element = allGfx[1];
+    for (int spriteNumber = 7; spriteNumber >= 0; spriteNumber--)
+    {
+        const uint8_t *base = &spriteram[spriteNumber * 4];
+        uint8_t atX = base[0];
+        uint16_t spriteIndex = base[1] & 0x3f;
+        uint8_t flipX = base[1] & 0x40;
+        uint8_t flipY = base[1] & 0x80;
+        uint8_t paletteIndex = base[2] & 7;
+        uint16_t atY = base[3];
+        GameDrawSprite(spriteNumber, spriteIndex, paletteIndex, atX, atY, flipX, flipY);
+    }
+    return;
     /* Draw the sprites. Note that it is important to draw them exactly in this */
     /* order, to have the correct priorities. */
+    uint8_t index=0;
     for (int offset = spriteram_size - 4; offset >= 0; offset -= 4)
     {
         int atX = (spriteram[offset + 3] + 1) & 0xff; /* ??? */
@@ -144,7 +212,7 @@ void AmidarRefreshScreen()
         /* proving that this is a hardware related "feature" */
         if (offset <= 2 * 4)
             atY++;
-        GameDrawSprite(offset / 4, spriteram[offset + 1] & 0x3f, spriteram[offset + 2] & 0x07, atX, atY, flipX, flipY);
+        GameDrawSprite(index++, spriteram[offset + 1] & 0x3f, spriteram[offset + 2] & 0x07, atX, atY, flipX, flipY);
         /*drawgfx(bitmap,Machine->gfx[1],
                 spriteram[offset + 1] & 0x3f,
                 spriteram[offset + 2] & 0x07,
